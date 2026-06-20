@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal Finder — CSU Library</title>
+<style>
+  :root {
+    --csu-orange:    #F0572A;
+    --csu-orange-dk: #DA3D0F;
+    --csu-charcoal:  #222222;
+    --csu-navy:      #222944;
+    --csu-green:     #3C8364;
+    --csu-blue:      #5675BC;
+    --csu-pink:      #E9CECA;
+    --csu-brown-lt:  #C7B8A0;
+    --white:         #FFFFFF;
+    --grey-100:      #F7F7F7;
+    --grey-200:      #EEEEEE;
+    --grey-400:      #AAAAAA;
+    --grey-600:      #666666;
+    --radius:        4px;
+    --shadow:        0 1px 4px rgba(0,0,0,.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: var(--csu-charcoal);
+    background: var(--grey-100);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--csu-navy);
+    color: var(--white);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  }
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+  .header-crest {
+    width: 38px; height: 38px;
+    background: var(--csu-orange);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .header-wordmark { line-height: 1.2; }
+  .header-wordmark strong { display: block; font-size: 15px; letter-spacing: .02em; }
+  .header-wordmark span  { font-size: 11px; color: var(--csu-brown-lt); letter-spacing: .04em; }
+  .header-tag { font-size: 12px; color: var(--csu-pink); text-align: right; line-height: 1.4; }
+  .accent-bar { height: 4px; background: var(--csu-orange); }
+
+  /* ── Hero ── */
+  .hero {
+    background: var(--csu-navy);
+    color: var(--white);
+    padding: 32px 24px 28px;
+    border-bottom: 4px solid var(--csu-orange);
+  }
+  .hero-inner { max-width: 960px; margin: 0 auto; }
+  .hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+  .hero h1 span { color: var(--csu-orange); }
+  .hero p { font-size: 13px; color: var(--csu-brown-lt); margin-bottom: 20px; max-width: 620px; }
+
+  /* ── Main ── */
+  .main { max-width: 1400px; margin: 0 auto; padding: 20px 16px 48px; }
+
+  /* ── Filter panel ── */
+  .filter-panel {
+    background: var(--white);
+    border: 1px solid var(--grey-200);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .filter-panel-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--grey-600);
+    margin-bottom: 12px;
+  }
+
+  /* keyword search row */
+  .keyword-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .keyword-row input {
+    flex: 1;
+    padding: 9px 14px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    border: 1px solid var(--grey-400);
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color .15s;
+  }
+  .keyword-row input:focus { border-color: var(--csu-orange); }
+  .keyword-row input::placeholder { color: var(--grey-400); }
+
+  /* filter dropdowns row */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; }
+  .filter-group label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--grey-600);
+  }
+  .filter-group select {
+    padding: 7px 28px 7px 10px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    border: 1px solid var(--grey-400);
+    border-radius: var(--radius);
+    background: var(--white);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    min-width: 160px;
+  }
+  .filter-group select:focus { outline: 2px solid var(--csu-orange); outline-offset: 1px; }
+
+  .btn-clear {
+    padding: 7px 16px;
+    background: transparent;
+    color: var(--grey-600);
+    border: 1px solid var(--grey-400);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    align-self: flex-end;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .btn-clear:hover { border-color: var(--csu-charcoal); color: var(--csu-charcoal); }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #resultCount { font-size: 13px; color: var(--grey-600); }
+  #resultCount strong { color: var(--csu-charcoal); }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--grey-600); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .dot-green { background: #3C8364; }
+  .dot-red   { background: #C0392B; }
+  .dot-teal  { background: #2980B9; }
+  .dot-grey  { background: var(--grey-400); }
+
+  /* ── Loading / empty ── */
+  #loadingMsg, #emptyMsg {
+    text-align: center; padding: 64px 24px; color: var(--grey-600);
+  }
+  #loadingMsg .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--grey-200);
+    border-top-color: var(--csu-orange);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #emptyMsg { display: none; }
+
+  /* ── Table ── */
+  .table-wrap {
+    background: var(--white);
+    border: 1px solid var(--grey-200);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .table-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 70vh;
+    border-radius: var(--radius);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead {
+    background: var(--csu-navy);
+    color: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+    will-change: transform;
+    transform: translateZ(0);
+  }
+  th {
+    padding: 11px 12px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    border-right: 1px solid rgba(255,255,255,.1);
+  }
+  th:last-child { border-right: none; }
+  th:hover { background: rgba(255,255,255,.1); }
+  th .si { margin-left: 3px; opacity: .5; font-style: normal; font-size: 9px; }
+  th.asc  .si::after { content: '▲'; opacity: 1; }
+  th.desc .si::after { content: '▼'; opacity: 1; }
+  th:not(.asc):not(.desc) .si::after { content: '⇅'; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--grey-200);
+    transition: background .1s;
+    background: var(--white);
+    position: relative;
+    z-index: 1;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #FFF8F6; }
+  td { padding: 9px 12px; vertical-align: top; line-height: 1.45; }
+  td.title-cell { font-weight: 600; min-width: 200px; max-width: 280px; }
+  td.pub  { min-width: 120px; max-width: 180px; }
+  td.agr  { min-width: 120px; max-width: 180px; }
+  td.ctr  { text-align: center; white-space: nowrap; }
+  td.for  { max-width: 140px; font-size: 12px; color: var(--grey-600); }
+  td.issn { font-size: 11px; color: var(--grey-600); min-width: 160px; }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .b-yes     { background: #D5F0E5; color: #1A6640; }
+  .b-no      { background: #FDDEDE; color: #8B1A1A; }
+  .b-na      { background: var(--grey-200); color: var(--grey-600); }
+  .b-q1      { background: #222944; color: #FFF; }
+  .b-q2      { background: #3C8364; color: #FFF; }
+  .b-q3      { background: #5675BC; color: #FFF; }
+  .b-q4      { background: #C7B8A0; color: #333; }
+  .b-diamond { background: #E8F4FD; color: #1565A0; }
+
+  /* ── Pagination ── */
+  .pagination {
+    display: flex; align-items: center; justify-content: center;
+    gap: 5px; padding: 14px; border-top: 1px solid var(--grey-200);
+    flex-wrap: wrap;
+  }
+  .pg {
+    min-width: 32px; height: 32px; padding: 0 7px;
+    border: 1px solid var(--grey-200);
+    background: var(--white);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-family: Arial, sans-serif; font-size: 12px;
+    color: var(--csu-charcoal);
+    display: flex; align-items: center; justify-content: center;
+    transition: all .12s;
+  }
+  .pg:hover:not(:disabled) { border-color: var(--csu-orange); color: var(--csu-orange); }
+  .pg.active { background: var(--csu-orange); color: #fff; border-color: var(--csu-orange); }
+  .pg:disabled { opacity: .35; cursor: default; }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--csu-charcoal); color: var(--grey-400);
+    text-align: center; padding: 18px 24px;
+    font-size: 11px; line-height: 1.7; margin-top: 32px;
+  }
+  footer a { color: var(--csu-brown-lt); }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 20px; }
+    .header-tag { display: none; }
+    td.issn, td.for { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <div class="header-crest" aria-hidden="true">📚</div>
+    <div class="header-wordmark">
+      <strong>Charles Sturt University</strong>
+      <span>Division of Library Services</span>
+    </div>
+  </div>
+  <div class="header-tag">Journal Finder<br>2026 Edition</div>
+</header>
+<div class="accent-bar"></div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Find a <span>Journal</span></h1>
+    <p>Search 35,000+ journals for open access eligibility, publisher agreements, Scimago rankings, and Diamond OA status.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="filter-panel">
+    <div class="filter-panel-title">Search &amp; Filter</div>
+
+    <!-- Keyword row -->
+    <div class="keyword-row">
+      <input type="search" id="searchInput"
+        placeholder="Search by keyword or journal title, publisher, ISSN, FOR code…"
+        autocomplete="off" aria-label="Keyword or journal title search">
+    </div>
+
+    <!-- Dropdowns row -->
+    <div class="filter-row">
+
+      <div class="filter-group">
+        <label for="filterEligible">CSU OA Agreement</label>
+        <select id="filterEligible">
+          <option value="">All</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="N/A">N/A</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterAgreement">Filter by agreement</label>
+        <select id="filterAgreement">
+          <option value="">All agreements</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterDiamond">Diamond OA</label>
+        <select id="filterDiamond">
+          <option value="">All</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterScimago">Scimago rank</label>
+        <select id="filterScimago">
+          <option value="">All</option>
+          <option value="Q1">Q1</option>
+          <option value="Q2">Q2</option>
+          <option value="Q3">Q3</option>
+          <option value="Q4">Q4</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterCSURank">CSU rank</label>
+        <select id="filterCSURank">
+          <option value="">All</option>
+          <option value="Q1">Q1</option>
+          <option value="Q2">Q2</option>
+          <option value="Q3">Q3</option>
+          <option value="Q4">Q4</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterFOR">FOR code</label>
+        <select id="filterFOR">
+          <option value="">All FOR codes</option>
+        </select>
+      </div>
+
+      <button class="btn-clear" id="clearBtn">✕ Clear all</button>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div id="resultCount"><strong>Loading…</strong></div>
+    <div class="legend">
+      <span class="legend-item"><span class="dot dot-green"></span>CSU Eligible</span>
+      <span class="legend-item"><span class="dot dot-red"></span>Not eligible</span>
+      <span class="legend-item"><span class="dot dot-teal"></span>Diamond OA</span>
+      <span class="legend-item"><span class="dot dot-grey"></span>Not in agreement</span>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loadingMsg">
+    <div class="spinner"></div>
+    <div>Loading journal data…</div>
+  </div>
+
+  <!-- Empty -->
+  <div id="emptyMsg" role="status" aria-live="polite">
+    <div style="font-size:32px">🔍</div>
+    <p><strong>No journals match your search.</strong></p>
+    <p style="margin-top:6px;font-size:13px">Try different keywords or clear a filter.</p>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap" id="tableWrap" style="display:none">
+    <div class="table-scroll">
+      <table id="journalTable" aria-label="Journal search results">
+        <thead>
+          <tr>
+            <th data-col="Journal Title">Journal title<i class="si"></i></th>
+            <th data-col="Publisher Name">Publisher<i class="si"></i></th>
+            <th data-col="Agreement">Agreement<i class="si"></i></th>
+            <th data-col="CSU Rank" class="ctr">CSU rank<i class="si"></i></th>
+            <th data-col="Scimago Rank" class="ctr">Scimago<i class="si"></i></th>
+            <th data-col="Eligible" class="ctr">CSU OA<i class="si"></i></th>
+            <th data-col="Diamond OA" class="ctr">Diamond OA<i class="si"></i></th>
+            <th data-col="FOR Codes">FOR codes<i class="si"></i></th>
+            <th data-col="ISSNs">ISSN<i class="si"></i></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Charles Sturt University — TEQSA Provider Identification: PRV12018 (Australian University). CRICOS Provider: 00005F.</p>
+  <p style="margin-top:5px">Data sources: CAUL OA Agreements 2026 · Scimago Journal Rankings 2025 · CSU Library Journal Ranking List</p>
+  <p style="margin-top:5px"><a href="https://www.csu.edu.au/library">CSU Library</a> · Last updated June 2026</p>
+</footer>
+
+<script>
+const PAGE_SIZE = 50;
+const DATA_URL  = 'journals.json';
+
+let allData     = [];
+let filtered    = [];
+let currentPage = 1;
+let sortCol     = 'Journal Title';
+let sortDir     = 'asc';
+
+// DOM refs
+const searchInput    = document.getElementById('searchInput');
+const clearBtn       = document.getElementById('clearBtn');
+const filterEligible = document.getElementById('filterEligible');
+const filterAgreement= document.getElementById('filterAgreement');
+const filterDiamond  = document.getElementById('filterDiamond');
+const filterScimago  = document.getElementById('filterScimago');
+const filterCSURank  = document.getElementById('filterCSURank');
+const filterFOR      = document.getElementById('filterFOR');
+const tableBody      = document.getElementById('tableBody');
+const pagination     = document.getElementById('pagination');
+const resultCount    = document.getElementById('resultCount');
+const loadingMsg     = document.getElementById('loadingMsg');
+const emptyMsg       = document.getElementById('emptyMsg');
+const tableWrap      = document.getElementById('tableWrap');
+
+// Load data
+fetch(DATA_URL)
+  .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+  .then(data => {
+    allData = data;
+    buildDropdowns(data);
+    applyFilters();
+    loadingMsg.style.display = 'none';
+  })
+  .catch(err => {
+    loadingMsg.innerHTML = `<p style="color:#C0392B">⚠ Could not load journal data.<br><small>${err.message}</small></p>`;
+  });
+
+// Build dynamic dropdowns
+function buildDropdowns(data) {
+  // Agreements
+  const agrs = [...new Set(data.map(r => r['Agreement']).filter(Boolean))].sort();
+  agrs.forEach(a => {
+    const o = document.createElement('option');
+    o.value = a; o.textContent = a;
+    filterAgreement.appendChild(o);
+  });
+
+  // FOR codes — split multi-value fields
+  const forSet = new Set();
+  data.forEach(r => {
+    if (r['FOR Codes']) {
+      r['FOR Codes'].split(';').forEach(c => {
+        const t = c.trim();
+        if (t) forSet.add(t);
+      });
+    }
+  });
+  [...forSet].sort((a,b) => a.localeCompare(b, undefined, {numeric: true}))
+    .forEach(code => {
+      const o = document.createElement('option');
+      o.value = code; o.textContent = code;
+      filterFOR.appendChild(o);
+    });
+}
+
+// Apply all filters
+function applyFilters() {
+  const q    = searchInput.value.trim().toLowerCase();
+  const elig = filterEligible.value;
+  const agr  = filterAgreement.value;
+  const dia  = filterDiamond.value;
+  const sci  = filterScimago.value;
+  const csu  = filterCSURank.value;
+  const forv = filterFOR.value;
+
+  filtered = allData.filter(r => {
+    if (elig && r['Eligible']    !== elig) return false;
+    if (agr  && r['Agreement']   !== agr)  return false;
+    if (dia  && r['Diamond OA']  !== dia)  return false;
+    if (sci  && r['Scimago Rank']!== sci)  return false;
+    if (csu  && r['CSU Rank']    !== csu)  return false;
+    if (forv) {
+      const codes = (r['FOR Codes'] || '').split(';').map(c => c.trim());
+      if (!codes.includes(forv)) return false;
+    }
+    if (q) {
+      const hay = [
+        r['Journal Title'], r['Publisher Name'], r['Agreement'],
+        r['ISSNs'], r['FOR Codes']
+      ].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  // Sort — strip leading non-alpha for natural sort
+  filtered.sort((a, b) => {
+    let av = (a[sortCol] || '').toString();
+    let avS = av.replace(/^[^a-zA-Z]+/, '').toLowerCase(); av = avS || av.toLowerCase();
+    let bv = (b[sortCol] || '').toString();
+    let bvS = bv.replace(/^[^a-zA-Z]+/, '').toLowerCase(); bv = bvS || bv.toLowerCase();
+    if (av < bv) return sortDir === 'asc' ? -1 : 1;
+    if (av > bv) return sortDir === 'asc' ?  1 : -1;
+    return 0;
+  });
+
+  currentPage = 1;
+  render();
+}
+
+// Render current page
+function render() {
+  const total = filtered.length;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const slice = filtered.slice(start, start + PAGE_SIZE);
+
+  resultCount.innerHTML = total === 0
+    ? '<strong>No results</strong>'
+    : `Showing <strong>${(start+1).toLocaleString()}–${Math.min(start+PAGE_SIZE,total).toLocaleString()}</strong> of <strong>${total.toLocaleString()}</strong> journals`;
+
+  emptyMsg.style.display  = total === 0 ? 'block' : 'none';
+  tableWrap.style.display = total === 0 ? 'none'  : 'block';
+
+  tableBody.innerHTML = slice.map(r => `<tr>
+    <td class="title-cell">${esc(r['Journal Title'])}</td>
+    <td class="pub">${esc(r['Publisher Name'])}</td>
+    <td class="agr">${esc(r['Agreement'])}</td>
+    <td class="ctr">${rankBadge(r['CSU Rank'])}</td>
+    <td class="ctr">${rankBadge(r['Scimago Rank'])}</td>
+    <td class="ctr">${eligBadge(r['Eligible'])}</td>
+    <td class="ctr">${diaBadge(r['Diamond OA'])}</td>
+    <td class="for">${esc(r['FOR Codes'])}</td>
+    <td class="issn">${esc(r['ISSNs'])}</td>
+  </tr>`).join('');
+
+  renderPagination(total);
+}
+
+// Badge helpers
+function eligBadge(v) {
+  if (v === 'Yes') return '<span class="badge b-yes">Yes</span>';
+  if (v === 'No')  return '<span class="badge b-no">No</span>';
+  return '<span style="color:var(--grey-400)">—</span>';
+}
+function rankBadge(v) {
+  const cls = {Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v];
+  return cls ? `<span class="badge ${cls}">${v}</span>` : '<span style="color:var(--grey-400)">—</span>';
+}
+function diaBadge(v) {
+  return v === 'Yes' ? '<span class="badge b-diamond">Yes</span>' : '<span style="color:var(--grey-400)">—</span>';
+}
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Pagination
+function renderPagination(total) {
+  const pages = Math.ceil(total / PAGE_SIZE);
+  if (pages <= 1) { pagination.innerHTML = ''; return; }
+  const range = pageRange(currentPage, pages);
+  let html = `<button class="pg" onclick="goTo(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  range.forEach(p => {
+    if (p === '…') html += `<span style="padding:0 4px;color:var(--grey-400)">…</span>`;
+    else html += `<button class="pg ${p===currentPage?'active':''}" onclick="goTo(${p})">${p}</button>`;
+  });
+  html += `<button class="pg" onclick="goTo(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
+  pagination.innerHTML = html;
+}
+function pageRange(cur, total) {
+  if (total <= 7) return Array.from({length:total},(_,i)=>i+1);
+  const r=[1];
+  if (cur>3) r.push('…');
+  for (let p=Math.max(2,cur-1); p<=Math.min(total-1,cur+1); p++) r.push(p);
+  if (cur<total-2) r.push('…');
+  r.push(total);
+  return r;
+}
+function goTo(p) {
+  currentPage = p;
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// Sorting
+document.querySelectorAll('th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    sortDir = (sortCol === col && sortDir === 'asc') ? 'desc' : 'asc';
+    sortCol = col;
+    document.querySelectorAll('th').forEach(t => t.classList.remove('asc','desc'));
+    th.classList.add(sortDir);
+    applyFilters();
+  });
+});
+
+// Events
+let debounce;
+searchInput.addEventListener('input', () => {
+  clearTimeout(debounce);
+  debounce = setTimeout(applyFilters, 220);
+});
+[filterEligible, filterAgreement, filterDiamond,
+ filterScimago, filterCSURank, filterFOR]
+  .forEach(el => el.addEventListener('change', applyFilters));
+
+clearBtn.addEventListener('click', () => {
+  searchInput.value = '';
+  [filterEligible, filterAgreement, filterDiamond,
+   filterScimago, filterCSURank, filterFOR]
+    .forEach(el => el.value = '');
+  applyFilters();
+});
+</script>
+</body>
+</html>

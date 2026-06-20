@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /tmp)",
+      "Bash(unzip -l \"G:/My Drive/ClaudeCode/CSU1/filesCodex.zip\")",
+      "Bash(unzip -p \"G:/My Drive/ClaudeCode/CSU1/filesCodex.zip\" \"codex-handover.zip\")",
+      "Bash(unzip -l /tmp/inner_codex.zip)",
+      "Bash(funzip)",
+      "Bash(python3 -c ' *)",
+      "Bash(python -c \"import zipfile,io; z=zipfile.ZipFile\\('G:/My Drive/ClaudeCode/CSU1/filesCodex.zip'\\); inner=z.read\\('codex-handover.zip'\\); z2=zipfile.ZipFile\\(io.BytesIO\\(inner\\)\\); import sys; sys.stdout.buffer.write\\(z2.read\\('index.html'\\)\\)\")",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "PowerShell(python --version)",
+      "PowerShell(python $s \"academic library journal search filter directory data tool professional\" --design-system -p \"CSU Journal Finder\")",
+      "PowerShell($s = \"C:\\\\Users\\\\SteveRose\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.5.0\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\")",
+      "PowerShell(python $s \"data table sticky header pagination sortable loading dense\" --domain ux -n 12)",
+      "PowerShell(python $s \"multi-step wizard progressive disclosure stepper form validation focus\" --domain ux -n 12)",
+      "PowerShell($s = \"C:\\\\Users\\\\SteveRose\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.5.0\\\\src\\\\ui-ux-pro-max\\\\scripts\\\\search.py\")",
+      "PowerShell(python $s \"data table sticky header pagination sortable loading dense virtualize\" --domain ux -n 10)",
+      "PowerShell(python $s \"multi-step wizard progressive disclosure stepper form validation focus empty-state\" --domain ux -n 10)"
+    ]
+  }
+}

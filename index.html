@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal Finder — CSU Library</title>
+<style>
+  :root {
+    --csu-orange:    #F0572A;
+    --csu-orange-dk: #DA3D0F;
+    --csu-charcoal:  #222222;
+    --csu-navy:      #222944;
+    --csu-navy-2:    #2C3556;
+    --csu-green:     #3C8364;
+    --csu-blue:      #5675BC;
+    --csu-pink:      #E9CECA;
+    --csu-brown-lt:  #C7B8A0;
+    --white:         #FFFFFF;
+    --grey-50:       #FAFBFC;
+    --grey-100:      #F4F6F8;
+    --grey-200:      #E7EAEE;
+    --grey-300:      #D7DBE2;
+    --grey-400:      #AAB0BB;
+    --grey-600:      #5B6473;
+    --grey-700:      #3A414E;
+
+    --radius-sm: 7px;
+    --radius:    11px;
+    --radius-lg: 16px;
+
+    /* Soft UI Evolution — softer than flat, clear depth */
+    --shadow-sm: 0 1px 2px rgba(34,41,68,.07), 0 1px 3px rgba(34,41,68,.08);
+    --shadow-md: 0 4px 14px rgba(34,41,68,.10), 0 2px 6px rgba(34,41,68,.07);
+    --shadow-lg: 0 12px 34px rgba(34,41,68,.16);
+    --ring:      0 0 0 3px rgba(240,87,42,.30);
+
+    --dur:   .22s;
+    --dur-2: .34s;
+    --ease:  cubic-bezier(.22,.61,.36,1);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: var(--csu-charcoal);
+    background: var(--grey-100);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+  a { color: var(--csu-blue); }
+  ::selection { background: rgba(240,87,42,.22); }
+
+  /* ── Header ── */
+  header {
+    background: var(--csu-navy);
+    color: var(--white);
+    padding: 0 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,.22);
+    z-index: 100;
+  }
+  .header-brand { display: flex; align-items: center; gap: 12px; }
+  .header-crest { width: 38px; height: 38px; flex-shrink: 0; display: block; }
+  .header-wordmark { line-height: 1.2; }
+  .header-wordmark strong { display: block; font-size: 14px; letter-spacing: .02em; }
+  .header-wordmark span  { font-size: 11px; color: var(--csu-brown-lt); letter-spacing: .04em; }
+  .header-tag { font-size: 12px; color: var(--csu-pink); text-align: right; line-height: 1.4; }
+  .accent-bar { height: 4px; background: var(--csu-orange); flex-shrink: 0; }
+
+  /* ── Chip / status bar (pinned) ── */
+  #chipBar {
+    display: none;
+    flex-shrink: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--grey-200);
+    box-shadow: var(--shadow-sm);
+    padding: 9px 16px;
+    z-index: 90;
+  }
+  #chipBar.show { display: block; }
+  .chipbar-inner {
+    max-width: 1320px; margin: 0 auto;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .live-count {
+    font-size: 13px; color: var(--grey-600); white-space: nowrap;
+    display: flex; align-items: baseline; gap: 5px;
+  }
+  .live-count b { font-size: 16px; color: var(--csu-navy); font-variant-numeric: tabular-nums; }
+  .chips { display: flex; gap: 7px; flex-wrap: wrap; flex: 1; min-width: 120px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--grey-100); border: 1px solid var(--grey-300);
+    color: var(--csu-navy); border-radius: 999px;
+    padding: 4px 6px 4px 11px; font-size: 12px; white-space: nowrap;
+    animation: chip-pop var(--dur) var(--ease) both;
+  }
+  .chip .k { color: var(--grey-600); }
+  .chip button {
+    border: none; background: var(--grey-300); color: var(--csu-navy);
+    width: 17px; height: 17px; border-radius: 50%; cursor: pointer;
+    font-size: 12px; line-height: 1; display: flex; align-items: center; justify-content: center;
+    transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .chip button:hover { background: var(--csu-orange); color: #fff; }
+  .chipbar-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    font-family: inherit; font-size: 13px; cursor: pointer;
+    border-radius: var(--radius-sm); padding: 7px 13px;
+    border: 1px solid var(--grey-300); background: var(--white); color: var(--csu-navy);
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+    white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { border-color: var(--csu-navy); }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--csu-orange); border-color: var(--csu-orange); color: #fff; font-weight: 700; }
+  .btn-primary:hover { background: var(--csu-orange-dk); border-color: var(--csu-orange-dk); }
+  .btn-ghost { background: transparent; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, .opt:focus-visible, .intent-card:focus-visible, th:focus-visible { outline: none; box-shadow: var(--ring); }
+
+  /* ── Stage (the single scroll region) ── */
+  #stage { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 22px 16px 40px; }
+  .surface { display: none; }
+  .surface.active { display: block; animation: fade-rise var(--dur-2) var(--ease) both; }
+
+  /* ── Entry ── */
+  .entry-hero { text-align: center; padding: 26px 8px 8px; }
+  .entry-hero h1 { font-size: 30px; font-weight: 700; color: var(--csu-navy); letter-spacing: -.01em; }
+  .entry-hero h1 span { color: var(--csu-orange); }
+  .entry-hero p { font-size: 14px; color: var(--grey-600); margin-top: 8px; }
+  .search-wrap {
+    max-width: 680px; margin: 22px auto 6px; position: relative;
+    display: flex; box-shadow: var(--shadow-md); border-radius: var(--radius-lg);
+    background: #fff; border: 1px solid var(--grey-200);
+    transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .search-wrap:focus-within { border-color: var(--csu-orange); box-shadow: var(--shadow-lg); }
+  .search-wrap svg { width: 20px; height: 20px; color: var(--grey-400); align-self: center; margin-left: 16px; flex-shrink: 0; }
+  .search-wrap input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-family: inherit; font-size: 16px; padding: 16px 12px; color: var(--csu-charcoal); min-width: 0;
+  }
+  .search-wrap input::placeholder { color: var(--grey-400); }
+  .search-wrap .btn-primary { margin: 7px; border-radius: var(--radius); }
+  .search-hint { text-align: center; font-size: 12.5px; color: var(--grey-600); min-height: 18px; margin-top: 4px; }
+  .search-hint b { color: var(--csu-navy); font-variant-numeric: tabular-nums; }
+
+  .intent-or { text-align: center; margin: 26px auto 14px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--grey-400); position: relative; max-width: 680px; }
+  .intent-or::before, .intent-or::after { content: ''; position: absolute; top: 50%; width: calc(50% - 90px); height: 1px; background: var(--grey-200); }
+  .intent-or::before { left: 0; } .intent-or::after { right: 0; }
+  .intents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
+  .intent-card {
+    text-align: left; background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius);
+    padding: 18px 16px 16px; cursor: pointer; font-family: inherit;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    display: flex; flex-direction: column; gap: 9px;
+  }
+  .intent-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--csu-brown-lt); }
+  .intent-ic { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; }
+  .intent-ic svg { width: 22px; height: 22px; }
+  .intent-card h3 { font-size: 15px; color: var(--csu-navy); }
+  .intent-card p { font-size: 12.5px; color: var(--grey-600); line-height: 1.45; }
+  .intent-card .go { font-size: 12px; color: var(--csu-orange); font-weight: 700; margin-top: auto; }
+  .entry-foot { text-align: center; margin-top: 24px; font-size: 13px; color: var(--grey-600); }
+  .linkbtn { background: none; border: none; color: var(--csu-blue); font-family: inherit; font-size: inherit; cursor: pointer; text-decoration: underline; padding: 0; }
+
+  /* ── Wizard ── */
+  .panel { background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); box-shadow: var(--shadow-md); }
+  .wizard-card { max-width: 720px; margin: 6px auto 0; }
+  .wizard-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--grey-200); }
+  .progress { display: flex; align-items: center; gap: 9px; }
+  .progress .dots { display: flex; gap: 5px; }
+  .progress .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--grey-300); transition: background var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .progress .dot.done { background: var(--csu-green); }
+  .progress .dot.cur { background: var(--csu-orange); transform: scale(1.35); }
+  .progress .lbl { font-size: 12px; color: var(--grey-600); font-weight: 700; letter-spacing: .03em; }
+  .wizard-running { font-size: 13px; color: var(--grey-600); }
+  .wizard-running b { color: var(--csu-navy); font-size: 15px; font-variant-numeric: tabular-nums; }
+  .step { padding: 22px 20px; }
+  .step.enter { animation: step-in var(--dur-2) var(--ease) both; }
+  .step h2 { font-size: 19px; color: var(--csu-navy); margin-bottom: 4px; }
+  .step .sub { font-size: 13px; color: var(--grey-600); margin-bottom: 16px; }
+  .opts { display: flex; flex-direction: column; gap: 9px; }
+  .opts.grid { flex-direction: row; flex-wrap: wrap; }
+  .opt {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: var(--grey-50); border: 1.5px solid var(--grey-200); border-radius: var(--radius-sm);
+    padding: 13px 15px; cursor: pointer; font-family: inherit; font-size: 14.5px; color: var(--csu-charcoal);
+    text-align: left; width: 100%;
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+    animation: chip-pop var(--dur) var(--ease) both; animation-delay: calc(var(--i,0) * 32ms);
+  }
+  .opts.grid .opt { width: auto; min-width: 120px; flex: 1; }
+  .opt:hover:not(:disabled) { border-color: var(--csu-brown-lt); background: #fff; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .opt .ov { display: flex; align-items: center; gap: 10px; }
+  .opt .cnt { font-size: 12.5px; color: var(--grey-600); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .opt[aria-checked="true"] { border-color: var(--csu-orange); background: #FFF6F3; box-shadow: var(--ring); }
+  .opt[aria-checked="true"] .cnt { color: var(--csu-orange-dk); }
+  .opt:disabled { opacity: .42; cursor: not-allowed; }
+  .opt .tick { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--grey-400); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .opt[aria-checked="true"] .tick { border-color: var(--csu-orange); background: var(--csu-orange); }
+  .opt[aria-checked="true"] .tick::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+
+  .catalog-search { width: 100%; padding: 11px 13px; font-family: inherit; font-size: 14px; border: 1.5px solid var(--grey-300); border-radius: var(--radius-sm); outline: none; margin-bottom: 10px; transition: border-color var(--dur) var(--ease); }
+  .catalog-search:focus { border-color: var(--csu-orange); }
+  .catalog-list { max-height: 230px; overflow: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 2px; }
+  .kw-input { width: 100%; padding: 15px 16px; font-family: inherit; font-size: 16px; border: 1.5px solid var(--grey-300); border-radius: var(--radius-sm); outline: none; transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+  .kw-input:focus { border-color: var(--csu-orange); box-shadow: var(--ring); }
+
+  .wizard-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-top: 1px solid var(--grey-200); gap: 10px; }
+  .wizard-nav .right { display: flex; gap: 9px; }
+
+  /* ── Advanced panel ── */
+  .adv { margin-bottom: 16px; padding: 16px 18px; }
+  .adv-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--grey-600); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .adv.collapsed .adv-keyword, .adv.collapsed .adv-row { display: none; }
+  .adv.collapsed .adv-title { margin-bottom: 0; }
+  .adv.collapsed { padding-bottom: 10px; }
+  .adv-keyword { display: flex; gap: 8px; margin-bottom: 14px; }
+  .adv-keyword input { flex: 1; padding: 10px 14px; font-size: 14px; font-family: inherit; border: 1px solid var(--grey-300); border-radius: var(--radius-sm); outline: none; transition: border-color var(--dur) var(--ease); }
+  .adv-keyword input:focus { border-color: var(--csu-orange); }
+  .adv-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .fg { display: flex; flex-direction: column; gap: 4px; }
+  .fg label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--grey-600); }
+  .fg select {
+    padding: 8px 30px 8px 11px; font-family: inherit; font-size: 13px;
+    border: 1px solid var(--grey-300); border-radius: var(--radius-sm); background: #fff; cursor: pointer;
+    appearance: none; min-width: 162px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235B6473' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 11px center;
+    transition: border-color var(--dur) var(--ease);
+  }
+  .fg select:focus { border-color: var(--csu-orange); }
+
+  /* ── Loosen / empty-state panel ── */
+  .loosen { margin-bottom: 16px; padding: 18px 20px; border: 1px solid #F3D9C9; background: #FFF8F4; border-radius: var(--radius); }
+  .loosen h3 { font-size: 15px; color: var(--csu-orange-dk); display: flex; align-items: center; gap: 8px; }
+  .loosen p { font-size: 13px; color: var(--grey-700); margin: 5px 0 13px; }
+  .loosen-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .loosen-opt { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--csu-charcoal); cursor: pointer; }
+  .loosen-opt input { width: 17px; height: 17px; accent-color: var(--csu-orange); cursor: pointer; }
+  .loosen-opt .gain { color: var(--csu-green); font-weight: 700; font-variant-numeric: tabular-nums; margin-left: auto; }
+  .loosen-actions { display: flex; gap: 9px; }
+
+  /* ── Results: summary + cards ── */
+  .results-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+  .results-head h2 { font-size: 21px; color: var(--csu-navy); }
+  .results-head h2 b { color: var(--csu-orange); font-variant-numeric: tabular-nums; }
+  .results-head .sub { font-size: 13px; color: var(--grey-600); margin-top: 2px; }
+  .results-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg { display: inline-flex; background: var(--grey-100); border: 1px solid var(--grey-200); border-radius: var(--radius-sm); overflow: hidden; }
+  .seg button { border: none; background: transparent; font-family: inherit; font-size: 12.5px; padding: 7px 13px; cursor: pointer; color: var(--grey-600); }
+  .seg button.on { background: #fff; color: var(--csu-navy); font-weight: 700; box-shadow: var(--shadow-sm); }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 13px; }
+  .jcard {
+    background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    padding: 15px 16px; display: flex; flex-direction: column; gap: 9px;
+    animation: chip-pop var(--dur) var(--ease) both; animation-delay: calc(var(--i,0) * 36ms);
+    transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .jcard:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .jcard h3 { font-size: 15px; color: var(--csu-navy); line-height: 1.3; }
+  .jcard .meta { font-size: 12px; color: var(--grey-600); }
+  .jcard .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .jcard .crow { display: flex; flex-wrap: wrap; gap: 5px 14px; font-size: 12px; color: var(--grey-700); }
+  .jcard .crow span b { color: var(--csu-navy); }
+  .jcard .cardfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; padding-top: 9px; border-top: 1px solid var(--grey-100); }
+  .strength { font-size: 11px; font-weight: 700; color: var(--csu-green); display: flex; align-items: center; gap: 5px; }
+
+  /* ── Badges ── */
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1.5; }
+  .b-yes { background: #D5F0E5; color: #1A6640; }
+  .b-no { background: #FDDEDE; color: #8B1A1A; }
+  .b-na { background: var(--grey-200); color: var(--grey-600); }
+  .b-q1 { background: #222944; color: #fff; }
+  .b-q2 { background: #3C8364; color: #fff; }
+  .b-q3 { background: #5675BC; color: #fff; }
+  .b-q4 { background: #C7B8A0; color: #333; }
+  .b-diamond { background: #E8F4FD; color: #1565A0; }
+  .b-lbl { font-size: 9px; color: var(--grey-400); text-transform: uppercase; letter-spacing: .04em; margin-right: 3px; }
+  .dash { color: var(--grey-400); }
+
+  /* ── Table ── */
+  .table-wrap { background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); box-shadow: var(--shadow-md); overflow: hidden; }
+  .table-scroll { overflow: auto; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+  /* ── Bulletproof sticky header: separate borders + sticky on opaque TH ── */
+  thead th {
+    position: sticky; top: 0; z-index: 3;
+    background: var(--csu-navy); color: #fff;
+    padding: 11px 12px; text-align: left; font-weight: 700; font-size: 10px;
+    letter-spacing: .05em; text-transform: uppercase; white-space: nowrap;
+    cursor: pointer; user-select: none;
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,.16);
+  }
+  thead th:hover { background: var(--csu-navy-2); }
+  th .si { margin-left: 4px; opacity: .5; font-style: normal; font-size: 9px; }
+  th[aria-sort="ascending"] .si::after { content: '▲'; opacity: 1; }
+  th[aria-sort="descending"] .si::after { content: '▼'; opacity: 1; }
+  th[aria-sort="none"] .si::after, th:not([aria-sort]) .si::after { content: '⇅'; }
+  tbody tr { transition: background .1s; }
+  tbody tr:hover { background: #FFF8F6; }
+  tbody td { padding: 9px 12px; vertical-align: top; line-height: 1.45; border-bottom: 1px solid var(--grey-200); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.title-cell { font-weight: 600; min-width: 200px; max-width: 300px; color: var(--csu-navy); }
+  td.pub { min-width: 120px; max-width: 180px; }
+  td.agr { min-width: 110px; max-width: 170px; color: var(--grey-700); }
+  td.ctr { text-align: center; white-space: nowrap; }
+  td.for { max-width: 130px; font-size: 12px; color: var(--grey-600); font-variant-numeric: tabular-nums; }
+  td.issn { font-size: 11px; color: var(--grey-600); min-width: 150px; font-variant-numeric: tabular-nums; }
+  td .rowcopy { opacity: 0; border: none; background: var(--grey-100); border-radius: 5px; cursor: pointer; font-size: 11px; padding: 3px 7px; color: var(--grey-600); transition: opacity var(--dur) var(--ease), background var(--dur) var(--ease); }
+  tbody tr:hover .rowcopy { opacity: 1; }
+  td .rowcopy:hover { background: var(--csu-orange); color: #fff; }
+  #tableBody.fade { opacity: .35; transition: opacity .12s; }
+
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 13px; border-top: 1px solid var(--grey-200); flex-wrap: wrap; }
+  .pg { min-width: 32px; height: 32px; padding: 0 7px; border: 1px solid var(--grey-200); background: #fff; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-size: 12px; color: var(--csu-charcoal); display: flex; align-items: center; justify-content: center; transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), background var(--dur) var(--ease); }
+  .pg:hover:not(:disabled) { border-color: var(--csu-orange); color: var(--csu-orange); }
+  .pg.active { background: var(--csu-orange); color: #fff; border-color: var(--csu-orange); }
+  .pg:disabled { opacity: .35; cursor: default; }
+
+  /* ── Empty / loading ── */
+  .empty { text-align: center; padding: 44px 24px; color: var(--grey-600); }
+  .empty .ic { font-size: 30px; }
+  .skeleton { max-width: 760px; margin: 30px auto; }
+  .sk { background: linear-gradient(90deg, var(--grey-200) 25%, var(--grey-100) 37%, var(--grey-200) 63%); background-size: 400% 100%; animation: sk 1.3s ease infinite; border-radius: var(--radius-sm); }
+  .sk-row { height: 54px; margin-bottom: 12px; }
+  .sk-search { height: 58px; border-radius: var(--radius-lg); margin-bottom: 22px; }
+
+  /* ── Footer ── */
+  footer { background: var(--csu-charcoal); color: var(--grey-400); text-align: center; padding: 9px 18px; font-size: 11px; line-height: 1.6; flex-shrink: 0; }
+  footer a { color: var(--csu-brown-lt); }
+
+  /* ── Toast ── */
+  #toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(14px); background: var(--csu-navy); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 13px; box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); z-index: 1000; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── Animations ── */
+  @keyframes fade-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes step-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes chip-pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+  @keyframes sk { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+  /* ── Responsive ── */
+  @media (max-width: 760px) {
+    .intents { grid-template-columns: 1fr; }
+    .intent-or::before, .intent-or::after { width: calc(50% - 70px); }
+    .header-tag { display: none; }
+    .entry-hero h1 { font-size: 24px; }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 16px 12px 32px; }
+    td.issn, td.for, th.col-ISSNs, th.col-FORCodes { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    <svg class="header-crest" viewBox="0 0 38 38" role="img" aria-label="Charles Sturt University">
+      <rect width="38" height="38" rx="8" fill="#F0572A"/>
+      <text x="19" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#222944" letter-spacing="-0.5">CSU</text>
+    </svg>
+    <div class="header-wordmark">
+      <strong>Charles Sturt University</strong>
+      <span>Division of Library Services</span>
+    </div>
+  </div>
+  <div class="header-tag">Journal Finder<br>2026 Edition</div>
+</header>
+<div class="accent-bar"></div>
+
+<!-- Pinned chip / status bar -->
+<div id="chipBar" role="region" aria-label="Active filters and result count">
+  <div class="chipbar-inner">
+    <div class="live-count" aria-live="polite"><b id="liveCount">0</b><span>journals match</span></div>
+    <div class="chips" id="chips"></div>
+    <div class="chipbar-actions">
+      <button class="btn btn-sm btn-ghost" id="clearAllBtn" hidden>Clear all</button>
+      <button class="btn btn-sm btn-ghost" id="startOverBtn" hidden>← Start over</button>
+      <button class="btn btn-sm" id="modeToggle">Show all filters</button>
+    </div>
+  </div>
+</div>
+
+<main id="stage">
+  <div class="wrap">
+
+    <!-- Loading skeleton -->
+    <div id="skeleton" class="skeleton" aria-hidden="true">
+      <div class="sk sk-search"></div>
+      <div class="sk sk-row"></div><div class="sk sk-row"></div><div class="sk sk-row"></div>
+    </div>
+
+    <!-- ENTRY -->
+    <section class="surface" id="entry" aria-labelledby="entryTitle">
+      <div class="entry-hero">
+        <h1 id="entryTitle">Find a <span>Journal</span></h1>
+        <p>Search <span id="totalCountTxt">35,000+</span> journals for open-access eligibility, publisher agreements, and rankings.</p>
+      </div>
+      <form class="search-wrap" id="entrySearchForm" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="entrySearch" type="search" autocomplete="off" placeholder="Search by journal title, ISSN, publisher or FOR code…" aria-label="Search journals">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+      <div class="search-hint" id="searchHint" aria-live="polite"></div>
+
+      <div class="intent-or">or start a guided search</div>
+      <div class="intents" id="intents"></div>
+
+      <div class="entry-foot">
+        <button class="btn" id="toAdvancedLink" style="padding:11px 24px;font-size:14px;font-weight:600;border-color:var(--csu-navy);color:var(--csu-navy)">☰ Show all filters on one page</button>
+      </div>
+    </section>
+
+    <!-- WIZARD -->
+    <section class="surface" id="wizard" aria-labelledby="stepHeading">
+      <div class="panel wizard-card">
+        <div class="wizard-top">
+          <div class="progress">
+            <div class="dots" id="wizDots" aria-hidden="true"></div>
+            <span class="lbl" id="wizStepLbl">Step 1</span>
+          </div>
+          <div class="wizard-running" aria-live="polite"><b id="wizCount">0</b> match so far</div>
+        </div>
+        <div class="step" id="wizStep"></div>
+        <div class="wizard-nav">
+          <button class="btn btn-ghost" id="wizBack">‹ Back</button>
+          <div class="right">
+            <button class="btn btn-ghost" id="wizSkip">Skip</button>
+            <button class="btn btn-primary" id="wizNext">Next ›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADVANCED -->
+    <section class="surface" id="advanced" aria-label="All filters">
+      <div class="panel adv">
+        <div class="adv-title"><span>Search &amp; filter</span><button class="btn btn-sm btn-ghost" id="advCollapse" style="text-transform:none;letter-spacing:0;font-weight:400">▲ Hide filters</button></div>
+        <div class="adv-keyword">
+          <input type="search" id="advSearch" autocomplete="off" placeholder="Keyword — title, publisher, ISSN, FOR code…" aria-label="Keyword search">
+        </div>
+        <div class="adv-row" id="advRow"></div>
+      </div>
+    </section>
+
+    <!-- RESULTS (shared by results + advanced) -->
+    <section class="surface" id="results" aria-label="Results">
+      <div id="loosen"></div>
+      <div class="results-head" id="resultsHead"></div>
+      <div id="summaryCards"></div>
+      <div id="tableArea" hidden>
+        <div class="table-wrap">
+          <div class="table-scroll" id="tableScroll">
+            <table id="journalTable" aria-label="Journal results">
+              <thead><tr id="theadRow"></tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+      <div class="empty" id="emptyMsg" hidden>
+        <div class="ic">🔍</div>
+        <p><strong>No journals match.</strong></p>
+        <p style="margin-top:6px;font-size:13px">Loosen a filter above, or clear all.</p>
+      </div>
+    </section>
+
+    <!-- data load error -->
+    <div class="empty" id="errorMsg" hidden></div>
+  </div>
+</main>
+
+<footer>
+  Charles Sturt University — TEQSA PRV12018 · CRICOS 00005F ·
+  <a href="https://www.csu.edu.au/library">CSU Library</a> ·
+  Data: CAUL OA Agreements 2026 · Scimago 2025 · CSU Journal Ranking List
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+const DATA_URL = 'journals.json';
+const CANONICAL_ORIGIN = 'https://roseyraine.github.io/journal-finder/';
+const PAGE_SIZE = 100;
+const SUMMARY_N = 8;
+const LOW_THRESHOLD = 12;
+
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+/* ── Facet configuration (drives wizard, advanced, chips, URL) ── */
+const ENUM_OPTS = {
+  eligible: [ {v:'Yes',t:'Eligible — free open access'}, {v:'No',t:'Not eligible'}, {v:'N/A',t:'No CSU agreement'} ],
+  diamond:  [ {v:'Yes',t:'Diamond OA only'} ],
+  scimago:  [ {v:'Q1',t:'Q1 (top quartile)'}, {v:'Q2',t:'Q2'}, {v:'Q3',t:'Q3'}, {v:'Q4',t:'Q4'} ],
+  csu:      [ {v:'Q1',t:'Q1 (top quartile)'}, {v:'Q2',t:'Q2'}, {v:'Q3Q4',t:'Q3 / Q4'} ]
+};
+const FACETS = {
+  q:         { key:'q', short:'q',  label:'Keyword',           type:'text',    q:'What journal, ISSN or term are you looking for?' },
+  eligible:  { key:'eligible', short:'el', label:'CSU OA Agreement', type:'enum', field:'Eligible',     q:'Open-access eligibility under a CSU agreement?' },
+  agreement: { key:'agreement',short:'ag', label:'Agreement',        type:'catalog', source:'agreements', field:'Agreement', q:'Which publisher agreement?' },
+  diamond:   { key:'diamond', short:'dia',label:'Diamond OA',        type:'enum', field:'Diamond OA',   q:'Restrict to Diamond Open Access journals?' },
+  scimago:   { key:'scimago', short:'sci',label:'Scimago rank',      type:'enum', field:'Scimago Rank', q:'Scimago quartile?' },
+  csu:       { key:'csu',     short:'csu',label:'CSU rank',          type:'enum', field:'CSU Rank',     q:'CSU ranking quartile?' },
+  for:       { key:'for',     short:'for',label:'Field of Research', type:'catalog', source:'forCodes', field:'FOR Codes', q:'Which Field of Research (FOR) code?' }
+};
+const INTENT_STEPS = {
+  publish: ['eligible','diamond','for','scimago'],
+  lookup:  ['q'],
+  explore: ['q','scimago','eligible','diamond']
+};
+const STEP_OPTIONAL = {
+  publish: { eligible:false, diamond:true, for:true, scimago:true },
+  lookup:  { q:false },
+  explore: { q:false, scimago:true, eligible:true, diamond:true }
+};
+const INTENTS = [
+  { id:'publish', color:'#3C8364', title:'Publish open access for free', desc:'Find journals where CSU’s agreements let you publish open access at no cost.',
+    icon:'<path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M5 21h14"/>' },
+  { id:'lookup', color:'#5675BC', title:'Look up a specific journal', desc:'Already know the title or ISSN? Jump straight to its details.',
+    icon:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>' },
+  { id:'explore', color:'#F0572A', title:'Explore quality journals in a field', desc:'Browse well-ranked journals by topic, keyword, and quartile.',
+    icon:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>' }
+];
+const COLUMNS = [
+  { key:'Journal Title', label:'Journal title', cls:'title-cell' },
+  { key:'Publisher Name', label:'Publisher', cls:'pub' },
+  { key:'Agreement', label:'Agreement', cls:'agr' },
+  { key:'CSU Rank', label:'CSU rank', cls:'ctr', badge:'rank' },
+  { key:'Scimago Rank', label:'Scimago', cls:'ctr', badge:'rank' },
+  { key:'Eligible', label:'CSU OA', cls:'ctr', badge:'elig' },
+  { key:'Diamond OA', label:'Diamond', cls:'ctr', badge:'dia' },
+  { key:'FOR Codes', label:'FOR codes', cls:'for' },
+  { key:'ISSNs', label:'ISSN', cls:'issn' }
+];
+
+/* ── State ── */
+const state = {
+  q:'', eligible:'', agreement:'', diamond:'', scimago:'', csu:'', for:'',
+  sortCol:'Journal Title', sortDir:'asc', page:1,
+  mode:'entry', intent:null, stepIndex:0, resultView:'summary'
+};
+const FACET_KEYS = ['q','eligible','agreement','diamond','scimago','csu','for'];
+let allData = [], filtered = [], catalog = { agreements:[], forCodes:[] };
+
+/* ── DOM refs ── */
+const $ = id => document.getElementById(id);
+const stage=$('stage'), chipBar=$('chipBar'), chipsEl=$('chips'), liveCount=$('liveCount'),
+  modeToggle=$('modeToggle'), clearAllBtn=$('clearAllBtn'),
+  surfaces={ entry:$('entry'), wizard:$('wizard'), advanced:$('advanced'), results:$('results') },
+  toastEl=$('toast');
+
+/* ── Load ── */
+fetch(DATA_URL)
+  .then(r => { if(!r.ok) throw new Error(r.status+' '+r.statusText); return r.json(); })
+  .then(data => {
+    allData = data;
+    buildCatalog(data);
+    buildIntents();
+    buildAdvancedControls();
+    buildTableHead();
+    $('skeleton').style.display = 'none';
+    $('totalCountTxt').textContent = allData.length.toLocaleString();
+    const had = readStateFromURL();
+    computeFiltered();
+    if (had) { showMode(state.mode === 'advanced' ? 'advanced' : 'results'); }
+    else { showMode('entry'); }
+    setStageHeight();
+  })
+  .catch(err => {
+    $('skeleton').style.display = 'none';
+    const e = $('errorMsg'); e.hidden = false;
+    e.innerHTML = '<div class="ic">⚠</div><p><strong>Could not load journal data.</strong></p><p style="font-size:13px;margin-top:6px">'+esc(err.message)+'</p>';
+  });
+
+/* ── Build catalogs (reuses original enumeration logic) ── */
+function buildCatalog(data){
+  catalog.agreements = [...new Set(data.map(r => r['Agreement']).filter(Boolean))].sort();
+  const forSet = new Set();
+  for (const r of data){
+    if (r['FOR Codes']) r['FOR Codes'].split(';').forEach(c => { const t=c.trim(); if(t) forSet.add(t); });
+  }
+  catalog.forCodes = [...forSet].sort((a,b)=>a.localeCompare(b, undefined, {numeric:true}));
+}
+
+/* ── Predicate (one definition powers filtering + counts) ── */
+function recMatches(r, st, skip){
+  if (skip!=='eligible'  && st.eligible  && r['Eligible']     !== st.eligible)  return false;
+  if (skip!=='agreement' && st.agreement && r['Agreement']    !== st.agreement) return false;
+  if (skip!=='diamond'   && st.diamond   && r['Diamond OA']   !== st.diamond)   return false;
+  if (skip!=='scimago'   && st.scimago   && r['Scimago Rank'] !== st.scimago)   return false;
+  if (skip!=='csu'       && st.csu){
+    const cr = r['CSU Rank'];
+    if (st.csu==='Q3Q4'){ if (cr!=='Q3' && cr!=='Q4') return false; }
+    else if (cr !== st.csu) return false;
+  }
+  if (skip!=='for' && st.for){
+    const codes = (r['FOR Codes']||'').split(';').map(c=>c.trim());
+    if (!codes.includes(st.for)) return false;
+  }
+  if (skip!=='q' && st.q){
+    let hay = r._hay; if (hay===undefined) hay = r._hay = [r['Journal Title'],r['Publisher Name'],r['Agreement'],r['ISSNs'],r['FOR Codes']].join(' ').toLowerCase();
+    if (!hay.includes(st.q)) return false;
+  }
+  return true;
+}
+
+function computeFiltered(){
+  filtered = allData.filter(r => recMatches(r, state, null));
+  sortFiltered();
+  if (state.page > Math.ceil(filtered.length/PAGE_SIZE)) state.page = 1;
+}
+function sortFiltered(){
+  const col=state.sortCol, dir=state.sortDir;
+  filtered.sort((a,b)=>{
+    let av=(a[col]||'').toString(); const as=av.replace(/^[^a-zA-Z]+/,'').toLowerCase(); av=as||av.toLowerCase();
+    let bv=(b[col]||'').toString(); const bs=bv.replace(/^[^a-zA-Z]+/,'').toLowerCase(); bv=bs||bv.toLowerCase();
+    if (av<bv) return dir==='asc'?-1:1;
+    if (av>bv) return dir==='asc'?1:-1;
+    return 0;
+  });
+}
+
+/* ── Per-option counts (single pass, ignores the facet being shown) ── */
+function facetCounts(facetKey){
+  const m = new Map();
+  const inc = k => m.set(k, (m.get(k)||0)+1);
+  for (const r of allData){
+    if (!recMatches(r, state, facetKey)) continue;
+    if (facetKey==='for'){
+      if (r['FOR Codes']) r['FOR Codes'].split(';').forEach(c=>{ const t=c.trim(); if(t) inc(t); });
+    } else if (facetKey==='csu'){
+      const cr=r['CSU Rank']; if(cr==='Q1') inc('Q1'); else if(cr==='Q2') inc('Q2'); else if(cr==='Q3'||cr==='Q4') inc('Q3Q4');
+    } else if (facetKey==='diamond'){
+      if (r['Diamond OA']==='Yes') inc('Yes');
+    } else {
+      const v = r[FACETS[facetKey].field]; if (v) inc(v);
+    }
+  }
+  return m;
+}
+
+/* ── Active facets / chips ── */
+function activeKeys(){ return FACET_KEYS.filter(k => state[k]); }
+function facetValueLabel(key, val){
+  if (key==='q') return '“'+val+'”';
+  if (key==='eligible') return {Yes:'Eligible',No:'Not eligible','N/A':'No agreement'}[val]||val;
+  if (key==='diamond') return 'Diamond OA';
+  if (key==='csu') return val==='Q3Q4' ? 'CSU Q3/Q4' : 'CSU '+val;
+  if (key==='scimago') return 'Scimago '+val;
+  if (key==='for') return 'FOR '+val;
+  return val;
+}
+function clearFacet(key){ state[key]=''; if(key==='q'){ const a=$('advSearch'); if(a) a.value=''; } }
+
+/* ── URL ── */
+function updateURL(replace){
+  const p = new URLSearchParams();
+  if (state.q) p.set('q', state.q);
+  if (state.eligible) p.set('el', {Yes:'Y',No:'N','N/A':'NA'}[state.eligible]);
+  if (state.agreement){ const i=catalog.agreements.indexOf(state.agreement); p.set('ag', i>=0?('a'+i):state.agreement); }
+  if (state.diamond) p.set('dia','1');
+  if (state.scimago) p.set('sci', state.scimago);
+  if (state.csu) p.set('csu', state.csu==='Q3Q4'?'Q34':state.csu);
+  if (state.for) p.set('for', state.for);
+  const ci = COLUMNS.findIndex(c=>c.key===state.sortCol);
+  if (!(ci===0 && state.sortDir==='asc')) p.set('s', ci+(state.sortDir==='asc'?'a':'d'));
+  p.set('view', state.mode==='advanced'?'adv':'r');
+  const qs = '?'+p.toString();
+  try { history.replaceState(null,'',qs); } catch(e){}
+  return CANONICAL_ORIGIN + qs;
+}
+function readStateFromURL(){
+  const p = new URLSearchParams(location.search);
+  if (![...p.keys()].length) return false;
+  let any=false;
+  if (p.get('q')){ state.q=p.get('q').toLowerCase(); any=true; }
+  const el={Y:'Yes',N:'No',NA:'N/A'}[p.get('el')]; if(el){ state.eligible=el; any=true; }
+  const ag=p.get('ag'); if(ag){ state.agreement = ag[0]==='a'&&/^a\d+$/.test(ag) ? (catalog.agreements[+ag.slice(1)]||'') : ag; if(state.agreement) any=true; }
+  if (p.get('dia')==='1'){ state.diamond='Yes'; any=true; }
+  const sci=p.get('sci'); if(/^Q[1-4]$/.test(sci||'')){ state.scimago=sci; any=true; }
+  const csu=p.get('csu'); if(csu){ state.csu = csu==='Q34'?'Q3Q4':(/^Q[12]$/.test(csu)?csu:''); if(state.csu) any=true; }
+  const forv=p.get('for'); if(forv && catalog.forCodes.includes(forv)){ state.for=forv; any=true; }
+  const s=p.get('s'); if(s && /^\d+[ad]$/.test(s)){ const ci=+s.slice(0,-1); if(COLUMNS[ci]){ state.sortCol=COLUMNS[ci].key; state.sortDir = s.slice(-1)==='a'?'asc':'desc'; } }
+  state.mode = p.get('view')==='adv' ? 'advanced' : 'results';
+  return any;
+}
+
+/* ── Central dispatcher ── */
+function applyFilters(opts){
+  computeFiltered();
+  renderChips();
+  renderLiveCount();
+  if (state.mode==='wizard') renderWizardCount();
+  if (state.mode==='advanced' || state.mode==='results') renderResultsArea();
+  updateURL();
+}
+
+/* ── Mode / surface switching ── */
+function showMode(mode){
+  state.mode = mode;
+  for (const k in surfaces) surfaces[k].classList.toggle('active', k===mode || (k==='results' && mode==='advanced'));
+  // advanced shows BOTH the advanced panel and the results area (table)
+  surfaces.advanced.classList.toggle('active', mode==='advanced');
+  surfaces.results.classList.toggle('active', mode==='advanced' || mode==='results');
+  chipBar.classList.toggle('show', mode!=='entry');
+  modeToggle.textContent = mode==='advanced' ? 'View results ›' : '☰ Show all filters';
+  modeToggle.style.display = mode==='entry' ? 'none' : '';
+  $('startOverBtn').hidden = mode==='entry';
+  if (mode==='advanced'){ state.resultView='table'; syncAdvancedFromState(); }
+  if (mode==='results' && state.intent==='lookup') state.resultView='summary';
+  renderChips(); renderLiveCount();
+  if (mode==='wizard') renderStep();
+  if (mode==='advanced' || mode==='results') renderResultsArea();
+  stage.scrollTop = 0;
+  setStageHeight();
+}
+
+/* ── ENTRY ── */
+function buildIntents(){
+  $('intents').innerHTML = INTENTS.map(it => `
+    <button class="intent-card" data-intent="${it.id}">
+      <span class="intent-ic" style="background:${it.color}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.icon}</svg></span>
+      <h3>${esc(it.title)}</h3>
+      <p>${esc(it.desc)}</p>
+      <span class="go">Start &rsaquo;</span>
+    </button>`).join('');
+  $('intents').querySelectorAll('.intent-card').forEach(b =>
+    b.addEventListener('click', () => startIntent(b.dataset.intent)));
+}
+let entryDebounce;
+$('entrySearch').addEventListener('input', e => {
+  clearTimeout(entryDebounce);
+  const v = e.target.value.trim().toLowerCase();
+  entryDebounce = setTimeout(() => {
+    const tmp = Object.assign({}, state, { q:v });
+    let c=0; if(v){ for(const r of allData) if(recMatches(r,tmp,null)) c++; }
+    $('searchHint').innerHTML = v ? `<b>${c.toLocaleString()}</b> match — press Enter to see them` : '';
+  }, 200);
+});
+$('entrySearchForm').addEventListener('submit', e => {
+  e.preventDefault();
+  state.q = $('entrySearch').value.trim().toLowerCase();
+  state.intent = 'lookup'; state.resultView='summary'; state.page=1;
+  applyFilters(); showMode('results');
+});
+$('toAdvancedLink').addEventListener('click', () => { showMode('advanced'); applyFilters(); });
+
+/* ── WIZARD ── */
+function startIntent(intent){
+  state.intent = intent; state.stepIndex = 0;
+  if (intent==='publish' && !state.eligible) state.eligible = 'Yes'; // sensible funnel default
+  applyFilters(); showMode('wizard');
+}
+function currentSteps(){ return INTENT_STEPS[state.intent] || []; }
+function renderWizardCount(){ countUp($('wizCount'), filtered.length); }
+function renderStep(){
+  const steps = currentSteps();
+  state.stepIndex = Math.max(0, Math.min(state.stepIndex, steps.length-1));
+  const key = steps[state.stepIndex];
+  const f = FACETS[key];
+  const stepEl = $('wizStep');
+
+  // progress dots + label
+  $('wizDots').innerHTML = steps.map((s,i)=>`<span class="dot ${i<state.stepIndex?'done':''} ${i===state.stepIndex?'cur':''}"></span>`).join('');
+  $('wizStepLbl').textContent = `Step ${state.stepIndex+1} of ${steps.length}`;
+  renderWizardCount();
+
+  const qText = (key==='q' && state.intent==='explore') ? 'What topic or field are you interested in?' : f.q;
+  let html = `<h2 id="stepHeading" tabindex="-1">${esc(qText)}</h2>`;
+  const optional = STEP_OPTIONAL[state.intent][key];
+  html += `<p class="sub">${optional ? 'Optional — choose one or skip.' : (f.type==='text' ? 'Type to search — results update as you type.' : 'Choose one to continue.')}</p>`;
+
+  if (f.type==='text'){
+    const kwPlaceholder = state.intent==='explore' ? 'e.g. immunology, education, climate, nursing…' : 'e.g. Nature, 1234-5678, immunology…';
+    html += `<input class="kw-input" id="kwInput" type="search" autocomplete="off" placeholder="${kwPlaceholder}" value="${esc(stateRawQ())}">`;
+    stepEl.innerHTML = html; stepEl.classList.remove('enter'); void stepEl.offsetWidth; stepEl.classList.add('enter');
+    const kw=$('kwInput');
+    kw.addEventListener('input', () => { clearTimeout(entryDebounce); entryDebounce=setTimeout(()=>{ state.q=kw.value.trim().toLowerCase(); applyFilters(); updateWizardNav(); }, 200); });
+    kw.focus();
+    updateWizardNav();
+    return;
+  }
+
+  const counts = facetCounts(key);
+  if (f.type==='enum'){
+    const opts = ENUM_OPTS[key];
+    html += `<div class="opts ${opts.length>3?'':'grid'}" role="radiogroup" aria-label="${esc(f.label)}">`;
+    opts.forEach((o,i)=>{ html += optionHTML(key, o.v, o.t, counts.get(o.v)||0, i); });
+    html += `</div>`;
+  } else { // catalog
+    const list = catalog[f.source];
+    html += `<input class="catalog-search" id="catSearch" type="search" autocomplete="off" placeholder="Type to filter ${list.length.toLocaleString()} ${key==='for'?'FOR codes':'agreements'}…">`;
+    html += `<div class="opts catalog-list" id="catList" role="radiogroup" aria-label="${esc(f.label)}"></div>`;
+  }
+  stepEl.innerHTML = html;
+  stepEl.classList.remove('enter'); void stepEl.offsetWidth; stepEl.classList.add('enter');
+
+  stepEl.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => selectOption(key, b.dataset.v)));
+  if (f.type==='catalog'){
+    const cs=$('catSearch'), cl=$('catList');
+    const draw = q => {
+      const ql=q.trim().toLowerCase();
+      const list = catalog[f.source].filter(v => !ql || v.toLowerCase().includes(ql)).slice(0, 60);
+      cl.innerHTML = list.map((v,i)=>optionHTML(key, v, key==='for'?('FOR '+v):v, counts.get(v)||0, i)).join('') || '<p class="sub" style="padding:8px">No matches.</p>';
+      cl.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => selectOption(key, b.dataset.v)));
+    };
+    draw('');
+    cs.addEventListener('input', () => draw(cs.value));
+    setTimeout(()=>cs.focus(), 30);
+  }
+  enableRadioKeys(stepEl);
+  const h=$('stepHeading'); if(h) h.focus({preventScroll:true});
+  updateWizardNav();
+}
+function stateRawQ(){ return state._rawQ || (state.q || ''); }
+function optionHTML(key, v, label, count, i){
+  const checked = isChosen(key, v);
+  const dis = count===0 && !checked;
+  return `<button class="opt" role="radio" aria-checked="${checked}" data-v="${esc(v)}" style="--i:${i}" ${dis?'disabled aria-disabled="true"':''}>
+    <span class="ov"><span class="tick"></span><span>${esc(label)}</span></span>
+    <span class="cnt">${count.toLocaleString()}</span></button>`;
+}
+function isChosen(key, v){ return state[key]===v; }
+function selectOption(key, v){
+  state[key] = (state[key]===v) ? '' : v;   // toggle to allow deselect
+  if (key==='q') state._rawQ = v;
+  state.page = 1;
+  applyFilters();
+  // refresh checked state + counts in place
+  renderStep();
+}
+function updateWizardNav(){
+  const steps = currentSteps();
+  const key = steps[state.stepIndex];
+  const optional = STEP_OPTIONAL[state.intent][key];
+  $('wizBack').style.visibility = state.stepIndex===0 ? 'hidden' : 'visible';
+  $('wizSkip').style.display = optional ? '' : 'none';
+  const last = state.stepIndex === steps.length-1;
+  $('wizNext').textContent = last ? 'See results ›' : 'Next ›';
+  const needsChoice = !optional && !state[key];
+  $('wizNext').disabled = needsChoice;
+  $('wizNext').classList.toggle('btn-primary', true);
+}
+$('wizNext').addEventListener('click', () => {
+  const steps = currentSteps();
+  if (state.stepIndex < steps.length-1){ state.stepIndex++; renderStep(); }
+  else { finishToResults(); }
+});
+$('wizBack').addEventListener('click', () => { if(state.stepIndex>0){ state.stepIndex--; renderStep(); } });
+$('wizSkip').addEventListener('click', () => {
+  const steps = currentSteps();
+  if (state.stepIndex < steps.length-1){ state.stepIndex++; renderStep(); } else finishToResults();
+});
+function finishToResults(){ state.resultView='summary'; applyFilters(); showMode('results'); }
+
+function enableRadioKeys(container){
+  const group = container.querySelector('[role="radiogroup"]'); if(!group) return;
+  const radios = [...group.querySelectorAll('.opt:not([disabled])')];
+  group.addEventListener('keydown', e => {
+    const i = radios.indexOf(document.activeElement);
+    if (['ArrowDown','ArrowRight'].includes(e.key)){ e.preventDefault(); radios[(i+1+radios.length)%radios.length]?.focus(); }
+    else if (['ArrowUp','ArrowLeft'].includes(e.key)){ e.preventDefault(); radios[(i-1+radios.length)%radios.length]?.focus(); }
+  });
+}
+
+/* ── ADVANCED ── */
+function buildAdvancedControls(){
+  const row = $('advRow');
+  const selects = [
+    { key:'eligible', label:'CSU OA Agreement', opts:[['','All'],['Yes','Yes'],['No','No'],['N/A','N/A']] },
+    { key:'agreement', label:'Agreement', opts:[['','All agreements'], ...catalog.agreements.map(a=>[a,a])] },
+    { key:'diamond', label:'Diamond OA', opts:[['','All'],['Yes','Yes']] },
+    { key:'scimago', label:'Scimago rank', opts:[['','All'],['Q1','Q1'],['Q2','Q2'],['Q3','Q3'],['Q4','Q4']] },
+    { key:'csu', label:'CSU rank', opts:[['','All'],['Q1','Q1'],['Q2','Q2'],['Q3Q4','Q3 / Q4']] },
+    { key:'for', label:'FOR code', opts:[['','All FOR codes'], ...catalog.forCodes.map(c=>[c,c])] }
+  ];
+  row.innerHTML = selects.map(s => `<div class="fg"><label for="adv_${s.key}">${esc(s.label)}</label>
+    <select id="adv_${s.key}" data-key="${s.key}">${s.opts.map(o=>`<option value="${esc(o[0])}">${esc(o[1])}</option>`).join('')}</select></div>`).join('')
+    + `<button class="btn btn-ghost btn-sm" id="advClear" style="align-self:flex-end">✕ Clear all</button>`;
+  row.querySelectorAll('select').forEach(sel => sel.addEventListener('change', () => {
+    state[sel.dataset.key] = sel.value; state.page=1; applyFilters();
+  }));
+  $('advClear').addEventListener('click', clearAll);
+}
+let advDebounce;
+$('advSearch').addEventListener('input', e => {
+  clearTimeout(advDebounce);
+  advDebounce = setTimeout(()=>{ state.q = e.target.value.trim().toLowerCase(); state._rawQ=e.target.value.trim(); state.page=1; applyFilters(); }, 220);
+});
+function syncAdvancedFromState(){
+  $('advSearch').value = state._rawQ || state.q || '';
+  ['eligible','agreement','diamond','scimago','csu','for'].forEach(k => { const s=$('adv_'+k); if(s) s.value = state[k]; });
+}
+
+/* ── CHIPS / live count ── */
+function renderChips(){
+  const keys = activeKeys();
+  chipsEl.innerHTML = keys.map(k => `<span class="chip"><span class="k">${esc(FACETS[k].label)}:</span> ${esc(facetValueLabel(k, state[k]))} <button data-k="${k}" aria-label="Remove ${esc(FACETS[k].label)} filter">✕</button></span>`).join('');
+  chipsEl.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { clearFacet(b.dataset.k); state.page=1; applyFilters(); }));
+  clearAllBtn.hidden = keys.length===0;
+}
+function renderLiveCount(){ countUp(liveCount, filtered.length); }
+clearAllBtn.addEventListener('click', clearAll);
+function clearAll(){ FACET_KEYS.forEach(clearFacet); state._rawQ=''; state.page=1; syncAdvancedFromState(); applyFilters(); }
+modeToggle.addEventListener('click', () => {
+  if (state.mode==='advanced'){ state.resultView='summary'; showMode('results'); }
+  else { showMode('advanced'); }
+  applyFilters();
+});
+$('startOverBtn').addEventListener('click', () => {
+  FACET_KEYS.forEach(clearFacet); state._rawQ=''; state.page=1;
+  state.intent=null; state.stepIndex=0; state.resultView='summary';
+  $('entrySearch').value=''; $('searchHint').innerHTML='';
+  showMode('entry');
+});
+$('advCollapse').addEventListener('click', () => {
+  const adv = document.querySelector('.adv');
+  const collapsed = adv.classList.toggle('collapsed');
+  $('advCollapse').textContent = collapsed ? '▼ Show filters' : '▲ Hide filters';
+  requestAnimationFrame(setStageHeight);
+});
+
+/* ── RESULTS area (summary cards + table, shared with advanced) ── */
+function renderResultsArea(){
+  renderLoosen();
+  renderResultsHead();
+  const showTable = state.resultView==='table';
+  const empty = filtered.length===0;
+  $('emptyMsg').hidden = !empty;
+  $('summaryCards').hidden = showTable || empty;
+  $('tableArea').hidden = !showTable || empty;
+  if (empty) return;
+  if (showTable){ renderTable(); requestAnimationFrame(setStageHeight); } else renderSummary();
+}
+function renderResultsHead(){
+  const head = $('resultsHead');
+  if (filtered.length===0){ head.innerHTML=''; return; }
+  const subText = state.resultView==='summary' ? 'Strongest matches first.' : 'Showing all matches.';
+  const title = `<div><h2><b>${filtered.length.toLocaleString()}</b> journals match</h2><div class="sub">${subText}</div></div>`;
+  const seg = `<div class="seg" role="tablist">
+      <button class="${state.resultView==='summary'?'on':''}" id="viewSummary" role="tab">Top matches</button>
+      <button class="${state.resultView==='table'?'on':''}" id="viewTable" role="tab">Full table</button></div>`;
+  head.innerHTML = `${title}<div class="results-tools">${seg}
+      <button class="btn btn-sm" id="csvBtn">⤓ Export CSV</button>
+      <button class="btn btn-sm" id="shareBtn">\u{1F517} Share</button></div>`;
+  $('viewSummary').addEventListener('click', ()=>{ state.resultView='summary'; renderResultsArea(); updateURL(); });
+  $('viewTable').addEventListener('click', ()=>{ state.resultView='table'; renderResultsArea(); updateURL(); });
+  $('csvBtn').addEventListener('click', exportCSV);
+  $('shareBtn').addEventListener('click', copyShare);
+}
+
+/* strength ranking for summary */
+function strengthScore(r){
+  let s=0;
+  if (r['Eligible']==='Yes') s+=1000;
+  s += ({Q1:4,Q2:3,Q3:2,Q4:1}[r['Scimago Rank']]||0)*100;
+  s += ({Q1:4,Q2:3,Q3:2,Q4:1}[r['CSU Rank']]||0)*20;
+  if (r['Diamond OA']==='Yes') s+=10;
+  return s;
+}
+let summarySorted = [], summaryShown = 0;
+function renderSummary(){
+  const q = state.q;
+  const score = r => {
+    let s = strengthScore(r);
+    if (q){ const t=(r['Journal Title']||'').toLowerCase(); if(t===q) s+=1e6; else if(t.startsWith(q)) s+=5e5; else if(t.includes(q)) s+=2e5; }
+    return s;
+  };
+  summarySorted = filtered.slice().sort((a,b)=>score(b)-score(a));
+  summaryShown = Math.min(SUMMARY_N, summarySorted.length);
+  drawSummaryCards();
+}
+function drawSummaryCards(){
+  const top = summarySorted.slice(0, summaryShown);
+  const remain = summarySorted.length - summaryShown;
+  const sc = $('summaryCards');
+  sc.innerHTML = `<div class="cards">${top.map((r,i)=>cardHTML(r,i)).join('')}</div>`
+    + (remain > 0 ? `<div style="text-align:center;margin:18px 0 6px"><button class="btn" id="seeMoreBtn" style="padding:10px 28px;font-size:14px">Show ${Math.min(SUMMARY_N, remain)} more ↓</button></div>` : '');
+  sc.querySelectorAll('.jcard .copybtn').forEach(b => b.addEventListener('click', () => copyJournal(allData[+b.dataset.idx])));
+  const moreBtn = $('seeMoreBtn');
+  if (moreBtn) moreBtn.addEventListener('click', () => { summaryShown = Math.min(summaryShown + SUMMARY_N, summarySorted.length); drawSummaryCards(); });
+}
+function cardHTML(r, i){
+  const idx = allData.indexOf(r);
+  const strong = r['Eligible']==='Yes';
+  return `<div class="jcard" style="--i:${i}">
+    <h3>${esc(r['Journal Title'])}</h3>
+    ${r['Publisher Name']?`<div class="meta">${esc(r['Publisher Name'])}</div>`:''}
+    <div class="badges">${eligBadge(r['Eligible'])}${r['Diamond OA']==='Yes'?diaBadge('Yes'):''}${rankBadgeL('CSU',r['CSU Rank'])}${rankBadgeL('SJR',r['Scimago Rank'])}</div>
+    ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
+    <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
+    <div class="cardfoot">
+      <span class="strength">${strong?'★ Free OA at CSU':' '}</span>
+      <button class="btn btn-sm copybtn" data-idx="${idx}">Copy details</button>
+    </div></div>`;
+}
+
+/* ── Loosen panel ── */
+function renderLoosen(){
+  const box = $('loosen');
+  const keys = activeKeys();
+  if (filtered.length > LOW_THRESHOLD || keys.length===0){ box.innerHTML=''; return; }
+  const base = filtered.length;
+  const sugg = keys.map(k => {
+    const tmp = Object.assign({}, state); tmp[k]='';
+    let c=0; for(const r of allData) if(recMatches(r,tmp,null)) c++;
+    return { k, gain:c-base };
+  }).filter(s=>s.gain>0).sort((a,b)=>b.gain-a.gain);
+  if (!sugg.length){ box.innerHTML=''; return; }
+  box.innerHTML = `<div class="loosen">
+    <h3>⚡ ${base===0?'No journals match':'Only '+base+' match'} — try loosening a filter</h3>
+    <p>Tick the filters to remove, then apply. The biggest openers are first.</p>
+    <div class="loosen-opts">${sugg.map(s=>`<label class="loosen-opt"><input type="checkbox" value="${s.k}"><span>Remove <b>${esc(FACETS[s.k].label)}: ${esc(facetValueLabel(s.k,state[s.k]))}</b></span><span class="gain">+${s.gain.toLocaleString()}</span></label>`).join('')}</div>
+    <div class="loosen-actions"><button class="btn btn-primary btn-sm" id="loosenApply">Apply</button><button class="btn btn-ghost btn-sm" id="loosenAll">Clear all filters</button></div>
+  </div>`;
+  $('loosenApply').addEventListener('click', () => {
+    box.querySelectorAll('input:checked').forEach(c => clearFacet(c.value));
+    state.page=1; syncAdvancedFromState(); applyFilters();
+  });
+  $('loosenAll').addEventListener('click', clearAll);
+}
+
+/* ── TABLE ── */
+function buildTableHead(){
+  $('theadRow').innerHTML = COLUMNS.map(c => `<th class="col-${c.key.replace(/\s/g,'')}" data-col="${c.key}" aria-sort="none" tabindex="0" role="columnheader">${esc(c.label)}<i class="si"></i></th>`).join('');
+  $('theadRow').querySelectorAll('th').forEach(th => {
+    const handler = () => {
+      const col=th.dataset.col;
+      state.sortDir = (state.sortCol===col && state.sortDir==='asc') ? 'desc' : 'asc';
+      state.sortCol = col;
+      applyFilters();
+    };
+    th.addEventListener('click', handler);
+    th.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); handler(); } });
+  });
+}
+function renderTable(){
+  const total = filtered.length;
+  const start = (state.page-1)*PAGE_SIZE;
+  const slice = filtered.slice(start, start+PAGE_SIZE);
+  const body = $('tableBody');
+  const paint = () => {
+    body.innerHTML = slice.map(r => {
+      const idx = allData.indexOf(r);
+      return '<tr>' + COLUMNS.map(c => cellHTML(r,c,idx)).join('') + '</tr>';
+    }).join('');
+    body.querySelectorAll('.rowcopy').forEach(b => b.addEventListener('click', () => copyJournal(allData[+b.dataset.idx])));
+    body.classList.remove('fade');
+  };
+  if (!reduceMotion.matches){ body.classList.add('fade'); setTimeout(paint, 110); } else paint();
+  // sort indicators
+  $('theadRow').querySelectorAll('th').forEach(th => th.setAttribute('aria-sort', th.dataset.col===state.sortCol ? (state.sortDir==='asc'?'ascending':'descending') : 'none'));
+  renderPagination(total);
+}
+function cellHTML(r, c, idx){
+  if (c.badge==='rank') return `<td class="ctr">${rankBadge(r[c.key])}</td>`;
+  if (c.badge==='elig') return `<td class="ctr">${eligBadge(r[c.key])}</td>`;
+  if (c.badge==='dia')  return `<td class="ctr">${r[c.key]==='Yes'?diaBadge('Yes'):dash()}</td>`;
+  if (c.key==='Journal Title') return `<td class="title-cell">${esc(r[c.key])} <button class="rowcopy" data-idx="${idx}" title="Copy details">copy</button></td>`;
+  return `<td class="${c.cls}">${esc(r[c.key])||dash()}</td>`;
+}
+function renderPagination(total){
+  const pages = Math.ceil(total/PAGE_SIZE);
+  const pg = $('pagination');
+  if (pages<=1){ pg.innerHTML=''; return; }
+  const range = pageRange(state.page, pages);
+  let html = `<button class="pg" data-go="${state.page-1}" ${state.page===1?'disabled':''} aria-label="Previous page">‹</button>`;
+  range.forEach(p => { html += p==='…' ? `<span style="padding:0 4px;color:var(--grey-400)">…</span>` : `<button class="pg ${p===state.page?'active':''}" data-go="${p}">${p}</button>`; });
+  html += `<button class="pg" data-go="${state.page+1}" ${state.page===pages?'disabled':''} aria-label="Next page">›</button>`;
+  pg.innerHTML = html;
+  pg.querySelectorAll('button[data-go]').forEach(b => b.addEventListener('click', () => { state.page=+b.dataset.go; renderTable(); $('tableScroll').scrollTop=0; }));
+}
+function pageRange(cur, total){
+  if (total<=7) return Array.from({length:total},(_,i)=>i+1);
+  const r=[1]; if(cur>3) r.push('…');
+  for(let p=Math.max(2,cur-1); p<=Math.min(total-1,cur+1); p++) r.push(p);
+  if(cur<total-2) r.push('…'); r.push(total); return r;
+}
+
+/* ── Badges / helpers (reused from original) ── */
+function eligBadge(v){ return v==='Yes'?'<span class="badge b-yes">Eligible</span>':v==='No'?'<span class="badge b-no">No</span>':dash(); }
+function rankBadge(v){ const c={Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}">${v}</span>`:dash(); }
+function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}"><span class="b-lbl" style="color:rgba(255,255,255,.7)">${lbl}</span>${v}</span>`:''; }
+function diaBadge(v){ return v==='Yes'?'<span class="badge b-diamond">Diamond OA</span>':dash(); }
+function dash(){ return '<span class="dash">—</span>'; }
+function esc(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ── Count-up animation ── */
+function countUp(el, target){
+  if (!el) return;
+  const from = parseInt((el.textContent||'0').replace(/[^\d]/g,''),10) || 0;
+  if (reduceMotion.matches || from===target){ el.textContent = target.toLocaleString(); return; }
+  const dur=420, t0=performance.now();
+  const tick = now => {
+    const p = Math.min(1, (now-t0)/dur);
+    const e = 1-Math.pow(1-p,3);
+    el.textContent = Math.round(from+(target-from)*e).toLocaleString();
+    if (p<1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ── Outputs: CSV, share, copy ── */
+function exportCSV(){
+  const cols = COLUMNS.map(c=>c.key);
+  const q = s => { s=(s==null?'':String(s)); return /[",;\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+  const lines = [cols.map(q).join(',')];
+  for (const r of filtered) lines.push(cols.map(c=>q(r[c])).join(','));
+  const blob = new Blob([lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=`csu-journals-${filtered.length}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+  toast(`Exported ${filtered.length.toLocaleString()} journals`);
+}
+function copyShare(){ const link = updateURL(); copyText(link, 'Share link copied'); }
+function copyJournal(r){
+  if (!r) return;
+  const t = [
+    r['Journal Title'],
+    r['ISSNs'] ? 'ISSN: '+r['ISSNs'] : '',
+    r['Publisher Name'] ? 'Publisher: '+r['Publisher Name'] : '',
+    r['Agreement'] ? 'Agreement: '+r['Agreement'] : '',
+    'CSU OA eligible: '+(r['Eligible']||'N/A'),
+    r['Diamond OA']==='Yes' ? 'Diamond OA: Yes' : '',
+    'CSU rank: '+(r['CSU Rank']||'—')+'  |  Scimago: '+(r['Scimago Rank']||'—'),
+    r['FOR Codes'] ? 'FOR codes: '+r['FOR Codes'] : ''
+  ].filter(Boolean).join('\n');
+  copyText(t, 'Journal details copied');
+}
+function copyText(text, okMsg){
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast(okMsg)).catch(()=>fallbackCopy(text, okMsg));
+  } else fallbackCopy(text, okMsg);
+}
+function fallbackCopy(text, okMsg){
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  let ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+  ta.remove(); toast(ok?okMsg:'Press Ctrl+C to copy');
+}
+let toastTimer;
+function toast(msg){ toastEl.textContent=msg; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>toastEl.classList.remove('show'), 2600); }
+
+/* ── Layout: bound table height to available stage space ── */
+function setStageHeight(){
+  const area = $('tableArea'); if (area.hidden) return;
+  const scroll = $('tableScroll');
+  const footerTop = document.querySelector('footer').getBoundingClientRect().top; // = bottom of the scrolling stage
+  const top = scroll.getBoundingClientRect().top;
+  const pag = $('pagination');
+  const pagH = pag ? pag.offsetHeight : 0;
+  const avail = footerTop - top - pagH - 48; // reserve pagination + wrap padding + breathing room
+  scroll.style.maxHeight = Math.max(200, avail) + 'px';
+}
+window.addEventListener('resize', () => { clearTimeout(window._rz); window._rz=setTimeout(setStageHeight, 120); });
+reduceMotion.addEventListener('change', () => { if(state.mode==='wizard') renderWizardCount(); renderLiveCount(); });
+</script>
+</body>
+</html>
