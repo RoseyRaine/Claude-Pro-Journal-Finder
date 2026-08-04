@@ -129,45 +129,74 @@
   .surface { display: none; }
   .surface.active { display: block; animation: fade-rise var(--dur-2) var(--ease) both; }
 
-  /* ── Entry ── */
-  .entry-hero { text-align: center; padding: 26px 8px 8px; }
-  .entry-hero h1 { font-size: 30px; font-weight: 700; color: var(--csu-navy); letter-spacing: -.01em; }
+  /* ── Entry: dark hero band ── */
+  .entry-hero-band {
+    background: var(--csu-navy);
+    background-image: radial-gradient(circle at 88% 35%, rgba(255,255,255,.05) 0%, rgba(255,255,255,.05) 40%, transparent 41%),
+                       radial-gradient(circle at 88% 35%, transparent 0 28%, rgba(255,255,255,.04) 29% 30%, transparent 31%),
+                       radial-gradient(circle at 88% 35%, transparent 0 38%, rgba(255,255,255,.04) 39% 40%, transparent 41%),
+                       radial-gradient(circle at 88% 35%, transparent 0 48%, rgba(255,255,255,.04) 49% 50%, transparent 51%);
+    border-radius: var(--radius-lg);
+    padding: 34px 30px 26px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    position: relative;
+  }
+  .entry-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12.5px; font-weight: 700; letter-spacing: .04em;
+    color: var(--csu-pink); margin-bottom: 14px;
+  }
+  .entry-eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--csu-orange); display: inline-block; }
+  .entry-hero { text-align: left; padding: 0; max-width: 640px; }
+  .entry-hero h1 { font-size: 34px; font-weight: 700; color: var(--white); letter-spacing: -.01em; line-height: 1.15; }
   .entry-hero h1 span { color: var(--csu-orange); }
-  .entry-hero p { font-size: 14px; color: var(--grey-600); margin-top: 8px; }
-  .search-wrap {
-    max-width: 680px; margin: 22px auto 6px; position: relative;
-    display: flex; box-shadow: var(--shadow-md); border-radius: var(--radius-lg);
-    background: #fff; border: 1px solid var(--grey-200);
-    transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
-  }
-  .search-wrap:focus-within { border-color: var(--csu-orange); box-shadow: var(--shadow-lg); }
-  .search-wrap svg { width: 20px; height: 20px; color: var(--grey-400); align-self: center; margin-left: 16px; flex-shrink: 0; }
-  .search-wrap input {
-    flex: 1; border: none; outline: none; background: transparent;
-    font-family: inherit; font-size: 16px; padding: 16px 12px; color: var(--csu-charcoal); min-width: 0;
-  }
-  .search-wrap input::placeholder { color: var(--grey-400); }
-  .search-wrap .btn-primary { margin: 7px; border-radius: var(--radius); }
-  .search-hint { text-align: center; font-size: 12.5px; color: var(--grey-600); min-height: 18px; margin-top: 4px; }
-  .search-hint b { color: var(--csu-navy); font-variant-numeric: tabular-nums; }
+  .entry-hero p { font-size: 14.5px; color: var(--csu-brown-lt); margin-top: 12px; line-height: 1.5; max-width: 480px; }
 
-  .intent-or { text-align: center; margin: 26px auto 14px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--grey-400); position: relative; max-width: 680px; }
-  .intent-or::before, .intent-or::after { content: ''; position: absolute; top: 50%; width: calc(50% - 90px); height: 1px; background: var(--grey-200); }
-  .intent-or::before { left: 0; } .intent-or::after { right: 0; }
-  .intents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 760px; margin: 0 auto; }
+  .intent-or { display: none; }
+  .intents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 100%; margin: 22px 0 0; position: relative; z-index: 1; }
   .intent-card {
-    text-align: left; background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius);
-    padding: 18px 16px 16px; cursor: pointer; font-family: inherit;
+    text-align: left; background: #fff; border: 2px solid transparent; border-radius: var(--radius);
+    padding: 18px 18px 16px; cursor: pointer; font-family: inherit;
     box-shadow: var(--shadow-sm);
     transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
     display: flex; flex-direction: column; gap: 9px;
+    position: relative;
   }
-  .intent-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--csu-brown-lt); }
-  .intent-ic { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; }
+  .intent-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .intent-card.is-selected { border-color: var(--csu-orange); }
+  .intent-card .selected-pill {
+    display: none; position: absolute; top: 14px; right: 14px;
+    background: var(--csu-orange); color: #fff; font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px;
+  }
+  .intent-card.is-selected .selected-pill { display: inline-block; }
+  .intent-ic { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; background: var(--csu-pink) !important; }
+  .intent-card.is-selected .intent-ic { background: var(--csu-green) !important; }
   .intent-ic svg { width: 22px; height: 22px; }
-  .intent-card h3 { font-size: 15px; color: var(--csu-navy); }
-  .intent-card p { font-size: 12.5px; color: var(--grey-600); line-height: 1.45; }
-  .intent-card .go { font-size: 12px; color: var(--csu-orange); font-weight: 700; margin-top: auto; }
+  .intent-card h3 { font-size: 16px; color: var(--csu-charcoal); font-weight: 700; }
+  .intent-card p { font-size: 13px; color: var(--grey-600); line-height: 1.45; }
+  .intent-card .go { display: none; }
+
+  .entry-search-section { background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); padding: 22px 24px 26px; box-shadow: var(--shadow-sm); }
+  .entry-search-label { font-size: 15px; font-weight: 700; color: var(--csu-charcoal); margin-bottom: 12px; }
+  .search-wrap {
+    max-width: 100%; margin: 0; position: relative;
+    display: flex; box-shadow: none; border-radius: var(--radius);
+    background: #fff; border: 1px solid var(--grey-300);
+    transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .search-wrap:focus-within { border-color: var(--csu-orange); box-shadow: 0 0 0 3px rgba(240,87,42,.12); }
+  .search-wrap svg { width: 20px; height: 20px; color: var(--grey-400); align-self: center; margin-left: 16px; flex-shrink: 0; }
+  .search-wrap input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-family: inherit; font-size: 15px; padding: 14px 12px; color: var(--csu-charcoal); min-width: 0;
+  }
+  .search-wrap input::placeholder { color: var(--grey-400); }
+  .search-wrap .btn-primary { margin: 6px; border-radius: var(--radius); }
+  .search-hint { text-align: left; font-size: 12.5px; color: var(--grey-600); min-height: 18px; margin-top: 8px; }
+  .search-hint b { color: var(--csu-navy); font-variant-numeric: tabular-nums; }
+
   .entry-foot { text-align: center; margin-top: 24px; font-size: 13px; color: var(--grey-600); }
   .linkbtn { background: none; border: none; color: var(--csu-blue); font-family: inherit; font-size: inherit; cursor: pointer; text-decoration: underline; padding: 0; }
 
@@ -276,14 +305,16 @@
   .strength { font-size: 11px; font-weight: 700; color: var(--csu-green); display: flex; align-items: center; gap: 5px; }
 
   /* ── Badges ── */
+
+  .b-disc { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
   .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; line-height: 1.5; }
   .b-yes { background: #D5F0E5; color: #1A6640; }
   .b-no { background: #FDDEDE; color: #8B1A1A; }
   .b-na { background: var(--grey-200); color: var(--grey-600); }
-  .b-q1 { background: #222944; color: #fff; }
-  .b-q2 { background: #3C8364; color: #fff; }
-  .b-q3 { background: #5675BC; color: #fff; }
-  .b-q4 { background: #C7B8A0; color: #333; }
+  .b-q1 { background: #2ecc71; color: #fff; }
+  .b-q2 { background: #f1c40f; color: #333; }
+  .b-q3 { background: #e67e22; color: #fff; }
+  .b-q4 { background: #e74c3c; color: #fff; }
   .b-diamond { background: #E8F4FD; color: #1565A0; }
   .b-lbl { font-size: 9px; color: var(--grey-400); text-transform: uppercase; letter-spacing: .04em; margin-right: 3px; }
   .dash { color: var(--grey-400); }
@@ -407,23 +438,30 @@
 
     <!-- ENTRY -->
     <section class="surface" id="entry" aria-labelledby="entryTitle">
-      <div class="entry-hero">
-        <h1 id="entryTitle">Find a <span>Journal</span></h1>
-        <p>Search <span id="totalCountTxt">35,000+</span> journals for open-access eligibility, publisher agreements, and rankings.</p>
-      </div>
-      <form class="search-wrap" id="entrySearchForm" role="search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        <input id="entrySearch" type="search" autocomplete="off" placeholder="Search by journal title, ISSN, publisher or FOR code…" aria-label="Search journals">
-        <button type="submit" class="btn btn-primary">Search</button>
-      </form>
-      <div class="search-hint" id="searchHint" aria-live="polite"></div>
 
-      <div class="intent-or">or start a guided search</div>
-      <div class="intents" id="intents"></div>
+      <div class="entry-hero-band">
+        <div class="entry-eyebrow">CSU Library research tool</div>
+        <div class="entry-hero">
+          <h1 id="entryTitle">Find the right <span>journal</span>. Publish with confidence.</h1>
+          <p>Check publishing eligibility for a journal you know, or explore journals in your research area.</p>
+        </div>
+        <div class="intents" id="intents"></div>
+      </div>
+
+      <div class="entry-search-section">
+        <div class="entry-search-label" id="entrySearchLabel">What is your research topic?</div>
+        <form class="search-wrap" id="entrySearchForm" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="entrySearch" type="search" autocomplete="off" placeholder="Try nursing, climate, education, economics…" aria-label="Search journals">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <div class="search-hint" id="searchHint" aria-live="polite"></div>
+      </div>
 
       <div class="entry-foot">
         <button class="btn" id="toAdvancedLink" style="padding:11px 24px;font-size:14px;font-weight:600;border-color:var(--csu-navy);color:var(--csu-navy)">☰ Show all filters on one page</button>
       </div>
+
     </section>
 
     <!-- WIZARD -->
@@ -508,6 +546,7 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const ENUM_OPTS = {
   eligible: [ {v:'Yes',t:'Eligible — free open access'}, {v:'No',t:'Not eligible'}, {v:'N/A',t:'No CSU agreement'} ],
   diamond:  [ {v:'Yes',t:'Diamond OA only'} ],
+  discount: [ {v:'Yes',t:'CSU discount available'} ],
   scimago:  [ {v:'Q1',t:'Q1 (top quartile)'}, {v:'Q2',t:'Q2'}, {v:'Q3',t:'Q3'}, {v:'Q4',t:'Q4'} ],
   csu:      [ {v:'Q1',t:'Q1 (top quartile)'}, {v:'Q2',t:'Q2'}, {v:'Q3Q4',t:'Q3 / Q4'} ]
 };
@@ -515,6 +554,7 @@ const FACETS = {
   q:         { key:'q', short:'q',  label:'Keyword',           type:'text',    q:'What journal, ISSN or term are you looking for?' },
   eligible:  { key:'eligible', short:'el', label:'CSU OA Agreement', type:'enum', field:'Eligible',     q:'Open-access eligibility under a CSU agreement?' },
   agreement: { key:'agreement',short:'ag', label:'Agreement',        type:'catalog', source:'agreements', field:'Agreement', q:'Which publisher agreement?' },
+  discount:  { key:'discount',short:'dis',label:'CSU Discount',       type:'enum', field:'CSU Discount', q:'Show only journals with a CSU APC discount?' },
   diamond:   { key:'diamond', short:'dia',label:'Diamond OA',        type:'enum', field:'Diamond OA',   q:'Restrict to Diamond Open Access journals?' },
   scimago:   { key:'scimago', short:'sci',label:'Scimago rank',      type:'enum', field:'Scimago Rank', q:'Scimago quartile?' },
   csu:       { key:'csu',     short:'csu',label:'CSU rank',          type:'enum', field:'CSU Rank',     q:'CSU ranking quartile?' },
@@ -540,23 +580,25 @@ const INTENTS = [
 ];
 const COLUMNS = [
   { key:'Journal Title', label:'Journal title', cls:'title-cell' },
+  { key:'Free to Publish', label:'Free to publish', cls:'ctr', badge:'ftp' },
   { key:'Publisher Name', label:'Publisher', cls:'pub' },
   { key:'Agreement', label:'Agreement', cls:'agr' },
   { key:'CSU Rank', label:'CSU rank', cls:'ctr', badge:'rank' },
   { key:'Scimago Rank', label:'Scimago', cls:'ctr', badge:'rank' },
   { key:'Eligible', label:'CSU OA', cls:'ctr', badge:'elig' },
   { key:'Diamond OA', label:'Diamond', cls:'ctr', badge:'dia' },
+  { key:'CSU Discount', label:'Discount', cls:'ctr', badge:'disc' },
   { key:'FOR Codes', label:'FOR codes', cls:'for' },
   { key:'ISSNs', label:'ISSN', cls:'issn' }
 ];
 
 /* ── State ── */
 const state = {
-  q:'', eligible:'', agreement:'', diamond:'', scimago:'', csu:'', for:'',
+  q:'', eligible:'', agreement:'', diamond:'', discount:'', scimago:[], csu:[], for:'',
   sortCol:'Journal Title', sortDir:'asc', page:1,
   mode:'entry', intent:null, stepIndex:0, resultView:'summary'
 };
-const FACET_KEYS = ['q','eligible','agreement','diamond','scimago','csu','for'];
+const FACET_KEYS = ['q','eligible','agreement','diamond','discount','scimago','csu','for'];
 let allData = [], filtered = [], catalog = { agreements:[], forCodes:[] };
 
 /* ── DOM refs ── */
@@ -576,7 +618,8 @@ fetch(DATA_URL)
     buildAdvancedControls();
     buildTableHead();
     $('skeleton').style.display = 'none';
-    $('totalCountTxt').textContent = allData.length.toLocaleString();
+    const totalTxt = $('totalCountTxt');
+    if (totalTxt) totalTxt.textContent = allData.length.toLocaleString();
     const had = readStateFromURL();
     computeFiltered();
     if (had) { showMode(state.mode === 'advanced' ? 'advanced' : 'results'); }
@@ -604,18 +647,19 @@ function recMatches(r, st, skip){
   if (skip!=='eligible'  && st.eligible  && r['Eligible']     !== st.eligible)  return false;
   if (skip!=='agreement' && st.agreement && r['Agreement']    !== st.agreement) return false;
   if (skip!=='diamond'   && st.diamond   && r['Diamond OA']   !== st.diamond)   return false;
-  if (skip!=='scimago'   && st.scimago   && r['Scimago Rank'] !== st.scimago)   return false;
-  if (skip!=='csu'       && st.csu){
+  if (skip!=='discount'  && st.discount  && r['CSU Discount'] !== st.discount)  return false;
+  if (skip!=='scimago'   && st.scimago && st.scimago.length > 0 && !st.scimago.includes(r['Scimago Rank'])) return false;
+  if (skip!=='csu'       && st.csu && st.csu.length > 0){
     const cr = r['CSU Rank'];
-    if (st.csu==='Q3Q4'){ if (cr!=='Q3' && cr!=='Q4') return false; }
-    else if (cr !== st.csu) return false;
+    const matched = st.csu.some(v => v==='Q3Q4' ? (cr==='Q3'||cr==='Q4') : cr===v);
+    if (!matched) return false;
   }
   if (skip!=='for' && st.for){
     const codes = (r['FOR Codes']||'').split(';').map(c=>c.trim());
     if (!codes.includes(st.for)) return false;
   }
   if (skip!=='q' && st.q){
-    let hay = r._hay; if (hay===undefined) hay = r._hay = [r['Journal Title'],r['Publisher Name'],r['Agreement'],r['ISSNs'],r['FOR Codes']].join(' ').toLowerCase();
+    let hay = r._hay; if (hay===undefined) hay = r._hay = [r['Journal Title'],r['Publisher Name'],r['Agreement'],r['ISSNs'],r['FOR Codes'],r['Abbreviation']].join(' ').toLowerCase();
     if (!hay.includes(st.q)) return false;
   }
   return true;
@@ -657,17 +701,18 @@ function facetCounts(facetKey){
 }
 
 /* ── Active facets / chips ── */
-function activeKeys(){ return FACET_KEYS.filter(k => state[k]); }
+function activeKeys(){ return FACET_KEYS.filter(k => Array.isArray(state[k]) ? state[k].length > 0 : state[k]); }
 function facetValueLabel(key, val){
   if (key==='q') return '“'+val+'”';
   if (key==='eligible') return {Yes:'Eligible',No:'Not eligible','N/A':'No agreement'}[val]||val;
   if (key==='diamond') return 'Diamond OA';
-  if (key==='csu') return val==='Q3Q4' ? 'CSU Q3/Q4' : 'CSU '+val;
-  if (key==='scimago') return 'Scimago '+val;
+  if (key==='discount') return 'CSU Discount';
+  if (key==='csu'){ const arr=Array.isArray(val)?val:[val]; return 'CSU '+arr.map(v=>v==='Q3Q4'?'Q3/Q4':v).join('+'); }
+  if (key==='scimago'){ const arr=Array.isArray(val)?val:[val]; return 'Scimago '+arr.join('+'); }
   if (key==='for') return 'FOR '+val;
   return val;
 }
-function clearFacet(key){ state[key]=''; if(key==='q'){ const a=$('advSearch'); if(a) a.value=''; } }
+function clearFacet(key){ state[key]=(key==='scimago'||key==='csu')?[]:'' ; if(key==='q'){ const a=$('advSearch'); if(a) a.value=''; } }
 
 /* ── URL ── */
 function updateURL(replace){
@@ -676,8 +721,8 @@ function updateURL(replace){
   if (state.eligible) p.set('el', {Yes:'Y',No:'N','N/A':'NA'}[state.eligible]);
   if (state.agreement){ const i=catalog.agreements.indexOf(state.agreement); p.set('ag', i>=0?('a'+i):state.agreement); }
   if (state.diamond) p.set('dia','1');
-  if (state.scimago) p.set('sci', state.scimago);
-  if (state.csu) p.set('csu', state.csu==='Q3Q4'?'Q34':state.csu);
+  if (state.scimago && state.scimago.length) p.set('sci', state.scimago.join(','));
+  if (state.csu && state.csu.length) p.set('csu', state.csu.map(v=>v==='Q3Q4'?'Q34':v).join(','));
   if (state.for) p.set('for', state.for);
   const ci = COLUMNS.findIndex(c=>c.key===state.sortCol);
   if (!(ci===0 && state.sortDir==='asc')) p.set('s', ci+(state.sortDir==='asc'?'a':'d'));
@@ -694,8 +739,8 @@ function readStateFromURL(){
   const el={Y:'Yes',N:'No',NA:'N/A'}[p.get('el')]; if(el){ state.eligible=el; any=true; }
   const ag=p.get('ag'); if(ag){ state.agreement = ag[0]==='a'&&/^a\d+$/.test(ag) ? (catalog.agreements[+ag.slice(1)]||'') : ag; if(state.agreement) any=true; }
   if (p.get('dia')==='1'){ state.diamond='Yes'; any=true; }
-  const sci=p.get('sci'); if(/^Q[1-4]$/.test(sci||'')){ state.scimago=sci; any=true; }
-  const csu=p.get('csu'); if(csu){ state.csu = csu==='Q34'?'Q3Q4':(/^Q[12]$/.test(csu)?csu:''); if(state.csu) any=true; }
+  const sci=p.get('sci'); if(sci){ const vals=sci.split(',').filter(v=>/^Q[1-4]$/.test(v)); if(vals.length){ state.scimago=vals; any=true; } }
+  const csu=p.get('csu'); if(csu){ const vals=csu.split(',').map(v=>v==='Q34'?'Q3Q4':v).filter(v=>/^Q[12]$|^Q3Q4$/.test(v)); if(vals.length){ state.csu=vals; any=true; } }
   const forv=p.get('for'); if(forv && catalog.forCodes.includes(forv)){ state.for=forv; any=true; }
   const s=p.get('s'); if(s && /^\d+[ad]$/.test(s)){ const ci=+s.slice(0,-1); if(COLUMNS[ci]){ state.sortCol=COLUMNS[ci].key; state.sortDir = s.slice(-1)==='a'?'asc':'desc'; } }
   state.mode = p.get('view')==='adv' ? 'advanced' : 'results';
@@ -736,13 +781,18 @@ function showMode(mode){
 function buildIntents(){
   $('intents').innerHTML = INTENTS.map(it => `
     <button class="intent-card" data-intent="${it.id}">
-      <span class="intent-ic" style="background:${it.color}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.icon}</svg></span>
+      <span class="selected-pill">Selected</span>
+      <span class="intent-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.icon}</svg></span>
       <h3>${esc(it.title)}</h3>
       <p>${esc(it.desc)}</p>
       <span class="go">Start &rsaquo;</span>
     </button>`).join('');
   $('intents').querySelectorAll('.intent-card').forEach(b =>
-    b.addEventListener('click', () => startIntent(b.dataset.intent)));
+    b.addEventListener('click', () => {
+      $('intents').querySelectorAll('.intent-card').forEach(c => c.classList.remove('is-selected'));
+      b.classList.add('is-selected');
+      startIntent(b.dataset.intent);
+    }));
 }
 let entryDebounce;
 $('entrySearch').addEventListener('input', e => {
@@ -837,13 +887,22 @@ function optionHTML(key, v, label, count, i){
     <span class="ov"><span class="tick"></span><span>${esc(label)}</span></span>
     <span class="cnt">${count.toLocaleString()}</span></button>`;
 }
-function isChosen(key, v){ return state[key]===v; }
+function isChosen(key, v){
+  if (key==='scimago'||key==='csu') return Array.isArray(state[key]) && state[key].includes(v);
+  return state[key]===v;
+}
 function selectOption(key, v){
-  state[key] = (state[key]===v) ? '' : v;   // toggle to allow deselect
-  if (key==='q') state._rawQ = v;
+  if (key==='scimago'||key==='csu'){
+    const arr = Array.isArray(state[key]) ? [...state[key]] : [];
+    const idx = arr.indexOf(v);
+    if (idx>=0) arr.splice(idx,1); else arr.push(v);
+    state[key] = arr;
+  } else {
+    state[key] = (state[key]===v) ? '' : v;   // toggle to allow deselect
+    if (key==='q') state._rawQ = v;
+  }
   state.page = 1;
   applyFilters();
-  // refresh checked state + counts in place
   renderStep();
 }
 function updateWizardNav(){
@@ -887,17 +946,36 @@ function buildAdvancedControls(){
     { key:'eligible', label:'CSU OA Agreement', opts:[['','All'],['Yes','Yes'],['No','No'],['N/A','N/A']] },
     { key:'agreement', label:'Agreement', opts:[['','All agreements'], ...catalog.agreements.map(a=>[a,a])] },
     { key:'diamond', label:'Diamond OA', opts:[['','All'],['Yes','Yes']] },
-    { key:'scimago', label:'Scimago rank', opts:[['','All'],['Q1','Q1'],['Q2','Q2'],['Q3','Q3'],['Q4','Q4']] },
-    { key:'csu', label:'CSU rank', opts:[['','All'],['Q1','Q1'],['Q2','Q2'],['Q3Q4','Q3 / Q4']] },
+    { key:'discount', label:'CSU Discount', opts:[['','All'],['Yes','Discounted for CSU']] },
     { key:'for', label:'FOR code', opts:[['','All FOR codes'], ...catalog.forCodes.map(c=>[c,c])] }
   ];
   row.innerHTML = selects.map(s => `<div class="fg"><label for="adv_${s.key}">${esc(s.label)}</label>
     <select id="adv_${s.key}" data-key="${s.key}">${s.opts.map(o=>`<option value="${esc(o[0])}">${esc(o[1])}</option>`).join('')}</select></div>`).join('')
+    + `<div class="fg"><label>Scimago rank <span style="font-size:10px;color:var(--grey-600)">(multi-select via wizard)</span></label>
+       <div style="display:flex;gap:4px;flex-wrap:wrap;padding-top:4px">${['Q1','Q2','Q3','Q4'].map(q=>`<button class="btn btn-sm adv-q-btn" data-q="${q}" data-key="scimago" style="padding:4px 10px">${q}</button>`).join('')}</div></div>`
+    + `<div class="fg"><label>CSU rank <span style="font-size:10px;color:var(--grey-600)">(multi-select)</span></label>
+       <div style="display:flex;gap:4px;flex-wrap:wrap;padding-top:4px">${['Q1','Q2','Q3Q4'].map(q=>`<button class="btn btn-sm adv-q-btn" data-q="${q}" data-key="csu" style="padding:4px 10px">${q==='Q3Q4'?'Q3/Q4':q}</button>`).join('')}</div></div>`
     + `<button class="btn btn-ghost btn-sm" id="advClear" style="align-self:flex-end">✕ Clear all</button>`;
   row.querySelectorAll('select').forEach(sel => sel.addEventListener('change', () => {
     state[sel.dataset.key] = sel.value; state.page=1; applyFilters();
   }));
+  // Multi-select Q buttons for scimago and csu
+  row.querySelectorAll('.adv-q-btn').forEach(btn => btn.addEventListener('click', () => {
+    selectOption(btn.dataset.key, btn.dataset.q);
+    updateAdvQButtons(row);
+  }));
   $('advClear').addEventListener('click', clearAll);
+}
+function updateAdvQButtons(row){
+  if (!row) return;
+  row.querySelectorAll('.adv-q-btn').forEach(btn => {
+    const key = btn.dataset.key;
+    const arr = Array.isArray(state[key]) ? state[key] : [];
+    const active = arr.includes(btn.dataset.q);
+    btn.style.background = active ? 'var(--csu-orange)' : '';
+    btn.style.color = active ? '#fff' : '';
+    btn.style.borderColor = active ? 'var(--csu-orange)' : '';
+  });
 }
 let advDebounce;
 $('advSearch').addEventListener('input', e => {
@@ -906,7 +984,8 @@ $('advSearch').addEventListener('input', e => {
 });
 function syncAdvancedFromState(){
   $('advSearch').value = state._rawQ || state.q || '';
-  ['eligible','agreement','diamond','scimago','csu','for'].forEach(k => { const s=$('adv_'+k); if(s) s.value = state[k]; });
+  ['eligible','agreement','diamond','discount','for'].forEach(k => { const s=$('adv_'+k); if(s) s.value = state[k]; });
+  // scimago and csu are multi-select handled by wizard/chip, not advanced dropdowns
 }
 
 /* ── CHIPS / live count ── */
@@ -1003,7 +1082,7 @@ function cardHTML(r, i){
   return `<div class="jcard" style="--i:${i}">
     <h3>${esc(r['Journal Title'])}</h3>
     ${r['Publisher Name']?`<div class="meta">${esc(r['Publisher Name'])}</div>`:''}
-    <div class="badges">${eligBadge(r['Eligible'])}${r['Diamond OA']==='Yes'?diaBadge('Yes'):''}${rankBadgeL('CSU',r['CSU Rank'])}${rankBadgeL('SJR',r['Scimago Rank'])}</div>
+    <div class="badges">${ftpBadge(r)}${rankBadgeL('CSU',r['CSU Rank'])}${rankBadgeL('SJR',r['Scimago Rank'])}</div>
     ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
     <div class="cardfoot">
@@ -1073,6 +1152,8 @@ function cellHTML(r, c, idx){
   if (c.badge==='rank') return `<td class="ctr">${rankBadge(r[c.key])}</td>`;
   if (c.badge==='elig') return `<td class="ctr">${eligBadge(r[c.key])}</td>`;
   if (c.badge==='dia')  return `<td class="ctr">${r[c.key]==='Yes'?diaBadge('Yes'):dash()}</td>`;
+  if (c.badge==='ftp')  return `<td class="ctr">${ftpBadge(r)}</td>`;
+  if (c.badge==='disc') return `<td class="ctr">${r[c.key]==='Yes'?'<span class="badge b-disc">💰 Yes</span>':dash()}</td>`;
   if (c.key==='Journal Title') return `<td class="title-cell">${esc(r[c.key])} <button class="rowcopy" data-idx="${idx}" title="Copy details">copy</button></td>`;
   return `<td class="${c.cls}">${esc(r[c.key])||dash()}</td>`;
 }
@@ -1100,6 +1181,14 @@ function rankBadge(v){ const c={Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v]; ret
 function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}"><span class="b-lbl" style="color:rgba(255,255,255,.7)">${lbl}</span>${v}</span>`:''; }
 function diaBadge(v){ return v==='Yes'?'<span class="badge b-diamond">Diamond OA</span>':dash(); }
 function dash(){ return '<span class="dash">—</span>'; }
+function ftpBadge(r){
+  const ftp = r['Free to Publish']||'';
+  if (ftp.startsWith('Yes — CSU Agreement & Diamond OA')) return '<span class="badge b-yes">✓ Free — Agreement & Diamond OA</span>';
+  if (ftp.startsWith('Yes — CSU Agreement')) return '<span class="badge b-yes">✓ Free — CSU Agreement</span>';
+  if (ftp.startsWith('Yes — Diamond OA'))    return '<span class="badge b-diamond">✓ Free — Diamond OA</span>';
+  if (ftp.startsWith('Discounted'))          return '<span class="badge b-disc">💰 Discounted — CSU rate</span>';
+  return '<span class="badge b-no">No free option</span>';
+}
 function esc(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 /* ── Count-up animation ── */
@@ -1136,13 +1225,9 @@ function copyJournal(r){
   if (!r) return;
   const t = [
     r['Journal Title'],
-    r['ISSNs'] ? 'ISSN: '+r['ISSNs'] : '',
     r['Publisher Name'] ? 'Publisher: '+r['Publisher Name'] : '',
-    r['Agreement'] ? 'Agreement: '+r['Agreement'] : '',
-    'CSU OA eligible: '+(r['Eligible']||'N/A'),
-    r['Diamond OA']==='Yes' ? 'Diamond OA: Yes' : '',
-    'CSU rank: '+(r['CSU Rank']||'—')+'  |  Scimago: '+(r['Scimago Rank']||'—'),
-    r['FOR Codes'] ? 'FOR codes: '+r['FOR Codes'] : ''
+    'CSU OA Eligible: '+(r['Eligible']||'N/A'),
+    'CSU Rank: '+(r['CSU Rank']||'—'),
   ].filter(Boolean).join('\n');
   copyText(t, 'Journal details copied');
 }
