@@ -150,7 +150,7 @@
   .entry-eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--csu-orange); display: inline-block; }
   .entry-hero { text-align: left; padding: 0; max-width: 640px; }
   .entry-hero h1 { font-size: 34px; font-weight: 700; color: var(--white); letter-spacing: -.01em; line-height: 1.15; }
-  .entry-hero h1 span { color: var(--csu-orange); }
+  .entry-hero h1 .orange { color: var(--csu-orange); }
   .entry-hero p { font-size: 14.5px; color: var(--csu-brown-lt); margin-top: 12px; line-height: 1.5; max-width: 480px; }
 
   .intent-or { display: none; }
@@ -415,29 +415,35 @@
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
   }
 
-  /* ── Word-by-word fade-up animation ── */
+  /* ── Heading animation: drift-in (Option 4) + magnetic (Option 3 desktop) ── */
+  .entry-hero h1 {
+    position: relative;
+  }
   .entry-hero h1 .aw {
     display: inline-block;
     opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 0.45s ease, transform 0.45s ease;
     margin-right: 0.22em;
+    /* transition set by JS after delay so stagger works */
+    will-change: transform, opacity;
+    cursor: default;
   }
-  /* When animated in */
-  .entry-hero h1 .aw.in {
+  .entry-hero h1 .aw.drifted {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate(0, 0) !important;
   }
-  /* Orange word inside an .aw */
-  .entry-hero h1 .aw .orange {
-    color: var(--csu-orange);
+  /* Magnetic hover transition (desktop only — added by JS) */
+  .entry-hero h1 .aw.magnetic {
+    transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1);
   }
-  /* Respect reduced motion preference */
+  /* Snap-back after drift-in is complete */
+  .entry-hero h1 .aw.snap {
+    transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.45s ease;
+  }
   @media (prefers-reduced-motion: reduce) {
     .entry-hero h1 .aw {
-      opacity: 1;
-      transform: none;
-      transition: none;
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
     }
   }
 </style>
@@ -1347,24 +1353,110 @@ function setStageHeight(){
 window.addEventListener('resize', () => { clearTimeout(window._rz); window._rz=setTimeout(setStageHeight, 120); });
 reduceMotion.addEventListener('change', () => { if(state.mode==='wizard') renderWizardCount(); renderLiveCount(); });
 
-/* ── Heading animation ── */
-function animateHeading() {
-  const words = document.querySelectorAll('#entryTitle .aw');
-  // Reset all words instantly (no transition) so animation replays cleanly
-  words.forEach(w => {
-    w.style.transition = 'none';
-    w.classList.remove('in');
-  });
-  // Force a reflow so the reset takes effect before we re-add transitions
-  void document.getElementById('entryTitle').offsetHeight;
-  // Stagger each word in
-  words.forEach((w, i) => {
+/* ── Heading animation: drift-in (all devices) + magnetic (desktop) ── */
+(function(){
+  const DIRS = [
+    [-60,  20],  // Find       — from left
+    [ 40, -30],  // the        — from upper right
+    [-30,  50],  // right      — from lower left
+    [ 70,  15],  // journal.   — from right
+    [-50, -40],  // Publish    — from upper left
+    [ 35,  45],  // with       — from lower right
+    [-45, -20],  // confidence — from upper left
+  ];
+  const STAGGER   = 95;   // ms between each word
+  const DELAY     = 60;   // ms before first word
+  const DRIFT_DUR = 520;  // ms for drift transition
+  const MAG_STR   = 28;   // max magnetic displacement (px)
+  const MAG_DIST  = 110;  // px radius of magnetic influence
+
+  let magneticEnabled = false;
+  let cleanupMagnetic = null;
+
+  function animateHeading() {
+    const words = [...document.querySelectorAll('#entryTitle .aw')];
+    if (!words.length) return;
+
+    // ── Tear down previous magnetic listeners ──
+    if (cleanupMagnetic) { cleanupMagnetic(); cleanupMagnetic = null; }
+    magneticEnabled = false;
+
+    // ── Reset all words: no transition, invisible, at their drift positions ──
+    words.forEach((w, i) => {
+      w.style.transition = 'none';
+      w.style.opacity    = '0';
+      const [dx, dy] = DIRS[i] || [0, 20];
+      w.style.transform  = `translate(${dx}px, ${dy}px)`;
+      w.classList.remove('drifted','magnetic','snap');
+    });
+
+    // Force reflow so resets apply before we start animating
+    void document.getElementById('entryTitle').offsetHeight;
+
+    // ── Drift each word in from its direction ──
+    words.forEach((w, i) => {
+      setTimeout(() => {
+        w.style.transition = `opacity ${DRIFT_DUR}ms ease, transform ${DRIFT_DUR}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+        w.style.opacity    = '1';
+        w.style.transform  = 'translate(0, 0)';
+      }, DELAY + i * STAGGER);
+    });
+
+    // ── After all words have landed, enable magnetic on desktop ──
+    const totalDrift = DELAY + words.length * STAGGER + DRIFT_DUR + 50;
     setTimeout(() => {
-      w.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
-      w.classList.add('in');
-    }, 80 + i * 90);  // 80ms initial delay, 90ms between each word
-  });
-}
+      // Only enable magnetic on devices with a fine pointer (mouse)
+      if (!window.matchMedia('(pointer: fine)').matches) return;
+
+      words.forEach(w => {
+        w.style.transition = '';
+        w.classList.add('magnetic');
+      });
+      magneticEnabled = true;
+
+      const h1 = document.getElementById('entryTitle');
+
+      function onMove(e) {
+        if (!magneticEnabled) return;
+        words.forEach(w => {
+          const rect   = w.getBoundingClientRect();
+          const cx     = rect.left + rect.width  / 2;
+          const cy     = rect.top  + rect.height / 2;
+          const dx     = e.clientX - cx;
+          const dy     = e.clientY - cy;
+          const dist   = Math.sqrt(dx*dx + dy*dy);
+          if (dist < MAG_DIST) {
+            const force = (1 - dist / MAG_DIST);
+            const mx    = dx * force * (MAG_STR / MAG_DIST) * 1.8;
+            const my    = dy * force * (MAG_STR / MAG_DIST) * 1.8;
+            w.style.transform = `translate(${mx.toFixed(1)}px, ${my.toFixed(1)}px)`;
+          } else {
+            w.style.transform = 'translate(0, 0)';
+          }
+        });
+      }
+
+      function onLeave() {
+        words.forEach(w => { w.style.transform = 'translate(0, 0)'; });
+      }
+
+      h1.addEventListener('mousemove', onMove);
+      h1.addEventListener('mouseleave', onLeave);
+
+      cleanupMagnetic = () => {
+        h1.removeEventListener('mousemove', onMove);
+        h1.removeEventListener('mouseleave', onLeave);
+        words.forEach(w => {
+          w.style.transform = '';
+          w.classList.remove('magnetic');
+        });
+      };
+    }, totalDrift);
+  }
+
+  // Expose so showMode can call it
+  window.animateHeading = animateHeading;
+})();
 </script>
 </body>
 </html>
