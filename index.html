@@ -385,7 +385,11 @@
   .footer-about-body strong { color: var(--white); }
   .footer-licence { display: flex; align-items: flex-start; gap: 12px; padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 12px; line-height: 1.55; }
   .footer-licence a { color: var(--csu-brown-lt); }
-  .cc-icon { width: 80px; height: 28px; flex-shrink: 0; margin-top: 1px; }
+  .cc-icon { display:none; }
+  .cc-badge { display: inline-flex; align-items: center; border-radius: 4px; overflow: hidden; flex-shrink: 0; font-family: Arial, sans-serif; font-weight: 700; font-size: 11px; line-height: 1; vertical-align: middle; margin-top: 1px; border: 1px solid rgba(255,255,255,.3); }
+  .cc-badge-cc  { background: #fff; color: #000; padding: 4px 5px; letter-spacing: -.3px; }
+  .cc-badge-by  { background: #EF9421; color: #fff; padding: 4px 5px; }
+  .cc-badge-ver { background: #EF9421; color: #fff; padding: 4px 5px; border-left: 1px solid rgba(255,255,255,.3); }
   .footer-legal { padding: 12px 24px; font-size: 11px; color: var(--grey-600); }
   footer a { color: var(--csu-brown-lt); }
 
@@ -420,7 +424,7 @@
 
 <header>
   <div class="header-brand">
-    <img class="header-crest" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAA/CAYAAACxdtubAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAARMSURBVGhD7ZcLUSRBEERPCwpQgAIMoAAFKMAAClCAAgygAAUoQMFcPIKMyKirmu7e2WaXvcmIDG77U13Z9em5P8t/gl3opWEXemnYhV5dXf1KVtiFZkZ+Ayt0CT133Nzc7EKFYaGfn5+bOIqefUcXyoE+PsK7u7vl9fX129K/eH9/X56fn5fHx8fl9vZ2ub6+/mK0w9zDw8Py8fHxvfMMhOIoAhGR4e3t7UtYJqhFt3kSodz4/f398vLykqYcY09PT1/rsv29nCpUIG1IQ5HIcHAmTGBPK3rMcUlchNsVdR7zU1N3FAjHWZyvBJLaOO4RGsVJhErcWnq2ancUU2sU4zgrqlP6vkjmY9o5sK/UlE3IWfwlM+i4zHuZTBU6Qpzm6XDnBMaY67kop2fDSYXi+FrtbXla4FShQB2X5wMhEIf5S2QQkEUOMM48l+D2napftynqPOanCz0ECMRBd8iJOGpv7ZLWcFKhOEzkW08LkTpEnGNKjWLUu59IqkF1S98fyRqiV4G05JK4BGxylshZzDmmCPXxERJVnMyaE3YRjpDe5jS1RkeF4jTRr2qPMSLWK845vRnpQYeIIA356+nMmixyDtUv+w/hWX3r/hR2oYaDUlf0uvNxTyvqMxsXfF8Ps1qf3oyqhsCzIFC3GqfxZGB9qyFRl79eqMA+twMR2GpsZy2UlK7+u8Z3NB05E4gPce9ZC2UNYwgiJVvgbC5AX13V2RVKoV4zwgyhIgIQEsGZvM1uH04RymGCxuAxhYoSzJmsr5qUn50FJaIU6h/mVT1sEQpYFyPVIs3JPyk9y7BVoRSKQRnAsODjW4UK1Ci1qnWRRKzqvoxpHWsqlEJxSgbccepF48cSKmDP1yOQ86ruDEjzHvulUG5ZBrhtwVNli1DsZ80HIEx1GsGYj3smrHXvUqgLglmdbhHKGsbYVwl2cD77WS+h/PVz1yJfCgXekNx5pcsxhDqz1KM/MK7OSioLnnX4uoZVoZ7/HORA2NbU1Xgk65gnLf3p4N+ett4Y/QIyrAqNqeEpxk1vEQrY7/Mtul2/qHgBGVaFAu+yMaqOQ4QKqj+ti+Rct4mokWiCptAYVRzPsEWog72yhRh+x2gxJps90QRNoSDWE78jRoWyht9Vp/SycFAyiMvOWkOXUBC/XKIjnuK9Qn187WkQONNF+vveQrfQmMIcGMXymzWjQkUcr95U2dZa/t2TskK3UMCt+43CLI09OiNCsc14FBDTNbvkFoaEgpg+0AVEcBH68IhCscMc44iJAvnNXBSZXW4Lw0IBEfM0gjjc+pQbSTWE+5cZ5MyeWs5wkFCA07FBwR7BFbDJ3igQ8tSMXFTEwUIFpWB0DHIRdGOik0UCx5nDBkIyO4wxvxWbhQo4E52sWF2MkzVc0pYoOo4mVFB0Mud7WH0NbcXRhQqqN7omzsfmRcQgc6xh7eiTMYJpQs8Nu9BLwy70srAsfwGIp6uO3JlRqwAAAABJRU5ErkJggg==" alt="Charles Sturt University crest">
+    <img class="header-crest" src="data:image/png;base64,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" alt="Charles Sturt University crest">
     <div class="header-wordmark">
       <strong>Charles Sturt University</strong>
       <span>Division of Library Services</span>
@@ -570,14 +574,9 @@
   <!-- CC-BY Licence -->
   <div class="footer-licence">
     <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" aria-label="Creative Commons Attribution 4.0 International Licence">
-      <svg class="cc-icon" viewBox="0 0 120 42" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <!-- CC badge -->
-        <rect width="120" height="42" rx="6" fill="#fff" opacity=".15"/>
-        <text x="10" y="28" font-family="Arial,sans-serif" font-size="22" font-weight="900" fill="#fff">CC</text>
-        <text x="44" y="20" font-family="Arial,sans-serif" font-size="11" fill="#fff">BY</text>
-        <circle cx="52" cy="29" r="8" fill="none" stroke="#fff" stroke-width="1.5"/>
-        <text x="49" y="33" font-family="Arial,sans-serif" font-size="11" fill="#fff">$</text>
-      </svg>
+<span class="cc-badge" aria-label="Creative Commons Attribution 4.0">
+        <span class="cc-badge-cc">CC</span><span class="cc-badge-by">BY</span><span class="cc-badge-ver">4.0</span>
+      </span>
     </a>
     <span>This work is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 International Licence (CC BY 4.0)</a>. You are free to share and adapt this material provided you give appropriate credit to Charles Sturt University Division of Library Services.</span>
   </div>
