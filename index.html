@@ -64,7 +64,7 @@
     z-index: 100;
   }
   .header-brand { display: flex; align-items: center; gap: 12px; }
-  .header-crest { width: 38px; height: 38px; flex-shrink: 0; display: block; }
+  .header-crest { width: 38px; height: 38px; flex-shrink: 0; display: block; filter: brightness(0) invert(1); }
   .header-wordmark { line-height: 1.2; }
   .header-wordmark strong { display: block; font-size: 14px; letter-spacing: .02em; }
   .header-wordmark span  { font-size: 11px; color: var(--csu-brown-lt); letter-spacing: .04em; }
@@ -367,7 +367,26 @@
   .sk-search { height: 58px; border-radius: var(--radius-lg); margin-bottom: 22px; }
 
   /* ── Footer ── */
-  footer { background: var(--csu-charcoal); color: var(--grey-400); text-align: center; padding: 9px 18px; font-size: 11px; line-height: 1.6; flex-shrink: 0; }
+  footer { background: var(--csu-charcoal); color: var(--grey-400); font-size: 12px; line-height: 1.6; flex-shrink: 0; margin-top: 32px; padding: 0; }
+  footer a { color: var(--csu-brown-lt); }
+  footer a:hover { color: var(--white); }
+  .footer-about { border-bottom: 1px solid rgba(255,255,255,.08); }
+  .footer-about summary { padding: 14px 24px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--csu-brown-lt); letter-spacing: .02em; list-style: none; display: flex; align-items: center; gap: 8px; user-select: none; transition: color .15s; }
+  .footer-about summary::-webkit-details-marker { display: none; }
+  .footer-about summary::before { content: '›'; font-size: 16px; transition: transform .2s; display: inline-block; }
+  .footer-about[open] summary::before { transform: rotate(90deg); }
+  .footer-about summary:hover { color: var(--white); }
+  .footer-about-body { padding: 4px 24px 28px; color: var(--grey-400); max-width: 860px; }
+  .footer-about-body h3 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 12px; margin-top: 4px; }
+  .footer-about-body h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--csu-brown-lt); margin: 18px 0 6px; }
+  .footer-about-body p { margin-bottom: 8px; line-height: 1.65; }
+  .footer-about-body ul { margin: 0 0 8px 18px; }
+  .footer-about-body li { margin-bottom: 6px; line-height: 1.6; }
+  .footer-about-body strong { color: var(--white); }
+  .footer-licence { display: flex; align-items: flex-start; gap: 12px; padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 12px; line-height: 1.55; }
+  .footer-licence a { color: var(--csu-brown-lt); }
+  .cc-icon { width: 80px; height: 28px; flex-shrink: 0; margin-top: 1px; }
+  .footer-legal { padding: 12px 24px; font-size: 11px; color: var(--grey-600); }
   footer a { color: var(--csu-brown-lt); }
 
   /* ── Toast ── */
@@ -401,10 +420,7 @@
 
 <header>
   <div class="header-brand">
-    <svg class="header-crest" viewBox="0 0 38 38" role="img" aria-label="Charles Sturt University">
-      <rect width="38" height="38" rx="8" fill="#F0572A"/>
-      <text x="19" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#222944" letter-spacing="-0.5">CSU</text>
-    </svg>
+    <img class="header-crest" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAA/CAYAAACxdtubAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAARMSURBVGhD7ZcLUSRBEERPCwpQgAIMoAAFKMAAClCAAgygAAUoQMFcPIKMyKirmu7e2WaXvcmIDG77U13Z9em5P8t/gl3opWEXemnYhV5dXf1KVtiFZkZ+Ayt0CT133Nzc7EKFYaGfn5+bOIqefUcXyoE+PsK7u7vl9fX129K/eH9/X56fn5fHx8fl9vZ2ub6+/mK0w9zDw8Py8fHxvfMMhOIoAhGR4e3t7UtYJqhFt3kSodz4/f398vLykqYcY09PT1/rsv29nCpUIG1IQ5HIcHAmTGBPK3rMcUlchNsVdR7zU1N3FAjHWZyvBJLaOO4RGsVJhErcWnq2ancUU2sU4zgrqlP6vkjmY9o5sK/UlE3IWfwlM+i4zHuZTBU6Qpzm6XDnBMaY67kop2fDSYXi+FrtbXla4FShQB2X5wMhEIf5S2QQkEUOMM48l+D2napftynqPOanCz0ECMRBd8iJOGpv7ZLWcFKhOEzkW08LkTpEnGNKjWLUu59IqkF1S98fyRqiV4G05JK4BGxylshZzDmmCPXxERJVnMyaE3YRjpDe5jS1RkeF4jTRr2qPMSLWK845vRnpQYeIIA356+nMmixyDtUv+w/hWX3r/hR2oYaDUlf0uvNxTyvqMxsXfF8Ps1qf3oyqhsCzIFC3GqfxZGB9qyFRl79eqMA+twMR2GpsZy2UlK7+u8Z3NB05E4gPce9ZC2UNYwgiJVvgbC5AX13V2RVKoV4zwgyhIgIQEsGZvM1uH04RymGCxuAxhYoSzJmsr5qUn50FJaIU6h/mVT1sEQpYFyPVIs3JPyk9y7BVoRSKQRnAsODjW4UK1Ci1qnWRRKzqvoxpHWsqlEJxSgbccepF48cSKmDP1yOQ86ruDEjzHvulUG5ZBrhtwVNli1DsZ80HIEx1GsGYj3smrHXvUqgLglmdbhHKGsbYVwl2cD77WS+h/PVz1yJfCgXekNx5pcsxhDqz1KM/MK7OSioLnnX4uoZVoZ7/HORA2NbU1Xgk65gnLf3p4N+ett4Y/QIyrAqNqeEpxk1vEQrY7/Mtul2/qHgBGVaFAu+yMaqOQ4QKqj+ti+Rct4mokWiCptAYVRzPsEWog72yhRh+x2gxJps90QRNoSDWE78jRoWyht9Vp/SycFAyiMvOWkOXUBC/XKIjnuK9Qn187WkQONNF+vveQrfQmMIcGMXymzWjQkUcr95U2dZa/t2TskK3UMCt+43CLI09OiNCsc14FBDTNbvkFoaEgpg+0AVEcBH68IhCscMc44iJAvnNXBSZXW4Lw0IBEfM0gjjc+pQbSTWE+5cZ5MyeWs5wkFCA07FBwR7BFbDJ3igQ8tSMXFTEwUIFpWB0DHIRdGOik0UCx5nDBkIyO4wxvxWbhQo4E52sWF2MkzVc0pYoOo4mVFB0Mud7WH0NbcXRhQqqN7omzsfmRcQgc6xh7eiTMYJpQs8Nu9BLwy70srAsfwGIp6uO3JlRqwAAAABJRU5ErkJggg==" alt="Charles Sturt University crest">
     <div class="header-wordmark">
       <strong>Charles Sturt University</strong>
       <span>Division of Library Services</span>
@@ -525,9 +541,53 @@
 </main>
 
 <footer>
-  Charles Sturt University — TEQSA PRV12018 · CRICOS 00005F ·
-  <a href="https://www.csu.edu.au/library">CSU Library</a> ·
-  Data: CAUL OA Agreements 2026 · Scimago 2025 · CSU Journal Ranking List
+
+  <!-- About section -->
+  <details class="footer-about">
+    <summary>About this tool</summary>
+    <div class="footer-about-body">
+      <h3>About the CSU Journal Finder</h3>
+      <p>The CSU Journal Finder helps researchers and staff at Charles Sturt University identify journals that are free or discounted to publish in, and explore journals by quality ranking and field of research.</p>
+
+      <h4>Data sources</h4>
+      <ul>
+        <li><strong>CAUL Open Access Agreements 2026</strong> — Publisher agreements negotiated by the Council of Australian University Libraries (CAUL) that allow CSU-affiliated authors to publish open access at no cost or reduced cost. Updated periodically as agreements are renewed or added.</li>
+        <li><strong>Scimago Journal Rankings 2025</strong> — Journal quartile rankings (Q1–Q4) and Diamond Open Access status sourced from the SCImago Journal &amp; Country Rank portal, based on Scopus citation data.</li>
+        <li><strong>CSU Journal Ranking List</strong> — An internal CSU ranking list maintained by the Division of Library Services, drawing on recognised ranking schemes including ABDC, CORE, and other discipline-specific sources.</li>
+      </ul>
+
+      <h4>How "Free to Publish" is determined</h4>
+      <p>A journal is marked free to publish in if it appears under a CSU CAUL open access agreement (Eligible = Yes) or is a Diamond Open Access journal (no APC for any author). A journal is marked discounted where CSU authors receive a negotiated reduction on article processing charges (APCs). These determinations are based on the data sources listed above and should be verified with the Library before submission.</p>
+
+      <h4>Creation and maintenance</h4>
+      <p>This tool was created using <strong>Claude Sonnet 4.6</strong> (Anthropic), with data compilation, review, and quality assurance by <strong>CSU Division of Library Services</strong>. The underlying data is updated when new agreement lists or ranking data are published.</p>
+
+      <h4>Disclaimer</h4>
+      <p>Information is provided in good faith for guidance purposes. CSU Library makes no warranty as to the accuracy or completeness of the data. Always confirm eligibility directly with the publisher or your library liaison before submitting a manuscript.</p>
+    </div>
+  </details>
+
+  <!-- CC-BY Licence -->
+  <div class="footer-licence">
+    <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" aria-label="Creative Commons Attribution 4.0 International Licence">
+      <svg class="cc-icon" viewBox="0 0 120 42" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- CC badge -->
+        <rect width="120" height="42" rx="6" fill="#fff" opacity=".15"/>
+        <text x="10" y="28" font-family="Arial,sans-serif" font-size="22" font-weight="900" fill="#fff">CC</text>
+        <text x="44" y="20" font-family="Arial,sans-serif" font-size="11" fill="#fff">BY</text>
+        <circle cx="52" cy="29" r="8" fill="none" stroke="#fff" stroke-width="1.5"/>
+        <text x="49" y="33" font-family="Arial,sans-serif" font-size="11" fill="#fff">$</text>
+      </svg>
+    </a>
+    <span>This work is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 International Licence (CC BY 4.0)</a>. You are free to share and adapt this material provided you give appropriate credit to Charles Sturt University Division of Library Services.</span>
+  </div>
+
+  <!-- Legal footer -->
+  <div class="footer-legal">
+    Charles Sturt University — TEQSA PRV12018 · CRICOS 00005F ·
+    <a href="https://www.csu.edu.au/library">CSU Library</a>
+  </div>
+
 </footer>
 
 <div id="toast" role="status" aria-live="polite"></div>
