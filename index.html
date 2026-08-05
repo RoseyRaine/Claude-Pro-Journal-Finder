@@ -414,6 +414,32 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
   }
+
+  /* ── Word-by-word fade-up animation ── */
+  .entry-hero h1 .aw {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    margin-right: 0.22em;
+  }
+  /* When animated in */
+  .entry-hero h1 .aw.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* Orange word inside an .aw */
+  .entry-hero h1 .aw .orange {
+    color: var(--csu-orange);
+  }
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .entry-hero h1 .aw {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
 </style>
 </head>
 <body>
@@ -458,7 +484,15 @@
       <div class="entry-hero-band">
         <div class="entry-eyebrow">CSU Library research tool</div>
         <div class="entry-hero">
-          <h1 id="entryTitle">Find the right <span>journal</span>. Publish with confidence.</h1>
+          <h1 id="entryTitle" aria-label="Find the right journal. Publish with confidence.">
+            <span class="aw">Find</span>
+            <span class="aw">the</span>
+            <span class="aw">right</span>
+            <span class="aw"><span class="orange">journal</span>.</span>
+            <span class="aw">Publish</span>
+            <span class="aw">with</span>
+            <span class="aw">confidence.</span>
+          </h1>
           <p>Check publishing eligibility for a journal you know, or explore journals in your research area.</p>
         </div>
         <div class="intents" id="intents"></div>
@@ -828,6 +862,7 @@ function showMode(mode){
   if (mode==='advanced' || mode==='results') renderResultsArea();
   stage.scrollTop = 0;
   setStageHeight();
+  if (mode === 'entry') animateHeading();
 }
 
 /* ── ENTRY ── */
@@ -1311,6 +1346,25 @@ function setStageHeight(){
 }
 window.addEventListener('resize', () => { clearTimeout(window._rz); window._rz=setTimeout(setStageHeight, 120); });
 reduceMotion.addEventListener('change', () => { if(state.mode==='wizard') renderWizardCount(); renderLiveCount(); });
+
+/* ── Heading animation ── */
+function animateHeading() {
+  const words = document.querySelectorAll('#entryTitle .aw');
+  // Reset all words instantly (no transition) so animation replays cleanly
+  words.forEach(w => {
+    w.style.transition = 'none';
+    w.classList.remove('in');
+  });
+  // Force a reflow so the reset takes effect before we re-add transitions
+  void document.getElementById('entryTitle').offsetHeight;
+  // Stagger each word in
+  words.forEach((w, i) => {
+    setTimeout(() => {
+      w.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+      w.classList.add('in');
+    }, 80 + i * 90);  // 80ms initial delay, 90ms between each word
+  });
+}
 </script>
 </body>
 </html>
