@@ -278,6 +278,38 @@
   .loosen-opt .gain { color: var(--csu-green); font-weight: 700; font-variant-numeric: tabular-nums; margin-left: auto; }
   .loosen-actions { display: flex; gap: 9px; }
 
+
+  /* ── Find Similar ── */
+  .similar-banner {
+    background: linear-gradient(135deg, var(--csu-navy) 0%, #2d3561 100%);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .similar-banner-text { color: var(--white); }
+  .similar-banner-text strong { display: block; font-size: 14px; margin-bottom: 3px; }
+  .similar-banner-text span { font-size: 12px; color: var(--csu-brown-lt); line-height: 1.5; }
+  .similar-banner-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .btn-similar {
+    background: none; border: 1.5px solid var(--csu-blue);
+    color: var(--csu-blue); border-radius: var(--radius);
+    padding: 5px 12px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+  }
+  .btn-similar:hover { background: var(--csu-blue); color: #fff; }
+  .no-for-msg {
+    background: var(--grey-100); border: 1px solid var(--grey-200);
+    border-radius: var(--radius); padding: 24px; text-align: center;
+    color: var(--grey-600); font-size: 14px; margin: 12px 0;
+  }
+  .no-for-msg strong { display: block; margin-bottom: 6px; color: var(--csu-charcoal); }
   /* ── Results: summary + cards ── */
   .results-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
   .results-head h2 { font-size: 21px; color: var(--csu-navy); }
@@ -605,6 +637,10 @@
       <h4>Creation and maintenance</h4>
       <p>This tool was created using <strong>Claude Sonnet 4.6</strong> (Anthropic), with data compilation, review, and quality assurance by <strong>CSU Division of Library Services</strong>. The underlying data is updated when new agreement lists or ranking data are published.</p>
 
+      <h4>Find Similar Journals</h4>
+      <p>Each journal card includes a <strong>Find similar</strong> button. This uses FOR (Field of Research) codes to identify journals in the same research area. When clicked, it returns a ranked list of journals that share one or more FOR codes with the selected journal — those sharing the most codes appear first. Within each tier of matching codes, results are further ranked by free-to-publish status and Scimago quartile.</p>
+      <p>This is not a citation-based similarity measure (such as Scimago's own "Find Similar" feature, which uses the Scopus citation network). It is a subject-area match based on ARC field classifications. Journals without FOR codes in the CSU Ranking List cannot be used as a similarity source and will show a "not enough data" message with a link to search Scimago directly.</p>
+
       <h4>Disclaimer</h4>
       <p>Information is provided in good faith for guidance purposes. CSU Library makes no warranty as to the accuracy or completeness of the data. Always confirm eligibility directly with the publisher or your library liaison before submitting a manuscript.</p>
     </div>
@@ -692,7 +728,7 @@ const COLUMNS = [
 const state = {
   q:'', eligible:'', agreement:'', diamond:'', discount:'', scimago:[], csu:[], for:'',
   sortCol:'Journal Title', sortDir:'asc', page:1,
-  mode:'entry', intent:null, stepIndex:0, resultView:'summary'
+  mode:'entry', intent:null, stepIndex:0, resultView:'summary', similarJournal:null
 };
 const FACET_KEYS = ['q','eligible','agreement','diamond','discount','scimago','csu','for'];
 let allData = [], filtered = [], catalog = { agreements:[], forCodes:[] };
@@ -762,6 +798,12 @@ function recMatches(r, st, skip){
 }
 
 function computeFiltered(){
+  // A new search/filter clears similar mode
+  if (state.similarJournal && (state.q || state.eligible || state.agreement ||
+      state.diamond || state.discount || (state.scimago&&state.scimago.length) ||
+      (state.csu&&state.csu.length) || state.for)) {
+    state.similarJournal = null; state.similarScored = null; state.similarNoCodes = false;
+  }
   filtered = allData.filter(r => recMatches(r, state, null));
   sortFiltered();
   if (state.page > Math.ceil(filtered.length/PAGE_SIZE)) state.page = 1;
@@ -1115,6 +1157,8 @@ $('advCollapse').addEventListener('click', () => {
 
 /* ── RESULTS area (summary cards + table, shared with advanced) ── */
 function renderResultsArea(){
+  // Similar mode overrides normal results
+  if (state.similarJournal) { renderSimilarResults(); renderLoosen(); return; }
   renderLoosen();
   renderResultsHead();
   const showTable = state.resultView==='table';
@@ -1170,25 +1214,159 @@ function drawSummaryCards(){
   sc.innerHTML = `<div class="cards">${top.map((r,i)=>cardHTML(r,i)).join('')}</div>`
     + (remain > 0 ? `<div style="text-align:center;margin:18px 0 6px"><button class="btn" id="seeMoreBtn" style="padding:10px 28px;font-size:14px">Show ${Math.min(SUMMARY_N, remain)} more ↓</button></div>` : '');
   sc.querySelectorAll('.jcard .copybtn').forEach(b => b.addEventListener('click', () => copyJournal(allData[+b.dataset.idx])));
+  sc.querySelectorAll('.jcard .similarBtn').forEach(b => b.addEventListener('click', () => findSimilar(allData[+b.dataset.idx])));
   const moreBtn = $('seeMoreBtn');
   if (moreBtn) moreBtn.addEventListener('click', () => { summaryShown = Math.min(summaryShown + SUMMARY_N, summarySorted.length); drawSummaryCards(); });
 }
-function cardHTML(r, i){
+function cardHTML(r, i, matchLabel){
   const idx = allData.indexOf(r);
   const strong = r['Eligible']==='Yes';
   return `<div class="jcard" style="--i:${i}">
     <h3>${esc(r['Journal Title'])}</h3>
     ${r['Publisher Name']?`<div class="meta">${esc(r['Publisher Name'])}</div>`:''}
+    ${matchLabel?`<div style="font-size:11px;color:var(--csu-green);font-weight:600;margin-bottom:4px">✓ ${esc(matchLabel)}</div>`:''}
     <div class="badges">${ftpBadge(r)}${rankBadgeL('CSU',r['CSU Rank'])}${rankBadgeL('SJR',r['Scimago Rank'])}</div>
     ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
     ${r['Journal Website']?`<div class="crow jcard-link"><span>🔗 <a href="${escAttr(r['Journal Website'])}" target="_blank" rel="noopener noreferrer">Visit journal homepage</a></span></div>`:''}
     <div class="cardfoot">
       <span class="strength">${strong?'★ Free OA at CSU':' '}</span>
-      <button class="btn btn-sm copybtn" data-idx="${idx}">Copy details</button>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm copybtn" data-idx="${idx}">Copy details</button>
+        <button class="btn btn-sm btn-similar similarBtn" data-idx="${idx}" title="Find journals in the same research area">Find similar</button>
+      </div>
     </div></div>`;
 }
 
+
+/* ── Find Similar Journals ── */
+function findSimilar(sourceJournal) {
+  if (!sourceJournal) return;
+
+  const forRaw = (sourceJournal['FOR Codes'] || '').trim();
+
+  // No FOR codes — show "not enough data" message
+  if (!forRaw) {
+    state.similarJournal = sourceJournal;
+    state.similarNoCodes = true;
+    state.page = 1;
+    showMode('results');
+    renderResultsArea();
+    return;
+  }
+
+  // Parse FOR codes for this journal
+  const sourceCodes = forRaw.split(';').map(c => c.trim()).filter(Boolean);
+
+  // Score every other journal by how many FOR codes it shares
+  const scored = [];
+  for (const r of allData) {
+    if (r === sourceJournal) continue;
+    const rCodes = (r['FOR Codes'] || '').split(';').map(c => c.trim()).filter(Boolean);
+    if (!rCodes.length) continue;
+    const matches = sourceCodes.filter(c => rCodes.includes(c)).length;
+    if (matches > 0) {
+      scored.push({ r, matches, total: sourceCodes.length });
+    }
+  }
+
+  // Sort by number of matching codes desc, then by Free to Publish, then Scimago rank
+  const rankOrder = { Q1:4, Q2:3, Q3:2, Q4:1 };
+  const ftpOrder = v => v && v.startsWith('Yes') ? 1 : 0;
+  scored.sort((a, b) => {
+    if (b.matches !== a.matches) return b.matches - a.matches;
+    if (ftpOrder(b.r['Free to Publish']) !== ftpOrder(a.r['Free to Publish']))
+      return ftpOrder(b.r['Free to Publish']) - ftpOrder(a.r['Free to Publish']);
+    return (rankOrder[b.r['Scimago Rank']] || 0) - (rankOrder[a.r['Scimago Rank']] || 0);
+  });
+
+  state.similarJournal = sourceJournal;
+  state.similarScored  = scored;
+  state.similarNoCodes = false;
+  state.similarShown   = Math.min(12, scored.length);
+  state.page = 1;
+
+  showMode('results');
+  renderResultsArea();
+}
+
+function renderSimilarBanner() {
+  const r = state.similarJournal;
+  if (!r) return '';
+  const forCodes = (r['FOR Codes']||'').split(';').map(c=>c.trim()).filter(Boolean);
+  const total = state.similarScored ? state.similarScored.length : 0;
+  return `<div class="similar-banner">
+    <div class="similar-banner-text">
+      <strong>🔍 Journals similar to: ${esc(r['Journal Title'])}</strong>
+      <span>Matched by shared FOR codes: ${forCodes.map(c=>`<b>${esc(c)}</b>`).join(', ')} · ${total.toLocaleString()} journals share at least one code · ranked by number of codes in common</span>
+    </div>
+    <div class="similar-banner-actions">
+      <button class="btn btn-sm" onclick="clearSimilar()" style="border-color:var(--csu-brown-lt);color:var(--csu-brown-lt)">✕ Clear</button>
+    </div>
+  </div>`;
+}
+
+function clearSimilar() {
+  state.similarJournal = null;
+  state.similarScored  = null;
+  state.similarNoCodes = false;
+  state.similarShown   = 0;
+  renderResultsArea();
+}
+
+function renderSimilarResults() {
+  const sc = $('summaryCards');
+  sc.hidden = false;
+  $('tableArea').hidden = true;
+
+  // No FOR codes case
+  if (state.similarNoCodes) {
+    const r = state.similarJournal;
+    sc.innerHTML = renderSimilarBanner() + `
+      <div class="no-for-msg">
+        <strong>Not enough data to find similar journals</strong>
+        <em>${esc(r['Journal Title'])}</em> has no FOR (Field of Research) codes in our dataset.
+        FOR codes are required to identify related journals.<br><br>
+        <a href="https://www.scimagojr.com/journalsearch.php?q=${encodeURIComponent(r['Journal Title'])}" target="_blank" rel="noopener noreferrer" style="color:var(--csu-blue)">
+          Try searching Scimago directly →
+        </a>
+      </div>`;
+    return;
+  }
+
+  const allScored = state.similarScored || [];
+  const shown     = state.similarShown  || 12;
+  const top       = allScored.slice(0, shown);
+  const remain    = allScored.length - shown;
+
+  const cards = top.map((s, i) => {
+    const matchLabel = s.matches === s.total
+      ? `All ${s.total} FOR code${s.total>1?'s':''} match`
+      : `${s.matches} of ${s.total} FOR code${s.total>1?'s':''} match`;
+    return cardHTML(s.r, i, matchLabel);
+  }).join('');
+
+  sc.innerHTML = renderSimilarBanner()
+    + `<div class="cards">${cards}</div>`
+    + (remain > 0
+      ? `<div style="text-align:center;margin:18px 0 6px">
+           <button class="btn" id="seeMoreSimilar" style="padding:10px 28px;font-size:14px">
+             Show ${Math.min(12, remain)} more ↓
+           </button>
+         </div>`
+      : '');
+
+  sc.querySelectorAll('.jcard .copybtn').forEach(b =>
+    b.addEventListener('click', () => copyJournal(allData[+b.dataset.idx])));
+  sc.querySelectorAll('.jcard .similarBtn').forEach(b =>
+    b.addEventListener('click', () => findSimilar(allData[+b.dataset.idx])));
+
+  const moreBtn = $('seeMoreSimilar');
+  if (moreBtn) moreBtn.addEventListener('click', () => {
+    state.similarShown = Math.min(state.similarShown + 12, allScored.length);
+    renderSimilarResults();
+  });
+}
 /* ── Loosen panel ── */
 function renderLoosen(){
   const box = $('loosen');
