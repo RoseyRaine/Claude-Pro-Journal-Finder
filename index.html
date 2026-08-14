@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Journal Finder — CSU Library</title>
+<title>Journal Finder — Charles Sturt University Library</title>
 <style>
   :root {
     --csu-orange:    #F0572A;
@@ -130,59 +130,130 @@
   .surface.active { display: block; animation: fade-rise var(--dur-2) var(--ease) both; }
 
   /* ── Entry: dark hero band ── */
+  /* ── Entry: full-width hero band ── */
   .entry-hero-band {
     background: var(--csu-navy);
-    background-image: radial-gradient(circle at 88% 35%, rgba(255,255,255,.05) 0%, rgba(255,255,255,.05) 40%, transparent 41%),
-                       radial-gradient(circle at 88% 35%, transparent 0 28%, rgba(255,255,255,.04) 29% 30%, transparent 31%),
-                       radial-gradient(circle at 88% 35%, transparent 0 38%, rgba(255,255,255,.04) 39% 40%, transparent 41%),
-                       radial-gradient(circle at 88% 35%, transparent 0 48%, rgba(255,255,255,.04) 49% 50%, transparent 51%);
-    border-radius: var(--radius-lg);
-    padding: 34px 30px 26px;
-    margin-bottom: 18px;
-    overflow: hidden;
+    background-image:
+      radial-gradient(ellipse at 75% 50%, rgba(90,107,188,.25) 0%, transparent 60%),
+      radial-gradient(ellipse at 25% 80%, rgba(240,87,42,.08) 0%, transparent 50%);
+    padding: 60px 24px 56px;
+    text-align: center;
     position: relative;
+    overflow: hidden;
+  }
+  .entry-hero-band::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--csu-orange), transparent);
   }
   .entry-eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
-    font-size: 12.5px; font-weight: 700; letter-spacing: .04em;
-    color: var(--csu-pink); margin-bottom: 14px;
+    font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--csu-brown-lt); margin-bottom: 20px;
+    opacity: .8;
   }
-  .entry-eyebrow::before { content: ''; width: 18px; height: 2px; background: var(--csu-orange); display: inline-block; }
-  .entry-hero { text-align: left; padding: 0; max-width: 640px; }
-  .entry-hero h1 { font-size: 34px; font-weight: 700; color: var(--white); letter-spacing: -.01em; line-height: 1.15; }
+  .entry-eyebrow::before, .entry-eyebrow::after {
+    content: ''; width: 24px; height: 1px;
+    background: var(--csu-orange); display: inline-block; opacity: .7;
+  }
+  .entry-hero { text-align: center; padding: 0; max-width: 760px; margin: 0 auto; }
+  .entry-hero h1 {
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800; color: var(--white);
+    letter-spacing: -.02em; line-height: 1.1;
+  }
   .entry-hero h1 .orange { color: var(--csu-orange); }
-  .entry-hero p { font-size: 14.5px; color: var(--csu-brown-lt); margin-top: 12px; line-height: 1.5; max-width: 480px; }
+  .entry-hero p {
+    font-size: 16px; color: var(--csu-brown-lt);
+    margin: 16px auto 0; line-height: 1.6; max-width: 520px;
+  }
 
+  /* ── Choice cards (below the band) ── */
   .intent-or { display: none; }
-  .intents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 100%; margin: 22px 0 0; position: relative; z-index: 1; }
-  .intent-card {
-    text-align: left; background: #fff; border: 2px solid transparent; border-radius: var(--radius);
-    padding: 18px 18px 16px; cursor: pointer; font-family: inherit;
-    box-shadow: var(--shadow-sm);
-    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
-    display: flex; flex-direction: column; gap: 9px;
+  .entry-choices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 800px;
+    margin: -28px auto 0;
+    padding: 0 24px;
     position: relative;
+    z-index: 2;
   }
-  .intent-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .intent-card {
+    background: #fff;
+    border: 2px solid var(--grey-100);
+    border-radius: 14px;
+    padding: 28px 26px 24px;
+    cursor: pointer; font-family: inherit;
+    box-shadow: 0 4px 24px rgba(0,0,0,.10), 0 1px 4px rgba(0,0,0,.06);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    display: flex; flex-direction: column; gap: 0;
+    position: relative; text-align: left;
+  }
+  .intent-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.06);
+    border-color: var(--csu-orange);
+  }
   .intent-card.is-selected { border-color: var(--csu-orange); }
-  .intent-card .selected-pill {
-    display: none; position: absolute; top: 14px; right: 14px;
-    background: var(--csu-orange); color: #fff; font-size: 11px; font-weight: 700;
-    padding: 3px 10px; border-radius: 999px;
+  .intent-card .selected-pill { display: none; }
+  .intent-ic {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; margin-bottom: 16px;
+    background: var(--csu-navy) !important;
   }
-  .intent-card.is-selected .selected-pill { display: inline-block; }
-  .intent-ic { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; background: var(--csu-pink) !important; }
   .intent-card.is-selected .intent-ic { background: var(--csu-green) !important; }
-  .intent-ic svg { width: 22px; height: 22px; }
-  .intent-card h3 { font-size: 16px; color: var(--csu-charcoal); font-weight: 700; }
-  .intent-card p { font-size: 13px; color: var(--grey-600); line-height: 1.45; }
+  .intent-ic svg { width: 24px; height: 24px; }
+  .intent-card h3 {
+    font-size: 18px; font-weight: 700;
+    color: var(--csu-navy); margin-bottom: 6px;
+  }
+  .intent-card > p {
+    font-size: 13.5px; color: var(--grey-600);
+    line-height: 1.5; margin-bottom: 20px;
+  }
   .intent-card .go { display: none; }
 
-  .entry-search-section { background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); padding: 22px 24px 26px; box-shadow: var(--shadow-sm); }
-  .entry-search-label { font-size: 15px; font-weight: 700; color: var(--csu-charcoal); margin-bottom: 12px; }
+  /* ── Inline search inside each choice card ── */
+  .intent-search-wrap {
+    display: flex; gap: 0; border-radius: 8px; overflow: hidden;
+    border: 1.5px solid var(--grey-200);
+    background: var(--grey-100);
+    transition: border-color .15s, box-shadow .15s;
+    margin-top: auto;
+  }
+  .intent-search-wrap:focus-within {
+    border-color: var(--csu-orange);
+    box-shadow: 0 0 0 3px rgba(240,87,42,.12);
+    background: #fff;
+  }
+  .intent-search-wrap input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-family: inherit; font-size: 14px;
+    padding: 11px 14px; color: var(--csu-charcoal); min-width: 0;
+  }
+  .intent-search-wrap input::placeholder { color: var(--grey-400); }
+  .intent-search-wrap button {
+    background: var(--csu-orange); color: #fff;
+    border: none; padding: 10px 16px;
+    cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 700;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .intent-search-wrap button:hover { background: var(--csu-orange-dk); }
+  .intent-search-hint {
+    font-size: 11px; color: var(--grey-500);
+    margin-top: 6px; min-height: 16px; padding: 0 2px;
+  }
+  .intent-search-hint b { color: var(--csu-navy); }
+
+  /* Search-wrap still used in wizard/advanced — keep but override for entry cards */
   .search-wrap {
-    max-width: 100%; margin: 0; position: relative;
-    display: flex; box-shadow: none; border-radius: var(--radius);
+    display: flex; border-radius: var(--radius);
     background: #fff; border: 1px solid var(--grey-300);
     transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
   }
@@ -194,11 +265,18 @@
   }
   .search-wrap input::placeholder { color: var(--grey-400); }
   .search-wrap .btn-primary { margin: 6px; border-radius: var(--radius); }
-  .search-hint { text-align: left; font-size: 12.5px; color: var(--grey-600); min-height: 18px; margin-top: 8px; }
-  .search-hint b { color: var(--csu-navy); font-variant-numeric: tabular-nums; }
+  .search-hint { font-size: 12.5px; color: var(--grey-600); min-height: 18px; margin-top: 8px; }
 
-  .entry-foot { text-align: center; margin-top: 24px; font-size: 13px; color: var(--grey-600); }
+  .entry-foot { text-align: center; margin-top: 28px; font-size: 13px; color: var(--grey-600); }
   .linkbtn { background: none; border: none; color: var(--csu-blue); font-family: inherit; font-size: inherit; cursor: pointer; text-decoration: underline; padding: 0; }
+
+  /* Mobile */
+  #entryBandOuter { display: none; }
+  #entryBandOuter.active { display: block; }
+  @media (max-width: 600px) {
+    .entry-choices { grid-template-columns: 1fr; margin-top: -20px; padding: 0 16px; }
+    .entry-hero-band { padding: 40px 20px 44px; }
+  }
 
   /* ── Wizard ── */
   .panel { background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); box-shadow: var(--shadow-md); }
@@ -586,11 +664,12 @@
       <div class="sk sk-row"></div><div class="sk sk-row"></div><div class="sk sk-row"></div>
     </div>
 
-    <!-- ENTRY -->
-    <section class="surface" id="entry" aria-labelledby="entryTitle">
-
+    <!-- ENTRY hero band: outside wrap for full-width -->
+    </div><!-- close .wrap -->
+    <div id="entryBandOuter">
+    <section class="surface-hero" id="entryHero">
       <div class="entry-hero-band">
-        <div class="entry-eyebrow">CSU Library research tool</div>
+        <div class="entry-eyebrow">Charles Sturt University Library</div>
         <div class="entry-hero">
           <h1 id="entryTitle" aria-label="Find the right journal. Publish with confidence.">
             <span class="aw">Find</span>
@@ -601,23 +680,20 @@
             <span class="aw">with</span>
             <span class="aw">confidence.</span>
           </h1>
-          <p>Check publishing eligibility for a journal you know, or explore journals in your research area.</p>
+          <p>Check publishing eligibility for a journal you know, or explore journals by topic and rank.</p>
         </div>
-        <div class="intents" id="intents"></div>
       </div>
 
-      <div class="entry-search-section">
-        <div class="entry-search-label" id="entrySearchLabel">What is your research topic?</div>
-        <form class="search-wrap" id="entrySearchForm" role="search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-          <input id="entrySearch" type="search" autocomplete="off" placeholder="Try nursing, climate, education, economics…" aria-label="Search journals">
-          <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-        <div class="search-hint" id="searchHint" aria-live="polite"></div>
-      </div>
+    </section>
+    </div><!-- close entryBandOuter -->
+    <div class="wrap"><!-- re-open .wrap -->
+    <section class="surface" id="entry" aria-labelledby="entryTitle">
+
+      <!-- Choice cards: centred, self-contained, overlapping the band -->
+      <div class="entry-choices" id="intents"></div>
 
       <div class="entry-foot">
-        <button class="btn" id="toAdvancedLink" style="padding:11px 24px;font-size:14px;font-weight:600;border-color:var(--csu-navy);color:var(--csu-navy)">☰ Show all filters on one page</button>
+        <button class="btn" id="toAdvancedLink" style="padding:10px 22px;font-size:13px;font-weight:600;border-color:var(--grey-400);color:var(--grey-600)">Show all filters on one page</button>
       </div>
 
     </section>
@@ -698,7 +774,7 @@
   <!-- Legal footer -->
   <div class="footer-legal">
     Charles Sturt University — TEQSA PRV12018 · CRICOS 00005F ·
-    <a href="https://www.csu.edu.au/library">CSU Library</a> ·
+    <a href="https://www.csu.edu.au/library">Charles Sturt University Library</a> ·
     <button class="footer-about-link" onclick="document.getElementById('aboutTrigger').click()">About &amp; Help</button>
   </div>
 
@@ -715,8 +791,8 @@
   <div class="about-drawer-body">
 
     <section class="about-section">
-      <h3>About the CSU Journal Finder</h3>
-      <p>The CSU Journal Finder helps researchers and staff at Charles Sturt University identify journals that are free or discounted to publish in, and explore journals by quality ranking and field of research.</p>
+      <h3>About the Charles Sturt University Journal Finder</h3>
+      <p>The Charles Sturt University Journal Finder helps researchers and staff at Charles Sturt University identify journals that are free or discounted to publish in, and explore journals by quality ranking and field of research.</p>
     </section>
 
     <section class="about-section">
@@ -734,27 +810,27 @@
     <section class="about-section">
       <h3>Data sources</h3>
       <ul>
-        <li><strong>CAUL Open Access Agreements 2026</strong> — Publisher agreements negotiated by the Council of Australian University Libraries (CAUL) that allow CSU-affiliated authors to publish open access at no cost or reduced cost. Updated periodically as agreements are renewed or added.</li>
-        <li><strong>Publisher-direct agreements</strong> — A small number of journals are included under agreements negotiated directly between CSU and a publisher, outside of CAUL. Current publisher-direct agreements include <strong>BMJ</strong> (25 journals) and the <strong>Journal of Medical Microbiology</strong> (Microbiology Society). These are maintained manually by CSU Library and may not appear in the CAUL title list.</li>
+        <li><strong>CAUL Open Access Agreements 2026</strong> — Publisher agreements negotiated by the Council of Australian University Libraries (CAUL) that allow Charles Sturt University-affiliated authors to publish open access at no cost or reduced cost. Updated periodically as agreements are renewed or added.</li>
+        <li><strong>Publisher-direct agreements</strong> — A small number of journals are included under agreements negotiated directly between Charles Sturt University and a publisher, outside of CAUL. Current publisher-direct agreements include <strong>BMJ</strong> (25 journals) and the <strong>Journal of Medical Microbiology</strong> (Microbiology Society). These are maintained manually by Charles Sturt University Library and may not appear in the CAUL title list.</li>
         <li><strong>Scimago Journal Rankings 2025</strong> — Journal quartile rankings (Q1–Q4) and Diamond Open Access status sourced from the SCImago Journal &amp; Country Rank portal, based on Scopus citation data.</li>
-        <li><strong>CSU Journal Ranking List</strong> — An internal CSU ranking list maintained by the Division of Library Services, drawing on recognised ranking schemes including ABDC, CORE, and other discipline-specific sources. This list also provides <strong>FOR (Field of Research) codes</strong> — four-digit codes from the Australian Research Council (ARC) classification system — used to power the FOR code filter and Find Similar feature.</li>
+        <li><strong>CSU Journal Ranking List</strong> — An internal Charles Sturt University ranking list maintained by the Division of Library Services, drawing on recognised ranking schemes including ABDC, CORE, and other discipline-specific sources. This list also provides <strong>FOR (Field of Research) codes</strong> — four-digit codes from the Australian Research Council (ARC) classification system — used to power the FOR code filter and Find Similar feature.</li>
         <li><strong>CAUL Title List (GitHub)</strong> — Journal homepage URLs are sourced from the <a href="https://github.com/CAUL-Office/CAUL_Title_List" target="_blank" rel="noopener noreferrer">CAUL Title List repository</a>, matched by ISSN. Not all journals have a recorded URL.</li>
       </ul>
     </section>
 
     <section class="about-section">
       <h3>How "Free to Publish" is determined</h3>
-      <p>A journal is marked free to publish in if it appears under a CSU CAUL open access agreement (<em>Eligible = Yes</em>) or is a Diamond Open Access journal (no APC for any author). A journal is marked discounted where CSU authors receive a negotiated reduction on article processing charges (APCs). These determinations are based on the data sources listed above and should be verified with the Library before submission.</p>
+      <p>A journal is marked free to publish in if it appears under a Charles Sturt University CAUL open access agreement (<em>Eligible = Yes</em>) or is a Diamond Open Access journal (no APC for any author). A journal is marked discounted where CSU authors receive a negotiated reduction on article processing charges (APCs). These determinations are based on the data sources listed above and should be verified with the Library before submission.</p>
     </section>
 
     <section class="about-section">
       <h3>Creation and maintenance</h3>
-      <p>This tool was created using <strong>Claude Sonnet 4.6</strong> (Anthropic), with data compilation, review, and quality assurance by <strong>CSU Division of Library Services</strong>. The underlying data is updated when new agreement lists or ranking data are published.</p>
+      <p>This tool was created using <strong>Claude Sonnet 4.6</strong> (Anthropic), with data compilation, review, and quality assurance by <strong>Charles Sturt University Division of Library Services</strong>. The underlying data is updated when new agreement lists or ranking data are published.</p>
     </section>
 
     <section class="about-section">
       <h3>Disclaimer</h3>
-      <p>Information is provided in good faith for guidance purposes. CSU Library makes no warranty as to the accuracy or completeness of the data. Always confirm eligibility directly with the publisher or your library liaison before submitting a manuscript.</p>
+      <p>Information is provided in good faith for guidance purposes. Charles Sturt University Library makes no warranty as to the accuracy or completeness of the data. Always confirm eligibility directly with the publisher or your library liaison before submitting a manuscript.</p>
     </section>
 
     <section class="about-section about-licence">
@@ -780,20 +856,20 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 /* ── Facet configuration (drives wizard, advanced, chips, URL) ── */
 const ENUM_OPTS = {
-  eligible: [ {v:'Yes',t:'Eligible — free open access'}, {v:'No',t:'Not eligible'}, {v:'N/A',t:'No CSU agreement'} ],
+  eligible: [ {v:'Yes',t:'Eligible — free open access'}, {v:'No',t:'Not eligible'}, {v:'N/A',t:'No Charles Sturt University agreement'} ],
   diamond:  [ {v:'Yes',t:'Diamond OA only'} ],
-  discount: [ {v:'Yes',t:'CSU discount available'} ],
+  discount: [ {v:'Yes',t:'Charles Sturt University discount available'} ],
   scimago:  [ {v:'Q1',t:'Q1 (top quartile)'}, {v:'Q2',t:'Q2'}, {v:'Q3',t:'Q3'}, {v:'Q4',t:'Q4'} ],
   csu:      [ {v:'Q1',t:'Q1 (top quartile)'}, {v:'Q2',t:'Q2'}, {v:'Q3Q4',t:'Q3 / Q4'} ]
 };
 const FACETS = {
   q:         { key:'q', short:'q',  label:'Keyword',           type:'text',    q:'What journal, ISSN or term are you looking for?' },
-  eligible:  { key:'eligible', short:'el', label:'CSU OA Agreement', type:'enum', field:'Eligible',     q:'Open-access eligibility under a CSU agreement?' },
+  eligible:  { key:'eligible', short:'el', label:'Charles Sturt University OA Agreement', type:'enum', field:'Eligible',     q:'Open-access eligibility under a CSU agreement?' },
   agreement: { key:'agreement',short:'ag', label:'Agreement',        type:'catalog', source:'agreements', field:'Agreement', q:'Which publisher agreement?' },
-  discount:  { key:'discount',short:'dis',label:'CSU Discount',       type:'enum', field:'CSU Discount', q:'Show only journals with a CSU APC discount?' },
+  discount:  { key:'discount',short:'dis',label:'Charles Sturt University Discount',       type:'enum', field:'CSU Discount', q:'Show only journals with a CSU APC discount?' },
   diamond:   { key:'diamond', short:'dia',label:'Diamond OA',        type:'enum', field:'Diamond OA',   q:'Restrict to Diamond Open Access journals?' },
   scimago:   { key:'scimago', short:'sci',label:'Scimago rank',      type:'enum', field:'Scimago Rank', q:'Scimago quartile?' },
-  csu:       { key:'csu',     short:'csu',label:'CSU rank',          type:'enum', field:'CSU Rank',     q:'CSU ranking quartile?' },
+  csu:       { key:'csu',     short:'csu',label:'Charles Sturt University Rank',          type:'enum', field:'CSU Rank',     q:'CSU ranking quartile?' },
   for:       { key:'for',     short:'for',label:'Field of Research', type:'catalog', source:'forCodes', field:'FOR Codes', q:'Which Field of Research (FOR) code?' }
 };
 const INTENT_STEPS = {
@@ -817,7 +893,7 @@ const COLUMNS = [
   { key:'Free to Publish', label:'Free to publish', cls:'ctr', badge:'ftp' },
   { key:'Publisher Name', label:'Publisher', cls:'pub' },
   { key:'Agreement', label:'Agreement', cls:'agr' },
-  { key:'CSU Rank', label:'CSU rank', cls:'ctr', badge:'rank' },
+  { key:'CSU Rank', label:'Charles Sturt University Rank', cls:'ctr', badge:'rank' },
   { key:'Scimago Rank', label:'Scimago', cls:'ctr', badge:'rank' },
   { key:'Eligible', label:'CSU OA', cls:'ctr', badge:'elig' },
   { key:'Diamond OA', label:'Diamond', cls:'ctr', badge:'dia' },
@@ -951,8 +1027,8 @@ function facetValueLabel(key, val){
   if (key==='q') return '“'+val+'”';
   if (key==='eligible') return {Yes:'Eligible',No:'Not eligible','N/A':'No agreement'}[val]||val;
   if (key==='diamond') return 'Diamond OA';
-  if (key==='discount') return 'CSU Discount';
-  if (key==='csu'){ const arr=Array.isArray(val)?val:[val]; return 'CSU '+arr.map(v=>v==='Q3Q4'?'Q3/Q4':v).join('+'); }
+  if (key==='discount') return 'Charles Sturt University Discount';
+  if (key==='csu'){ const arr=Array.isArray(val)?val:[val]; return 'Charles Sturt University '+arr.map(v=>v==='Q3Q4'?'Q3/Q4':v).join('+'); }
   if (key==='scimago'){ const arr=Array.isArray(val)?val:[val]; return 'Scimago '+arr.join('+'); }
   if (key==='for') return 'FOR '+val;
   return val;
@@ -1006,6 +1082,7 @@ function applyFilters(opts){
 function showMode(mode){
   state.mode = mode;
   for (const k in surfaces) surfaces[k].classList.toggle('active', k===mode || (k==='results' && mode==='advanced'));
+  const _eb = document.getElementById('entryBandOuter'); if(_eb) _eb.classList.toggle('active', mode==='entry');
   // advanced shows BOTH the advanced panel and the results area (table)
   surfaces.advanced.classList.toggle('active', mode==='advanced');
   surfaces.results.classList.toggle('active', mode==='advanced' || mode==='results');
@@ -1025,34 +1102,75 @@ function showMode(mode){
 
 /* ── ENTRY ── */
 function buildIntents(){
+  const placeholders = {
+    lookup:  'Journal title, ISSN, or abbreviation…',
+    explore: 'Topic, keyword, or FOR code…',
+  };
   $('intents').innerHTML = INTENTS.map(it => `
-    <button class="intent-card" data-intent="${it.id}">
-      <span class="selected-pill">Selected</span>
-      <span class="intent-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${it.icon}</svg></span>
+    <div class="intent-card" data-intent="${it.id}" role="group" aria-label="${esc(it.title)}">
+      <span class="intent-ic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${it.icon}</svg>
+      </span>
       <h3>${esc(it.title)}</h3>
       <p>${esc(it.desc)}</p>
-      <span class="go">Start &rsaquo;</span>
-    </button>`).join('');
-  $('intents').querySelectorAll('.intent-card').forEach(b =>
-    b.addEventListener('click', () => {
+      <form class="intent-search-wrap" data-intent="${it.id}" role="search" aria-label="${esc(it.title)} search">
+        <input type="search" autocomplete="off"
+          placeholder="${esc(placeholders[it.id]||'Search…')}"
+          aria-label="${esc(it.title)}">
+        <button type="submit">Search</button>
+      </form>
+      <div class="intent-search-hint" id="hint_${it.id}" aria-live="polite"></div>
+    </div>`).join('');
+
+  // Wire up each card's inline search form
+  $('intents').querySelectorAll('.intent-search-wrap').forEach(form => {
+    const intent = form.dataset.intent;
+    const input  = form.querySelector('input');
+    const hint   = $('hint_'+intent);
+
+    // Live count hint as user types
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      if (!q || !allData.length) { if(hint) hint.innerHTML=''; return; }
+      const n = allData.filter(r => {
+        let hay = r._hay || [r['Journal Title'],r['Publisher Name'],r['ISSNs'],r['FOR Codes'],r['Abbreviation']].join(' ').toLowerCase();
+        return hay.includes(q);
+      }).length;
+      if (hint) hint.innerHTML = n ? `<b>${n.toLocaleString()}</b> journals match` : 'No matches';
+    });
+
+    // Submit → launch intent with query pre-filled
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const q = input.value.trim();
+      state.q = q.toLowerCase();
+      state._rawQ = q;
+      // Highlight the selected card
       $('intents').querySelectorAll('.intent-card').forEach(c => c.classList.remove('is-selected'));
-      b.classList.add('is-selected');
-      startIntent(b.dataset.intent);
-    }));
+      form.closest('.intent-card').classList.add('is-selected');
+      startIntent(intent);
+    });
+
+    // Also clicking the card body (not the form) selects the mode
+    form.closest('.intent-card').addEventListener('click', e => {
+      if (e.target.closest('.intent-search-wrap')) return; // handled by form
+      input.focus();
+    });
+  });
 }
 let entryDebounce;
-$('entrySearch').addEventListener('input', e => {
+document.getElementById('entrySearch') && document.getElementById('entrySearch').addEventListener('input', e => {
   clearTimeout(entryDebounce);
   const v = e.target.value.trim().toLowerCase();
   entryDebounce = setTimeout(() => {
     const tmp = Object.assign({}, state, { q:v });
     let c=0; if(v){ for(const r of allData) if(recMatches(r,tmp,null)) c++; }
-    $('searchHint').innerHTML = v ? `<b>${c.toLocaleString()}</b> match — press Enter to see them` : '';
+    (document.getElementById('searchHint')||{}).innerHTML = v ? `<b>${c.toLocaleString()}</b> match — press Enter to see them` : '';
   }, 200);
 });
-$('entrySearchForm').addEventListener('submit', e => {
+document.getElementById('entrySearchForm') && document.getElementById('entrySearchForm').addEventListener('submit', e => {
   e.preventDefault();
-  state.q = $('entrySearch').value.trim().toLowerCase();
+  state.q = (document.getElementById('entrySearch')||{}).value||''.trim().toLowerCase();
   state.intent = 'lookup'; state.resultView='summary'; state.page=1;
   applyFilters(); showMode('results');
 });
@@ -1189,17 +1307,17 @@ function enableRadioKeys(container){
 function buildAdvancedControls(){
   const row = $('advRow');
   const selects = [
-    { key:'eligible', label:'CSU OA Agreement', opts:[['','All'],['Yes','Yes'],['No','No'],['N/A','N/A']] },
+    { key:'eligible', label:'Charles Sturt University OA Agreement', opts:[['','All'],['Yes','Yes'],['No','No'],['N/A','N/A']] },
     { key:'agreement', label:'Agreement', opts:[['','All agreements'], ...catalog.agreements.map(a=>[a,a])] },
     { key:'diamond', label:'Diamond OA', opts:[['','All'],['Yes','Yes']] },
-    { key:'discount', label:'CSU Discount', opts:[['','All'],['Yes','Discounted for CSU']] },
+    { key:'discount', label:'Charles Sturt University Discount', opts:[['','All'],['Yes','Discounted for CSU']] },
     { key:'for', label:'FOR code', opts:[['','All FOR codes'], ...catalog.forCodes.map(c=>[c,c])] }
   ];
   row.innerHTML = selects.map(s => `<div class="fg"><label for="adv_${s.key}">${esc(s.label)}</label>
     <select id="adv_${s.key}" data-key="${s.key}">${s.opts.map(o=>`<option value="${esc(o[0])}">${esc(o[1])}</option>`).join('')}</select></div>`).join('')
     + `<div class="fg"><label>Scimago rank <span style="font-size:10px;color:var(--grey-600)">(multi-select via wizard)</span></label>
        <div style="display:flex;gap:4px;flex-wrap:wrap;padding-top:4px">${['Q1','Q2','Q3','Q4'].map(q=>`<button class="btn btn-sm adv-q-btn" data-q="${q}" data-key="scimago" style="padding:4px 10px">${q}</button>`).join('')}</div></div>`
-    + `<div class="fg"><label>CSU rank <span style="font-size:10px;color:var(--grey-600)">(multi-select)</span></label>
+    + `<div class="fg"><label>Charles Sturt University Rank <span style="font-size:10px;color:var(--grey-600)">(multi-select)</span></label>
        <div style="display:flex;gap:4px;flex-wrap:wrap;padding-top:4px">${['Q1','Q2','Q3Q4'].map(q=>`<button class="btn btn-sm adv-q-btn" data-q="${q}" data-key="csu" style="padding:4px 10px">${q==='Q3Q4'?'Q3/Q4':q}</button>`).join('')}</div></div>`
     + `<button class="btn btn-ghost btn-sm" id="advClear" style="align-self:flex-end">✕ Clear all</button>`;
   row.querySelectorAll('select').forEach(sel => sel.addEventListener('change', () => {
@@ -1252,7 +1370,7 @@ modeToggle.addEventListener('click', () => {
 $('startOverBtn').addEventListener('click', () => {
   FACET_KEYS.forEach(clearFacet); state._rawQ=''; state.page=1;
   state.intent=null; state.stepIndex=0; state.resultView='summary';
-  $('entrySearch').value=''; $('searchHint').innerHTML='';
+  const _es=document.getElementById('entrySearch'); if(_es) _es.value=''; const _sh=document.getElementById('searchHint'); if(_sh) _sh.innerHTML='';
   showMode('entry');
 });
 $('advCollapse').addEventListener('click', () => {
@@ -1343,12 +1461,12 @@ function cardHTML(r, i, matchLabel){
     <h3>${esc(r['Journal Title'])}</h3>
     ${r['Publisher Name']?`<div class="meta">${esc(r['Publisher Name'])}</div>`:''}
     ${matchLabel?`<div style="font-size:11px;color:var(--csu-green);font-weight:600;margin-bottom:4px">✓ ${esc(matchLabel)}</div>`:''}
-    <div class="badges">${ftpBadge(r)}${!isCheck?rankBadgeL('CSU',r['CSU Rank']):''}${!isCheck?rankBadgeL('SJR',r['Scimago Rank']):''}${discBadge(r['CSU Discount'])}</div>
+    <div class="badges">${ftpBadge(r)}${!isCheck?rankBadgeL('CSU Rank',r['CSU Rank']):''}${!isCheck?rankBadgeL('SJR',r['Scimago Rank']):''}${discBadge(r['CSU Discount'])}</div>
     ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
     ${r['Journal Website']?`<div class="crow jcard-link"><span>🔗 <a href="${escAttr(r['Journal Website'])}" target="_blank" rel="noopener noreferrer">Visit journal homepage</a></span></div>`:''}
     <div class="cardfoot">
-      <span class="strength">${strong?'★ Free OA at CSU':' '}</span>
+      <span class="strength">${strong?'★ Free OA — Charles Sturt University':' '}</span>
       <div style="display:flex;gap:6px">
         <button class="btn btn-sm copybtn" data-idx="${idx}">Copy details</button>
         <button class="btn btn-sm btn-similar similarBtn" data-idx="${idx}" title="Find journals in the same research area">Find similar</button>
@@ -1581,9 +1699,9 @@ function discBadge(v){
 function ftpBadge(r){
   const ftp = r['Free to Publish']||'';
   if (ftp.startsWith('Yes — CSU Agreement & Diamond OA')) return '<span class="badge b-yes">✓ Free — Agreement & Diamond OA</span>';
-  if (ftp.startsWith('Yes — CSU Agreement')) return '<span class="badge b-yes">✓ Free — CSU Agreement</span>';
+  if (ftp.startsWith('Yes — CSU Agreement')) return '<span class="badge b-yes">✓ Free — Charles Sturt University Agreement</span>';
   if (ftp.startsWith('Yes — Diamond OA'))    return '<span class="badge b-diamond">✓ Free — Diamond OA</span>';
-  if (ftp.startsWith('Discounted'))          return '<span class="badge b-disc">💰 Discounted — CSU rate</span>';
+  if (ftp.startsWith('Discounted'))          return '<span class="badge b-disc">💰 Discounted — Charles Sturt University rate</span>';
   return '<span class="badge b-no">No free option</span>';
 }
 function escAttr(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -1624,8 +1742,8 @@ function copyJournal(r){
   const t = [
     r['Journal Title'],
     r['Publisher Name'] ? 'Publisher: '+r['Publisher Name'] : '',
-    'CSU OA Eligible: '+(r['Eligible']||'N/A'),
-    'CSU Rank: '+(r['CSU Rank']||'—'),
+    'Charles Sturt University OA Eligible: '+(r['Eligible']||'N/A'),
+    'Charles Sturt University Rank: '+(r['CSU Rank']||'—'),
   ].filter(Boolean).join('\n');
   copyText(t, 'Journal details copied');
 }
