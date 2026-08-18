@@ -367,6 +367,19 @@
 
   .explore-note { background: var(--grey-100); border: 1px solid var(--grey-200); border-radius: var(--radius); padding: 10px 14px; font-size: 12.5px; color: var(--grey-600); margin-bottom: 12px; }
   .explore-note a { color: var(--csu-blue); }
+
+  /* ── Journal Type + Cap warning badges ── */
+  .b-fully-oa  { background: #D5F0E5; color: #1A6640; }
+  .b-hybrid    { background: #E8F0FB; color: #2C4FA3; }
+  .b-sub       { background: var(--grey-200); color: var(--grey-600); }
+  .b-cap       { background: #FFF3CD; color: #856404; border: 1px solid #FFCA2C; }
+  .b-cap-reached { background: #FDDEDE; color: #8B1A1A; border: 1px solid #F5C2C7; }
+  .cap-detail {
+    font-size: 11.5px; line-height: 1.5;
+    background: #FFF8E6; border: 1px solid #FFCA2C; border-radius: 6px;
+    padding: 8px 11px; margin-top: 8px; color: #5a4000;
+  }
+  .cap-detail a { color: #856404; font-weight: 600; }
   /* ── Find Similar ── */
   .similar-banner {
     background: linear-gradient(135deg, var(--csu-navy) 0%, #2d3561 100%);
@@ -623,6 +636,20 @@
   @media (prefers-reduced-motion: reduce) {
     .about-drawer, .about-overlay { animation: none; }
   }
+
+  /* ── Journal Type + Cap warning badges ── */
+  .b-fully-oa  { background: #D5F0E5; color: #1A6640; }
+  .b-hybrid    { background: #E8F0FB; color: #2C4FA3; }
+  .b-sub       { background: var(--grey-200); color: var(--grey-600); }
+  .b-cap       { background: #FFF3CD; color: #856404; border: 1px solid #FFCA2C; }
+  .b-cap-reached { background: #FDDEDE; color: #8B1A1A; border: 1px solid #F5C2C7; }
+  .cap-detail {
+    font-size: 11.5px; line-height: 1.5;
+    background: #FFF8E6; border: 1px solid #FFCA2C; border-radius: 6px;
+    padding: 8px 11px; margin-top: 8px; color: #5a4000;
+  }
+  .cap-detail a { color: #856404; font-weight: 600; }
+
 </style>
 </head>
 <body>
@@ -819,6 +846,17 @@
     </section>
 
     <section class="about-section">
+      <h3>Journal type labels</h3>
+      <p>Each journal card shows whether the journal is <strong>Fully OA</strong> (Gold — all articles are open access, APC funded by the agreement) or <strong>Hybrid</strong> (a mix of open and closed articles; OA publishing is covered by the agreement). This distinction matters because some agreements only cover Hybrid journals, and Fully OA (Gold) journals under certain agreements have publication caps.</p>
+
+      <h3>Agreement cap warnings</h3>
+      <p>Some agreements impose a shared cap on the number of Gold OA articles that can be published across all CAUL institutions in a year. When a cap is approaching or has been reached, an <strong>⚠ amber or red badge</strong> appears on affected journal cards with a detail explanation. Current capped agreements:</p>
+      <ul>
+        <li><strong>Wiley Gold OA</strong> — capped; a 20% APC discount applies if the cap is reached</li>
+        <li><strong>Springer Nature Gold OA</strong> — extremely limited (176 articles shared across all CAUL institutions)</li>
+      </ul>
+      <p>Cap status is updated manually by Charles Sturt University Library by editing a configuration file (<code>config.json</code>). Always confirm with the Library before submitting to a capped journal. See the <a href="https://libguides.csu.edu.au/OpenAccess/readandpublish" target="_blank" rel="noopener noreferrer">OA Publishing Agreements guide</a> for current details.</p>
+
       <h3>How "Free to Publish" is determined</h3>
       <p>A journal is marked free to publish in if it appears under a Charles Sturt University CAUL open access agreement (<em>Eligible = Yes</em>) or is a Diamond Open Access journal (no APC for any author). A journal is marked discounted where CSU authors receive a negotiated reduction on article processing charges (APCs). These determinations are based on the data sources listed above and should be verified with the Library before submission.</p>
     </section>
@@ -859,6 +897,7 @@ const ENUM_OPTS = {
   eligible: [ {v:'Yes',t:'Eligible — free open access'}, {v:'No',t:'Not eligible'}, {v:'N/A',t:'No Charles Sturt University agreement'} ],
   diamond:  [ {v:'Yes',t:'Diamond OA only'} ],
   discount: [ {v:'Yes',t:'Charles Sturt University discount available'} ],
+  journalType: [ {v:'Fully Open Access',t:'Fully Open Access (Gold OA)'}, {v:'Hybrid',t:'Hybrid'} ],
   scimago:  [ {v:'Q1',t:'Q1 (top quartile)'}, {v:'Q2',t:'Q2'}, {v:'Q3',t:'Q3'}, {v:'Q4',t:'Q4'} ],
   csu:      [ {v:'Q1',t:'Q1 (top quartile)'}, {v:'Q2',t:'Q2'}, {v:'Q3Q4',t:'Q3 / Q4'} ]
 };
@@ -904,11 +943,11 @@ const COLUMNS = [
 
 /* ── State ── */
 const state = {
-  q:'', eligible:'', agreement:'', diamond:'', discount:'', scimago:[], csu:[], for:'',
+  q:'', eligible:'', agreement:'', diamond:'', discount:'', journalType:'', scimago:[], csu:[], for:'',
   sortCol:'Journal Title', sortDir:'asc', page:1,
   mode:'entry', intent:null, stepIndex:0, resultView:'summary', similarJournal:null
 };
-const FACET_KEYS = ['q','eligible','agreement','diamond','discount','scimago','csu','for'];
+const FACET_KEYS = ['q','eligible','agreement','diamond','discount','journalType','scimago','csu','for'];
 let allData = [], filtered = [], catalog = { agreements:[], forCodes:[] };
 
 /* ── DOM refs ── */
@@ -918,10 +957,57 @@ const stage=$('stage'), chipBar=$('chipBar'), chipsEl=$('chips'), liveCount=$('l
   surfaces={ entry:$('entry'), wizard:$('wizard'), advanced:$('advanced'), results:$('results') },
   toastEl=$('toast');
 
+
+/* ── Config: cap warnings (loaded from config.json) ── */
+const CONFIG_URL = 'config.json';
+let capWarnings = {};  // populated after fetch
+
+function loadConfig(){
+  return fetch(CONFIG_URL)
+    .then(r => r.ok ? r.json() : {})
+    .then(cfg => {
+      capWarnings = (cfg && cfg.cap_warnings) ? cfg.cap_warnings : {};
+      console.log('[JF] Config loaded, cap warnings:', Object.keys(capWarnings).length);
+    })
+    .catch(() => { capWarnings = {}; });
+}
+
+function getCapWarning(r){
+  // Key is "Agreement|JournalType"
+  const key = (r['Agreement']||'') + '|' + (r['Journal Type']||'');
+  const warn = capWarnings[key];
+  if (!warn || warn.status === 'ok') return null;
+  return warn;
+}
+
+function journalTypeBadge(r){
+  const t = r['Journal Type'] || '';
+  if (t === 'Fully Open Access') return '<span class="badge b-fully-oa">Fully OA</span>';
+  if (t === 'Hybrid')            return '<span class="badge b-hybrid">Hybrid</span>';
+  if (t === 'Subscription' || t === 'Subscription only') return '<span class="badge b-sub">Subscription</span>';
+  return '';
+}
+
+function capBadge(r){
+  const w = getCapWarning(r);
+  if (!w) return '';
+  if (w.status === 'reached')
+    return `<span class="badge b-cap-reached" title="${esc(w.label)}">⚠ Cap reached</span>`;
+  return `<span class="badge b-cap" title="${esc(w.label)}">⚠ Cap risk</span>`;
+}
+
+function capDetail(r){
+  const w = getCapWarning(r);
+  if (!w) return '';
+  return `<div class="cap-detail">⚠ <strong>${esc(w.label)}</strong> — ${esc(w.detail)}
+    ${w.link ? `<a href="${escAttr(w.link)}" target="_blank" rel="noopener noreferrer"> Learn more →</a>` : ''}
+  </div>`;
+}
+
 /* ── Load ── */
-fetch(DATA_URL)
-  .then(r => { if(!r.ok) throw new Error(r.status+' '+r.statusText); return r.json(); })
-  .then(data => {
+Promise.all([loadConfig(), fetch(DATA_URL).then(r => { if(!r.ok) throw new Error(r.status+' '+r.statusText); return r.json(); })])
+  .then(([_, journalData]) => {
+  const data = journalData;
     allData = data;
     buildCatalog(data);
     buildIntents();
@@ -958,6 +1044,7 @@ function recMatches(r, st, skip){
   if (skip!=='agreement' && st.agreement && r['Agreement']    !== st.agreement) return false;
   if (skip!=='diamond'   && st.diamond   && r['Diamond OA']   !== st.diamond)   return false;
   if (skip!=='discount'  && st.discount  && r['CSU Discount'] !== st.discount)  return false;
+  if (skip!=='journalType' && st.journalType && r['Journal Type'] !== st.journalType) return false;
   if (skip!=='scimago'   && st.scimago && st.scimago.length > 0 && !st.scimago.includes(r['Scimago Rank'])) return false;
   if (skip!=='csu'       && st.csu && st.csu.length > 0){
     const cr = r['CSU Rank'];
@@ -1028,6 +1115,7 @@ function facetValueLabel(key, val){
   if (key==='eligible') return {Yes:'Eligible',No:'Not eligible','N/A':'No agreement'}[val]||val;
   if (key==='diamond') return 'Diamond OA';
   if (key==='discount') return 'Charles Sturt University Discount';
+  if (key==='journalType') return val==='Fully Open Access'?'Fully OA':val;
   if (key==='csu'){ const arr=Array.isArray(val)?val:[val]; return 'Charles Sturt University '+arr.map(v=>v==='Q3Q4'?'Q3/Q4':v).join('+'); }
   if (key==='scimago'){ const arr=Array.isArray(val)?val:[val]; return 'Scimago '+arr.join('+'); }
   if (key==='for') return 'FOR '+val;
@@ -1310,7 +1398,8 @@ function buildAdvancedControls(){
     { key:'eligible', label:'Charles Sturt University OA Agreement', opts:[['','All'],['Yes','Yes'],['No','No'],['N/A','N/A']] },
     { key:'agreement', label:'Agreement', opts:[['','All agreements'], ...catalog.agreements.map(a=>[a,a])] },
     { key:'diamond', label:'Diamond OA', opts:[['','All'],['Yes','Yes']] },
-    { key:'discount', label:'Charles Sturt University Discount', opts:[['','All'],['Yes','Discounted for CSU']] },
+    { key:'discount', label:'Charles Sturt University Discount', opts:[['','All'],['Yes','Discounted for Charles Sturt University']] },
+    { key:'journalType', label:'Journal type', opts:[['','All types'],['Fully Open Access','Fully OA (Gold)'],['Hybrid','Hybrid'],['Subscription','Subscription']] },
     { key:'for', label:'FOR code', opts:[['','All FOR codes'], ...catalog.forCodes.map(c=>[c,c])] }
   ];
   row.innerHTML = selects.map(s => `<div class="fg"><label for="adv_${s.key}">${esc(s.label)}</label>
@@ -1348,7 +1437,7 @@ $('advSearch').addEventListener('input', e => {
 });
 function syncAdvancedFromState(){
   $('advSearch').value = state._rawQ || state.q || '';
-  ['eligible','agreement','diamond','discount','for'].forEach(k => { const s=$('adv_'+k); if(s) s.value = state[k]; });
+  ['eligible','agreement','diamond','discount','journalType','for'].forEach(k => { const s=$('adv_'+k); if(s) s.value = state[k]; });
   // scimago and csu are multi-select handled by wizard/chip, not advanced dropdowns
 }
 
@@ -1461,9 +1550,10 @@ function cardHTML(r, i, matchLabel){
     <h3>${esc(r['Journal Title'])}</h3>
     ${r['Publisher Name']?`<div class="meta">${esc(r['Publisher Name'])}</div>`:''}
     ${matchLabel?`<div style="font-size:11px;color:var(--csu-green);font-weight:600;margin-bottom:4px">✓ ${esc(matchLabel)}</div>`:''}
-    <div class="badges">${ftpBadge(r)}${!isCheck?rankBadgeL('CSU Rank',r['CSU Rank']):''}${!isCheck?rankBadgeL('SJR',r['Scimago Rank']):''}${discBadge(r['CSU Discount'])}</div>
+    <div class="badges">${ftpBadge(r)}${journalTypeBadge(r)}${capBadge(r)}${!isCheck?rankBadgeL('CSU Rank',r['CSU Rank']):''}${!isCheck?rankBadgeL('SJR',r['Scimago Rank']):''}${discBadge(r['CSU Discount'])}</div>
     ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
+    ${capDetail(r)}
     ${r['Journal Website']?`<div class="crow jcard-link"><span>🔗 <a href="${escAttr(r['Journal Website'])}" target="_blank" rel="noopener noreferrer">Visit journal homepage</a></span></div>`:''}
     <div class="cardfoot">
       <span class="strength">${strong?'★ Free OA — Charles Sturt University':' '}</span>

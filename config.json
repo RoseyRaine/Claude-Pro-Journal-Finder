@@ -1,0 +1,28 @@
+{
+  "_readme": "CSU Journal Finder — Agreement cap configuration. Edit this file and upload to GitHub to update cap warnings without touching index.html.",
+  "_last_updated": "2026-08-18",
+  "_updated_by": "CSU Library",
+
+  "cap_warnings": {
+    "Wiley|Fully Open Access": {
+      "status": "capped",
+      "label": "Wiley Gold OA — cap nearly reached",
+      "detail": "The Wiley agreement has a shared cap on Gold (Fully OA) journals across all CAUL institutions. Publishing may no longer be funded if the cap has been reached. A 20% APC discount applies if you publish outside the cap. Check with the Library before submitting.",
+      "link": "https://libguides.csu.edu.au/OpenAccess/readandpublish"
+    },
+    "Springer|Fully Open Access": {
+      "status": "capped",
+      "label": "Springer Nature Gold OA — extremely limited",
+      "detail": "Only 176 Gold OA articles are available across all CAUL institutions under this agreement. This cap is shared and extremely limited. If the cap is reached before your article is accepted, you will be responsible for the full APC. Check with the Library before submitting.",
+      "link": "https://libguides.csu.edu.au/OpenAccess/readandpublish"
+    }
+  },
+
+  "_status_values": {
+    "ok": "No cap warning — agreement is uncapped or cap not yet reached",
+    "capped": "Cap warning active — show amber warning badge on journal cards",
+    "reached": "Cap reached — show red warning badge, publishing no longer funded"
+  },
+
+  "_how_to_update": "To clear a warning, change 'status' from 'capped' to 'ok'. To mark cap as fully reached, change to 'reached'. Upload this file to your GitHub repo alongside index.html. Changes take effect within 2 minutes."
+}
