@@ -1247,7 +1247,27 @@ $('toAdvancedLink').addEventListener('click', () => { showMode('advanced'); appl
 /* ── WIZARD ── */
 function startIntent(intent){
   state.intent = intent; state.stepIndex = 0;
-  if (intent==='publish' && !state.eligible) state.eligible = 'Yes'; // sensible funnel default
+
+  // For 'lookup': the inline card search already captured the query,
+  // so skip the wizard and go straight to results.
+  // Also skip if all wizard steps are already answered (e.g. came from URL).
+  if (intent === 'lookup') {
+    applyFilters();
+    showMode('results');
+    return;
+  }
+
+  // For 'explore': if a query was entered in the card's inline search,
+  // skip the 'q' step since it's already answered and go to next step.
+  if (intent === 'explore' && state.q) {
+    const steps = INTENT_STEPS[intent] || [];
+    const firstUnanswered = steps.findIndex(k => k !== 'q');
+    state.stepIndex = firstUnanswered >= 0 ? firstUnanswered : steps.length;
+    if (state.stepIndex >= steps.length) {
+      applyFilters(); showMode('results'); return;
+    }
+  }
+
   applyFilters(); showMode('wizard');
 }
 function currentSteps(){ return INTENT_STEPS[state.intent] || []; }
