@@ -831,6 +831,9 @@
       </ul>
       <p>Cap status is updated manually by Charles Sturt University Library by editing a configuration file (<code>config.json</code>). Always confirm with the Library before submitting to a capped journal. See the <a href="https://libguides.csu.edu.au/OpenAccess/readandpublish" target="_blank" rel="noopener noreferrer">OA Publishing Agreements guide</a> for current details.</p>
 
+      <h3>Green OA policies</h3>
+      <p>This tool covers Gold and Diamond Open Access (paying to publish or publish-free). It does not currently include Green OA data — the ability to self-archive an accepted manuscript in a repository. Each journal card includes a <strong>Check Green OA policy</strong> link that opens <a href="https://openpolicyfinder.jisc.ac.uk/" target="_blank" rel="noopener noreferrer">Open Policy Finder (Jisc)</a>, where you can check the journal's self-archiving and embargo policies.</p>
+
       <h3>How "Free to Publish" is determined</h3>
       <p>A journal is marked free to publish in if it appears under a Charles Sturt University CAUL open access agreement (<em>Eligible = Yes</em>) or is a Diamond Open Access journal (no APC for any author). A journal is marked discounted where CSU authors receive a negotiated reduction on article processing charges (APCs). These determinations are based on the data sources listed above and should be verified with the Library before submission.</p>
     </section>
@@ -926,7 +929,8 @@ const stage=$('stage'), chipBar=$('chipBar'), chipsEl=$('chips'), liveCount=$('l
 
 
 /* ── Config: cap warnings (loaded from config.json) ── */
-const CONFIG_URL = 'config.json';
+const CONFIG_URL       = 'config.json';
+const CORRECTIONS_URL  = 'corrections.json';
 let capWarnings = {};  // populated after fetch
 
 function loadConfig(){
@@ -937,6 +941,67 @@ function loadConfig(){
       console.log('[JF] Config loaded, cap warnings:', Object.keys(capWarnings).length);
     })
     .catch(() => { capWarnings = {}; });
+}
+
+function loadCorrections(){
+  return fetch(CORRECTIONS_URL)
+    .then(r => r.ok ? r.json() : {})
+    .then(cfg => {
+      if (!cfg || (!cfg.by_issn && !cfg.by_title)) return;
+
+      const byISSN  = cfg.by_issn  || {};
+      const byTitle = cfg.by_title || {};
+      let applied = 0;
+
+      allData.forEach(r => {
+        let correction = null;
+
+        // Match by any individual ISSN in the journal's ISSN list
+        if (r['ISSNs']) {
+          const issns = r['ISSNs'].split(';').map(s => s.trim());
+          for (const issn of issns) {
+            if (byISSN[issn]) { correction = byISSN[issn]; break; }
+          }
+        }
+
+        // Fallback: match by exact title
+        if (!correction) {
+          const norm = r['Journal Title'] ? r['Journal Title'].trim() : '';
+          if (byTitle[norm]) correction = byTitle[norm];
+        }
+
+        if (!correction) return;
+
+        // Apply all non-underscore fields from the correction
+        const ALLOWED = ['Scimago Rank','CSU Rank','Diamond OA','Eligible',
+                         'Free to Publish','Publisher Name','Agreement',
+                         'Journal Type','Journal Website','CSU Discount'];
+        ALLOWED.forEach(field => {
+          if (Object.prototype.hasOwnProperty.call(correction, field)) {
+            r[field] = correction[field];
+          }
+        });
+
+        // Recompute Free to Publish if not explicitly overridden
+        if (!Object.prototype.hasOwnProperty.call(correction, 'Free to Publish')) {
+          const e  = r['Eligible']   || '';
+          const d  = r['Diamond OA'] || '';
+          const di = r['CSU Discount'] || '';
+          if      (e==='Yes' && d==='Yes') r['Free to Publish'] = 'Yes — CSU Agreement & Diamond OA';
+          else if (e==='Yes')              r['Free to Publish'] = 'Yes — CSU Agreement';
+          else if (d==='Yes')              r['Free to Publish'] = 'Yes — Diamond OA';
+          else if (di==='Yes')             r['Free to Publish'] = 'Discounted — CSU rate';
+          else                             r['Free to Publish'] = 'No';
+        }
+
+        // Clear cached hay string so search re-indexes correctly
+        delete r._hay;
+        applied++;
+      });
+
+      console.log('[JF] Corrections applied:', applied);
+    })
+    .catch(() => { console.log('[JF] corrections.json not found or invalid — skipping'); });
 }
 
 function getCapWarning(r){
@@ -974,9 +1039,11 @@ function capDetail(r){
 /* ── Load ── */
 Promise.all([loadConfig(), fetch(DATA_URL).then(r => { if(!r.ok) throw new Error(r.status+' '+r.statusText); return r.json(); })])
   .then(([_, journalData]) => {
-  const data = journalData;
-    allData = data;
-    buildCatalog(data);
+    allData = journalData;
+    return loadCorrections();
+  })
+  .then(() => {
+    buildCatalog(allData);
     buildIntents();
     buildAdvancedControls();
     buildTableHead();
@@ -1554,6 +1621,7 @@ function cardHTML(r, i, matchLabel){
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
     ${capDetail(r)}
     ${r['Journal Website']?`<div class="crow jcard-link"><span>🔗 <a href="${escAttr(r['Journal Website'])}" target="_blank" rel="noopener noreferrer">Visit journal homepage</a></span></div>`:''}
+    ${(()=>{ const issn = (r['ISSNs']||'').split(';')[0].trim().replace(/-/g,''); return issn ? `<div class="crow jcard-link"><span>📋 <a href="https://openpolicyfinder.jisc.ac.uk/?term=${encodeURIComponent(issn)}" target="_blank" rel="noopener noreferrer">Check Green OA policy (Open Policy Finder)</a></span></div>` : ''; })()}
     <div class="cardfoot">
       <span class="strength">${strong?'★ Free OA — Charles Sturt University':' '}</span>
       <div style="display:flex;gap:6px">
