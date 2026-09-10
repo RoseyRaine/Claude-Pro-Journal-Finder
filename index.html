@@ -368,6 +368,21 @@
   .explore-note { background: var(--grey-100); border: 1px solid var(--grey-200); border-radius: var(--radius); padding: 10px 14px; font-size: 12.5px; color: var(--grey-600); margin-bottom: 12px; }
   .explore-note a { color: var(--csu-blue); }
 
+
+  /* ── Key drawer grid ── */
+  .key-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 14px;
+    align-items: start;
+    margin-top: 10px;
+  }
+  .key-desc {
+    font-size: 12.5px;
+    color: var(--grey-700, #444);
+    line-height: 1.5;
+    padding-top: 2px;
+  }
   /* ── Journal Type + Cap warning badges ── */
   .b-fully-oa  { background: #FDF3D0; color: #7A5900; }
   .b-hybrid    { background: #F0EBF8; color: #6B3FA0; }
@@ -646,6 +661,7 @@
   </div>
   <div class="header-right">
     <div class="header-tag">Journal Finder<br>2026 Edition</div>
+    <button class="btn-about-trigger" id="keyTrigger" aria-label="Label key" aria-expanded="false" aria-controls="keyDrawer">Key</button>
     <button class="btn-about-trigger" id="aboutTrigger" aria-label="About this tool" aria-expanded="false" aria-controls="aboutDrawer">About &amp; Help</button>
   </div>
 </header>
@@ -781,6 +797,100 @@
 
 </footer>
 
+
+
+<!-- ── Key / Legend Drawer ── -->
+<div id="keyOverlay" class="about-overlay" hidden aria-hidden="true"></div>
+<aside id="keyDrawer" class="about-drawer" hidden aria-label="Label key" role="dialog" aria-modal="true">
+  <div class="about-drawer-header">
+    <h2>Label Key</h2>
+    <button class="about-close" id="keyClose" aria-label="Close">✕</button>
+  </div>
+  <div class="about-drawer-body">
+
+    <section class="about-section">
+      <h3>Free to Publish</h3>
+      <p>Whether you can publish open access in this journal at no cost or reduced cost as a Charles Sturt University author.</p>
+      <div class="key-grid">
+        <span class="badge b-yes">✓ Free — CSU Agreement</span>
+        <span class="key-desc">Covered by a CAUL read-and-publish agreement. No APC for eligible Charles Sturt University authors.</span>
+
+        <span class="badge b-diamond">✓ Free — Diamond OA</span>
+        <span class="key-desc">Diamond Open Access — no APC for any author regardless of institution. Always free to publish.</span>
+
+        <span class="badge b-yes">✓ Free — Agreement &amp; Diamond OA</span>
+        <span class="key-desc">Covered by both a CSU agreement and Diamond OA status.</span>
+
+        <span class="badge b-disc">💰 Discounted — CSU rate</span>
+        <span class="key-desc">A negotiated APC discount applies for Charles Sturt University authors, but a fee is still required.</span>
+
+        <span class="badge b-no">No free option</span>
+        <span class="key-desc">No current agreement or Diamond OA status. Standard APC applies.</span>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h3>Journal Type</h3>
+      <p>Whether the journal is fully open access or a hybrid subscription/OA model.</p>
+      <div class="key-grid">
+        <span class="badge b-fully-oa">Fully OA</span>
+        <span class="key-desc">Gold Open Access — all articles are published open access. APCs may apply but are often waived by agreements.</span>
+
+        <span class="badge b-hybrid">Hybrid</span>
+        <span class="key-desc">Subscription journal that also offers an OA option for individual articles. Most read-and-publish agreements cover these.</span>
+
+        <span class="badge b-sub">Subscription</span>
+        <span class="key-desc">Traditional subscription journal with no OA publishing option.</span>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h3>Scimago &amp; CSU Rank</h3>
+      <p>Journal quartile rankings. Scimago is based on the Scopus citation index. CSU Rank is an internal Charles Sturt University ranking drawing on ABDC, CORE, and other schemes.</p>
+      <div class="key-grid">
+        <span class="badge b-q1">Q1</span>
+        <span class="key-desc">Top 25% of journals in their subject area — highest ranking.</span>
+
+        <span class="badge b-q2">Q2</span>
+        <span class="key-desc">Second quartile — upper-mid range journals.</span>
+
+        <span class="badge b-q3">Q3</span>
+        <span class="key-desc">Third quartile — lower-mid range journals.</span>
+
+        <span class="badge b-q4">Q4</span>
+        <span class="key-desc">Bottom 25% — lowest ranked journals in their subject area.</span>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h3>Agreement cap warnings</h3>
+      <p>Some agreements have a cap on the number of Gold OA articles that can be published across all CAUL institutions in a year.</p>
+      <div class="key-grid">
+        <span class="badge b-cap">⚠ Cap risk</span>
+        <span class="key-desc">This journal's agreement has a shared publication cap that is approaching. Check with the Library before submitting — a discount may still apply if the cap is reached.</span>
+
+        <span class="badge b-cap-reached">⚠ Cap reached</span>
+        <span class="key-desc">The cap for this agreement has been reached. Publishing is no longer funded under the agreement this year. You will be responsible for the full APC.</span>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h3>Other</h3>
+      <div class="key-grid">
+        <span class="badge b-diamond">Diamond OA</span>
+        <span class="key-desc">Diamond Open Access — free to read and free to publish for all authors, with no APCs charged.</span>
+
+        <span class="badge b-disc">💰 CSU Discount</span>
+        <span class="key-desc">A negotiated APC discount is available for Charles Sturt University authors under this publisher's agreement.</span>
+      </div>
+    </section>
+
+    <section class="about-section" style="border-bottom:none">
+      <p style="font-size:12px;color:var(--grey-600)">Not sure which option applies to your article? Contact your <a href="https://www.csu.edu.au/library" target="_blank" rel="noopener noreferrer">CSU Library liaison</a> for advice before submitting.</p>
+    </section>
+
+  </div>
+</aside>
 
 <!-- ── About & Help Drawer ── -->
 <div id="aboutOverlay" class="about-overlay" hidden aria-hidden="true"></div>
@@ -1621,7 +1731,7 @@ function cardHTML(r, i, matchLabel){
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
     ${capDetail(r)}
     ${r['Journal Website']?`<div class="crow jcard-link"><span>🔗 <a href="${escAttr(r['Journal Website'])}" target="_blank" rel="noopener noreferrer">Visit journal homepage</a></span></div>`:''}
-    ${(()=>{ const issn = (r['ISSNs']||'').split(';')[0].trim().replace(/-/g,''); return issn ? `<div class="crow jcard-link"><span>📋 <a href="https://openpolicyfinder.jisc.ac.uk/?term=${encodeURIComponent(issn)}" target="_blank" rel="noopener noreferrer">Check Green OA policy (Open Policy Finder)</a></span></div>` : ''; })()}
+    ${(()=>{ const issnRaw = (r['ISSNs']||'').split(';')[0].trim(); return issnRaw ? `<div class="crow jcard-link"><span>📋 <a href="https://openpolicyfinder.jisc.ac.uk/" target="_blank" rel="noopener noreferrer">Check Green OA policy (Open Policy Finder)</a> — search ISSN: <code style="font-size:11px;background:var(--grey-100);padding:1px 5px;border-radius:3px;user-select:all">${esc(issnRaw)}</code></span></div>` : ''; })()}
     <div class="cardfoot">
       <span class="strength">${strong?'★ Free OA — Charles Sturt University':' '}</span>
       <div style="display:flex;gap:6px">
@@ -2035,6 +2145,34 @@ reduceMotion.addEventListener('change', () => { if(state.mode==='wizard') render
 
   // Expose so showMode can call it
   window.animateHeading = animateHeading;
+})();
+
+/* ── Key drawer ── */
+(function(){
+  const trigger  = document.getElementById('keyTrigger');
+  const overlay  = document.getElementById('keyOverlay');
+  const drawer   = document.getElementById('keyDrawer');
+  const closeBtn = document.getElementById('keyClose');
+  if (!trigger || !drawer) return;
+
+  function openKey(){
+    drawer.hidden  = false;
+    overlay.hidden = false;
+    trigger.setAttribute('aria-expanded','true');
+    closeBtn.focus();
+    document.body.style.overflow = 'hidden';
+  }
+  function closeKey(){
+    drawer.hidden  = true;
+    overlay.hidden = true;
+    trigger.setAttribute('aria-expanded','false');
+    trigger.focus();
+    document.body.style.overflow = '';
+  }
+  trigger.addEventListener('click', openKey);
+  closeBtn.addEventListener('click', closeKey);
+  overlay.addEventListener('click', closeKey);
+  document.addEventListener('keydown', e => { if (e.key==='Escape' && !drawer.hidden) closeKey(); });
 })();
 
 /* ── About drawer ── */
