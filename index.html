@@ -148,6 +148,16 @@
     height: 3px;
     background: linear-gradient(90deg, transparent, var(--csu-orange), transparent);
   }
+  .entry-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--csu-brown-lt); margin-bottom: 20px;
+    opacity: .8;
+  }
+  .entry-eyebrow::before, .entry-eyebrow::after {
+    content: ''; width: 24px; height: 1px;
+    background: var(--csu-orange); display: inline-block; opacity: .7;
+  }
   .entry-hero { text-align: center; padding: 0; max-width: 760px; margin: 0 auto; }
   .entry-hero h1 {
     font-size: clamp(28px, 4vw, 46px);
@@ -441,7 +451,8 @@
   .jcard .crow span b { color: var(--csu-navy); }
   .jcard-link a { color: var(--csu-blue); font-size: 12px; text-decoration: none; }
   .jcard-link a:hover { text-decoration: underline; }
-  .jcard .cardfoot { display: flex; justify-content: flex-end; align-items: center; margin-top: 2px; padding-top: 9px; border-top: 1px solid var(--grey-100); }
+  .jcard .cardfoot { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; padding-top: 9px; border-top: 1px solid var(--grey-100); }
+  .strength { font-size: 11px; font-weight: 700; color: var(--csu-green); display: flex; align-items: center; gap: 5px; }
 
   /* ── Badges ── */
 
@@ -547,15 +558,6 @@
     .wrap { padding: 16px 12px 32px; }
     td.issn, td.for, th.col-ISSNs, th.col-FORCodes { display: none; }
   }
-  @media (max-width: 520px) {
-    header { padding: 0 10px; }
-    .header-brand { gap: 8px; }
-    .header-crest { width: 30px; height: 30px; }
-    .header-wordmark strong { font-size: 12px; }
-    .header-wordmark span { display: none; }
-    .header-right { gap: 6px; }
-    .btn-about-trigger { padding: 4px 7px; font-size: 11px; }
-  }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
@@ -653,7 +655,7 @@
   <div class="header-brand">
     <img class="header-crest" src="data:image/png;base64,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" alt="Charles Sturt University crest">
     <div class="header-wordmark">
-      <strong>Charles Sturt University</strong>
+      <strong>CSU</strong>
       <span>Division of Library Services</span>
     </div>
   </div>
@@ -692,6 +694,7 @@
     <div id="entryBandOuter">
     <section class="surface-hero" id="entryHero">
       <div class="entry-hero-band">
+        <div class="entry-eyebrow">CSU Library</div>
         <div class="entry-hero">
           <h1 id="entryTitle" aria-label="Find the right journal. Publish with confidence.">
             <span class="aw">Find</span>
@@ -815,13 +818,13 @@
         <span class="badge b-diamond">✓ Free — Diamond OA</span>
         <span class="key-desc">Diamond Open Access — no APC for any author regardless of institution. Always free to publish.</span>
 
-        <span class="badge b-yes">✓ Free — CSU Agreement &amp; Diamond OA</span>
+        <span class="badge b-yes">✓ Free — Agreement &amp; Diamond OA</span>
         <span class="key-desc">Covered by both a CSU agreement and Diamond OA status.</span>
 
         <span class="badge b-disc">💰 Discounted — CSU rate</span>
         <span class="key-desc">A negotiated APC discount applies for Charles Sturt University authors, but a fee is still required.</span>
 
-        <span class="badge b-no">No free OA option</span>
+        <span class="badge b-no">No free option</span>
         <span class="key-desc">No current agreement or Diamond OA status. Standard APC applies.</span>
       </div>
     </section>
@@ -871,6 +874,17 @@
       </div>
     </section>
 
+    <section class="about-section">
+      <h3>Other</h3>
+      <div class="key-grid">
+        <span class="badge b-diamond">Diamond OA</span>
+        <span class="key-desc">Diamond Open Access — free to read and free to publish for all authors, with no APCs charged.</span>
+
+        <span class="badge b-disc">💰 CSU Discount</span>
+        <span class="key-desc">A negotiated APC discount is available for Charles Sturt University authors under this publisher's agreement.</span>
+      </div>
+    </section>
+
     <section class="about-section" style="border-bottom:none">
       <p style="font-size:12px;color:var(--grey-600)">Not sure which option applies to your article? Contact your <a href="https://library.csu.edu.au/our-libraries/contact-library-team/faculty-teams" target="_blank" rel="noopener noreferrer">CSU Faculty Librarian</a> for advice before submitting.</p>
     </section>
@@ -912,7 +926,7 @@
         <li><strong>Scimago Journal Rankings 2025</strong> — Journal quartile rankings (Q1–Q4) and Diamond Open Access status sourced from the SCImago Journal &amp; Country Rank portal, based on Scopus citation data.</li>
         <li><strong>CSU Journal Ranking List</strong> — An internal Charles Sturt University ranking list maintained by the Division of Library Services, drawing on recognised ranking schemes including ABDC, CORE, and other discipline-specific sources. This list also provides <strong>FOR (Field of Research) codes</strong> — four-digit codes from the Australian Research Council (ARC) classification system — used to power the FOR code filter and Find Similar feature.</li>
         <li><strong>CAUL Title List (GitHub)</strong> — Journal homepage URLs are sourced from the <a href="https://github.com/CAUL-Office/CAUL_Title_List" target="_blank" rel="noopener noreferrer">CAUL Title List repository</a>, matched by ISSN. Not all journals have a recorded URL.</li>
-        <li><strong>Open Policy Finder (Jisc)</strong> — Provides direct links to journal self-archiving policy records, matched by ISSN.</li>
+        <li><strong>Open Policy Finder (Jisc)</strong> — Direct links to journal self-archiving policy records were added by matching journal ISSNs through the <a href="https://openpolicyfinder.jisc.ac.uk/help/developers" target="_blank" rel="noopener noreferrer">Open Policy Finder API</a>. Open Policy Finder content is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-ND 4.0</a>.</li>
       </ul>
     </section>
 
@@ -933,7 +947,7 @@
       <p>Open Policy Finder links were added using the service's API. See the <a href="https://openpolicyfinder.jisc.ac.uk/help/developers" target="_blank" rel="noopener noreferrer">Open Policy Finder API documentation</a>. Open Policy Finder content is made available under the <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International licence (CC BY-NC-ND 4.0)</a>.</p>
 
       <h3>How "Free to Publish" is determined</h3>
-      <p>A journal is marked free to publish in if it is covered for eligible CSU authors under an open access agreement or is a Diamond Open Access journal with no APC for any author. A journal is marked discounted where CSU authors receive a negotiated reduction on article processing charges (APCs). These determinations are based on the data sources listed above and should be verified with the Library before submission.</p>
+      <p>A journal is marked free to publish in if it appears under a Charles Sturt University CAUL open access agreement (<em>Eligible = Yes</em>) or is a Diamond Open Access journal (no APC for any author). A journal is marked discounted where CSU authors receive a negotiated reduction on article processing charges (APCs). These determinations are based on the data sources listed above and should be verified with the Library before submission.</p>
     </section>
 
     <section class="about-section">
@@ -962,8 +976,8 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 /* ── Facet configuration (drives wizard, advanced, chips, URL) ── */
 const ENUM_OPTS = {
-  eligible: [ {v:'Yes',t:'Free — CSU Agreement'}, {v:'No',t:'No free OA option'}, {v:'N/A',t:'No CSU agreement'} ],
-  freeoa:   [ {v:'eligible',t:'Free through a CSU agreement'}, {v:'diamond',t:'Diamond OA — free for all authors'} ],
+  eligible: [ {v:'Yes',t:'Eligible — free open access'}, {v:'No',t:'Not eligible'}, {v:'N/A',t:'No CSU agreement'} ],
+  freeoa:   [ {v:'eligible',t:'Eligible — free open access through a CSU agreement'}, {v:'diamond',t:'Diamond OA — free for all authors'} ],
   diamond:  [ {v:'Yes',t:'Diamond OA only'} ],
   discount: [ {v:'Yes',t:'CSU discount available'} ],
   journalType: [ {v:'Fully Open Access',t:'Fully Open Access (Gold OA)'}, {v:'Hybrid',t:'Hybrid'} ],
@@ -972,8 +986,8 @@ const ENUM_OPTS = {
 };
 const FACETS = {
   q:         { key:'q', short:'q',  label:'Keyword',           type:'text',    q:'What journal, ISSN or term are you looking for?' },
-  eligible:  { key:'eligible', short:'el', label:'CSU agreement status', type:'enum', field:'Eligible', q:'Free-to-publish status under a CSU agreement?' },
-  freeoa:    { key:'freeoa', short:'fo', label:'Free to publish', type:'enum', q:'Which free-to-publish options would you like to include?' },
+  eligible:  { key:'eligible', short:'el', label:'CSU OA Agreement', type:'enum', field:'Eligible',     q:'Open-access eligibility under a CSU agreement?' },
+  freeoa:    { key:'freeoa', short:'fo', label:'Free open access', type:'enum', q:'Which free open access options would you like to include?' },
   agreement: { key:'agreement',short:'ag', label:'Agreement',        type:'catalog', source:'agreements', field:'Agreement', q:'Which publisher agreement?' },
   discount:  { key:'discount',short:'dis',label:'CSU Discount',       type:'enum', field:'CSU Discount', q:'Show only journals with a CSU APC discount?' },
   diamond:   { key:'diamond', short:'dia',label:'Diamond OA',        type:'enum', field:'Diamond OA',   q:'Restrict to Diamond Open Access journals?' },
@@ -1004,6 +1018,9 @@ const COLUMNS = [
   { key:'Agreement', label:'Agreement', cls:'agr' },
   { key:'CSU Rank', label:'CSU Rank', cls:'ctr', badge:'rank' },
   { key:'Scimago Rank', label:'Scimago', cls:'ctr', badge:'rank' },
+  { key:'Eligible', label:'CSU OA', cls:'ctr', badge:'elig' },
+  { key:'Diamond OA', label:'Diamond', cls:'ctr', badge:'dia' },
+  { key:'CSU Discount', label:'Discount', cls:'ctr', badge:'disc' },
   { key:'FOR Codes', label:'FOR codes', cls:'for' },
   { key:'ISSNs', label:'ISSN', cls:'issn' }
 ];
@@ -1253,7 +1270,7 @@ function facetCounts(facetKey){
 function activeKeys(){ return FACET_KEYS.filter(k => Array.isArray(state[k]) ? state[k].length > 0 : state[k]); }
 function facetValueLabel(key, val){
   if (key==='q') return '“'+val+'”';
-  if (key==='eligible') return {Yes:'Free — CSU Agreement',No:'No free OA option','N/A':'No CSU agreement'}[val]||val;
+  if (key==='eligible') return {Yes:'Eligible',No:'Not eligible','N/A':'No agreement'}[val]||val;
   if (key==='freeoa'){
     const arr=Array.isArray(val)?val:[val];
     return arr.map(v=>v==='eligible'?'CSU agreement':'Diamond OA').join(' or ');
@@ -1374,20 +1391,16 @@ function buildIntents(){
     const intent = form.dataset.intent;
     const input  = form.querySelector('input');
     const hint   = $('hint_'+intent);
-    let liveCountTimer;
 
     // Live count hint as user types
     input.addEventListener('input', () => {
       const q = input.value.trim().toLowerCase();
-      clearTimeout(liveCountTimer);
       if (!q || !allData.length) { if(hint) hint.innerHTML=''; return; }
-      liveCountTimer = setTimeout(() => {
-        const n = allData.filter(r => {
-          let hay = r._hay || [r['Journal Title'],r['Publisher Name'],r['ISSNs'],r['FOR Codes'],r['Abbreviation']].join(' ').toLowerCase();
-          return hay.includes(q);
-        }).length;
-        if (hint) hint.innerHTML = n ? `<b>${n.toLocaleString()}</b> journals match` : 'No matches';
-      }, 180);
+      const n = allData.filter(r => {
+        let hay = r._hay || [r['Journal Title'],r['Publisher Name'],r['ISSNs'],r['FOR Codes'],r['Abbreviation']].join(' ').toLowerCase();
+        return hay.includes(q);
+      }).length;
+      if (hint) hint.innerHTML = n ? `<b>${n.toLocaleString()}</b> journals match` : 'No matches';
     });
 
     // Submit → launch intent with query pre-filled
@@ -1471,12 +1484,7 @@ function renderStep(){
   let html = `<h2 id="stepHeading" tabindex="-1">${esc(qText)}</h2>`;
   const optional = STEP_OPTIONAL[state.intent][key];
   const multiChoice = key==='freeoa' || key==='scimago' || key==='csu';
-  const guidance = key==='freeoa'
-    ? 'Choose one or more, or select <strong>Skip</strong> to see all options.'
-    : optional
-      ? (multiChoice ? 'Optional — choose one or more, or skip.' : 'Optional — choose one or skip.')
-      : (f.type==='text' ? 'Type to search — results update as you type.' : 'Choose one to continue.');
-  html += `<p class="sub">${guidance}</p>`;
+  html += `<p class="sub">${optional ? (multiChoice ? 'Optional — choose one or more, or skip.' : 'Optional — choose one or skip.') : (f.type==='text' ? 'Type to search — results update as you type.' : 'Choose one to continue.')}</p>`;
 
   if (f.type==='text'){
     const kwPlaceholder = state.intent==='explore' ? 'e.g. immunology, education, climate, nursing…' : 'e.g. Nature, 1234-5678, immunology…';
@@ -1584,7 +1592,7 @@ function enableRadioKeys(container){
 function buildAdvancedControls(){
   const row = $('advRow');
   const selects = [
-    { key:'eligible', label:'CSU agreement status', opts:[['','All'],['Yes','Free — CSU Agreement'],['No','No free OA option'],['N/A','No CSU agreement']] },
+    { key:'eligible', label:'CSU OA Agreement', opts:[['','All'],['Yes','Yes'],['No','No'],['N/A','N/A']] },
     { key:'agreement', label:'Agreement', opts:[['','All agreements'], ...catalog.agreements.map(a=>[a,a])] },
     { key:'diamond', label:'Diamond OA', opts:[['','All'],['Yes','Yes']] },
     { key:'discount', label:'CSU Discount', opts:[['','All'],['Yes','Discounted for CSU authors']] },
@@ -1726,6 +1734,7 @@ function drawSummaryCards(){
 }
 function cardHTML(r, i, matchLabel){
   const idx = allData.indexOf(r);
+  const strong = r['Eligible']==='Yes';
   const isCheck = state.intent==='lookup';
   const sciRank = r['Scimago Rank'];
   const csuRank = r['CSU Rank'];
@@ -1738,7 +1747,7 @@ function cardHTML(r, i, matchLabel){
     <h3>${esc(r['Journal Title'])}</h3>
     ${r['Publisher Name']?`<div class="meta">${esc(r['Publisher Name'])}</div>`:''}
     ${matchLabel?`<div style="font-size:11px;color:var(--csu-green);font-weight:600;margin-bottom:4px">✓ ${esc(matchLabel)}</div>`:''}
-    <div class="badges">${ftpBadge(r)}${journalTypeBadge(r)}${capBadge(r)}${!isCheck?rankBadgeL('CSU Rank',r['CSU Rank']):''}${!isCheck?rankBadgeL('SJR',r['Scimago Rank']):''}</div>
+    <div class="badges">${ftpBadge(r)}${journalTypeBadge(r)}${capBadge(r)}${!isCheck?rankBadgeL('CSU Rank',r['CSU Rank']):''}${!isCheck?rankBadgeL('SJR',r['Scimago Rank']):''}${discBadge(r['CSU Discount'])}</div>
     ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
     ${capDetail(r)}
@@ -1750,6 +1759,7 @@ function cardHTML(r, i, matchLabel){
       return issnRaw ? `<div class="crow jcard-link"><span>📋 <a href="https://openpolicyfinder.jisc.ac.uk/" target="_blank" rel="noopener noreferrer">Search Open Policy Finder</a> — ISSN: <code style="font-size:11px;background:var(--grey-100);padding:1px 5px;border-radius:3px;user-select:all">${esc(issnRaw)}</code></span></div>` : '';
     })()}
     <div class="cardfoot">
+      <span class="strength">${strong?'★ Free OA — CSU':' '}</span>
       <div style="display:flex;gap:6px">
         <button class="btn btn-sm copybtn" data-idx="${idx}">Copy details</button>
         <button class="btn btn-sm btn-similar similarBtn" data-idx="${idx}" title="Find journals in the same research area">Find similar</button>
@@ -1945,7 +1955,10 @@ function renderTable(){
 }
 function cellHTML(r, c, idx){
   if (c.badge==='rank') return `<td class="ctr">${rankBadge(r[c.key])}</td>`;
+  if (c.badge==='elig') return `<td class="ctr">${eligBadge(r[c.key])}</td>`;
+  if (c.badge==='dia')  return `<td class="ctr">${r[c.key]==='Yes'?diaBadge('Yes'):dash()}</td>`;
   if (c.badge==='ftp')  return `<td class="ctr">${ftpBadge(r)}</td>`;
+  if (c.badge==='disc') return `<td class="ctr">${r[c.key]==='Yes'?'<span class="badge b-disc">💰 Yes</span>':dash()}</td>`;
   if (c.key==='Journal Title') return `<td class="title-cell">${esc(r[c.key])} <button class="rowcopy" data-idx="${idx}" title="Copy details">copy</button></td>`;
   return `<td class="${c.cls}">${esc(r[c.key])||dash()}</td>`;
 }
@@ -1968,16 +1981,21 @@ function pageRange(cur, total){
 }
 
 /* ── Badges / helpers (reused from original) ── */
+function eligBadge(v){ return v==='Yes'?'<span class="badge b-yes">Eligible</span>':v==='No'?'<span class="badge b-no">No</span>':dash(); }
 function rankBadge(v){ const c={Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}">${v}</span>`:dash(); }
 function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}"><span class="b-lbl" style="color:rgba(255,255,255,.7)">${lbl}</span>${v}</span>`:''; }
+function diaBadge(v){ return v==='Yes'?'<span class="badge b-diamond">Diamond OA</span>':dash(); }
 function dash(){ return '<span class="dash">—</span>'; }
+function discBadge(v){
+  return v==='Yes' ? '<span class="badge b-disc">💰 CSU Discount</span>' : '';
+}
 function ftpBadge(r){
   const ftp = r['Free to Publish']||'';
-  if (ftp.startsWith('Yes — CSU Agreement & Diamond OA')) return '<span class="badge b-yes">✓ Free — CSU Agreement & Diamond OA</span>';
+  if (ftp.startsWith('Yes — CSU Agreement & Diamond OA')) return '<span class="badge b-yes">✓ Free — Agreement & Diamond OA</span>';
   if (ftp.startsWith('Yes — CSU Agreement')) return '<span class="badge b-yes">✓ Free — CSU Agreement</span>';
   if (ftp.startsWith('Yes — Diamond OA'))    return '<span class="badge b-diamond">✓ Free — Diamond OA</span>';
   if (ftp.startsWith('Discounted'))          return '<span class="badge b-disc">💰 Discounted — CSU rate</span>';
-  return '<span class="badge b-no">No free OA option</span>';
+  return '<span class="badge b-no">No free option</span>';
 }
 function escAttr(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function esc(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -2017,7 +2035,7 @@ function copyJournal(r){
   const t = [
     r['Journal Title'],
     r['Publisher Name'] ? 'Publisher: '+r['Publisher Name'] : '',
-    'Free through CSU agreement: '+(r['Eligible']||'N/A'),
+    'CSU OA Eligible: '+(r['Eligible']||'N/A'),
     'CSU Rank: '+(r['CSU Rank']||'—'),
   ].filter(Boolean).join('\n');
   copyText(t, 'Journal details copied');
