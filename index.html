@@ -810,7 +810,7 @@
       <p>Whether you can publish open access in this journal at no cost or reduced cost as a Charles Sturt University author.</p>
       <div class="key-grid">
         <span class="badge b-yes">✓ Free — CSU Agreement</span>
-        <span class="key-desc">Covered by a CAUL read-and-publish agreement. No APC for eligible Charles Sturt University authors.</span>
+        <span class="key-desc">Free to publish for eligible CSU authors through either a CAUL-negotiated agreement or a publisher-direct agreement.</span>
 
         <span class="badge b-diamond">✓ Free — Diamond OA</span>
         <span class="key-desc">Diamond Open Access — no APC for any author regardless of institution. Always free to publish.</span>
@@ -822,7 +822,7 @@
         <span class="key-desc">A negotiated APC discount applies for Charles Sturt University authors, but a fee is still required.</span>
 
         <span class="badge b-no">No free OA option</span>
-        <span class="key-desc">No current agreement or Diamond OA status. Standard APC applies.</span>
+        <span class="key-desc">No current agreement or Diamond OA status. An APC may apply.</span>
       </div>
     </section>
 
@@ -851,11 +851,14 @@
         <span class="badge b-q2">Q2</span>
         <span class="key-desc">Second quartile — upper-mid range journals.</span>
 
+        <span class="badge b-q3">Q3/4</span>
+        <span class="key-desc">Combined lower-quartile category used in the CSU Journal Ranking List.</span>
+
         <span class="badge b-q3">Q3</span>
-        <span class="key-desc">Third quartile — lower-mid range journals.</span>
+        <span class="key-desc">Scimago third quartile — lower-mid range journals.</span>
 
         <span class="badge b-q4">Q4</span>
-        <span class="key-desc">Bottom 25% — lowest ranked journals in their subject area.</span>
+        <span class="key-desc">Scimago bottom quartile — lowest ranked journals in their subject area.</span>
       </div>
     </section>
 
@@ -890,6 +893,7 @@
     <section class="about-section">
       <h3>About the Charles Sturt University Journal Finder</h3>
       <p>The Charles Sturt University Journal Finder helps researchers and staff at Charles Sturt University identify journals that are free or discounted to publish in, and explore journals by quality ranking and field of research.</p>
+      <p><strong>Data last updated:</strong> 18 September 2026.</p>
     </section>
 
     <section class="about-section">
@@ -910,10 +914,11 @@
         <li><strong>CAUL Open Access Agreements 2026</strong> — Publisher agreements negotiated by the Council of Australian University Libraries (CAUL) that allow Charles Sturt University-affiliated authors to publish open access at no cost or reduced cost. Updated periodically as agreements are renewed or added.</li>
         <li><strong>Publisher-direct agreements</strong> — A small number of journals are included under agreements negotiated directly between Charles Sturt University and a publisher, outside of CAUL. Current publisher-direct agreements include <strong>BMJ</strong> (25 journals) and the <strong>Journal of Medical Microbiology</strong> (Microbiology Society). These are maintained manually by Charles Sturt University Library and may not appear in the CAUL title list.</li>
         <li><strong>Scimago Journal Rankings 2025</strong> — Journal quartile rankings (Q1–Q4) and Diamond Open Access status sourced from the SCImago Journal &amp; Country Rank portal, based on Scopus citation data.</li>
-        <li><strong>CSU Journal Ranking List</strong> — An internal Charles Sturt University ranking list maintained by the Division of Library Services, drawing on recognised ranking schemes including ABDC, CORE, and other discipline-specific sources. This list also provides <strong>FOR (Field of Research) codes</strong> — four-digit codes from the Australian Research Council (ARC) classification system — used to power the FOR code filter and Find Similar feature.</li>
+        <li><strong>CSU Journal Ranking List 2025</strong> — An internal Charles Sturt University ranking list maintained by the Division of Library Services, drawing on recognised ranking schemes including ABDC, CORE, and other discipline-specific sources. This list also provides <strong>FOR (Field of Research) codes</strong> — four-digit codes from the Australian Research Council (ARC) classification system — used to power the FOR code filter and Find Similar feature.</li>
         <li><strong>CAUL Title List (GitHub)</strong> — Journal homepage URLs are sourced from the <a href="https://github.com/CAUL-Office/CAUL_Title_List" target="_blank" rel="noopener noreferrer">CAUL Title List repository</a>, matched by ISSN. Not all journals have a recorded URL.</li>
         <li><strong>Open Policy Finder (Jisc)</strong> — Provides direct links to journal self-archiving policy records, matched by ISSN.</li>
       </ul>
+      <p>Manual corrections are applied where current publisher information supersedes a source dataset.</p>
     </section>
 
     <section class="about-section">
@@ -938,7 +943,7 @@
 
     <section class="about-section">
       <h3>Creation and maintenance</h3>
-      <p>This tool was created using <strong>Claude Sonnet 4.6</strong> (Anthropic), with data compilation, review, and quality assurance by <strong>Charles Sturt University Division of Library Services</strong>. The underlying data is updated when new agreement lists or ranking data are published.</p>
+      <p>This tool was originally developed using <strong>Claude Sonnet 4.6</strong> (Anthropic) and subsequently updated using <strong>OpenAI Codex</strong>, with data compilation, review, and quality assurance by <strong>Charles Sturt University Division of Library Services</strong>. The underlying data is updated when new agreement lists or ranking data are published.</p>
     </section>
 
     <section class="about-section">
@@ -1186,7 +1191,7 @@ function recMatches(r, st, skip){
   if (skip!=='scimago'   && st.scimago && st.scimago.length > 0 && !st.scimago.includes(r['Scimago Rank'])) return false;
   if (skip!=='csu'       && st.csu && st.csu.length > 0){
     const cr = r['CSU Rank'];
-    const matched = st.csu.some(v => v==='Q3Q4' ? (cr==='Q3'||cr==='Q4') : cr===v);
+    const matched = st.csu.some(v => v==='Q3Q4' ? (cr==='Q3/4'||cr==='Q3'||cr==='Q4') : cr===v);
     if (!matched) return false;
   }
   if (skip!=='for' && st.for){
@@ -1236,7 +1241,7 @@ function facetCounts(facetKey){
     if (facetKey==='for'){
       if (r['FOR Codes']) r['FOR Codes'].split(';').forEach(c=>{ const t=c.trim(); if(t) inc(t); });
     } else if (facetKey==='csu'){
-      const cr=r['CSU Rank']; if(cr==='Q1') inc('Q1'); else if(cr==='Q2') inc('Q2'); else if(cr==='Q3'||cr==='Q4') inc('Q3Q4');
+      const cr=r['CSU Rank']; if(cr==='Q1') inc('Q1'); else if(cr==='Q2') inc('Q2'); else if(cr==='Q3/4'||cr==='Q3'||cr==='Q4') inc('Q3Q4');
     } else if (facetKey==='diamond'){
       if (r['Diamond OA']==='Yes') inc('Yes');
     } else if (facetKey==='freeoa'){
@@ -1697,7 +1702,7 @@ function strengthScore(r){
   let s=0;
   if (r['Eligible']==='Yes') s+=1000;
   s += ({Q1:4,Q2:3,Q3:2,Q4:1}[r['Scimago Rank']]||0)*100;
-  s += ({Q1:4,Q2:3,Q3:2,Q4:1}[r['CSU Rank']]||0)*20;
+  s += ({Q1:4,Q2:3,'Q3/4':2,Q3:2,Q4:1}[r['CSU Rank']]||0)*20;
   if (r['Diamond OA']==='Yes') s+=10;
   return s;
 }
@@ -1731,7 +1736,7 @@ function cardHTML(r, i, matchLabel){
   const csuRank = r['CSU Rank'];
   const rankHero = isCheck && (sciRank || csuRank) ? `<div class="rank-hero">
     ${sciRank?`<div class="rank-hero-item"><span class="rank-hero-lbl">Scimago</span><span class="badge ${{'Q1':'b-q1','Q2':'b-q2','Q3':'b-q3','Q4':'b-q4'}[sciRank]||''}">${esc(sciRank)}</span></div>`:''}
-    ${csuRank?`<div class="rank-hero-item"><span class="rank-hero-lbl">CSU Rank</span><span class="badge ${{'Q1':'b-q1','Q2':'b-q2','Q3':'b-q3','Q4':'b-q4'}[csuRank]||''}">${esc(csuRank)}</span></div>`:''}
+    ${csuRank?`<div class="rank-hero-item"><span class="rank-hero-lbl">CSU Rank</span><span class="badge ${{'Q1':'b-q1','Q2':'b-q2','Q3/4':'b-q3','Q3':'b-q3','Q4':'b-q4'}[csuRank]||''}">${esc(csuRank)}</span></div>`:''}
   </div>` : '';
   return `<div class="jcard${isCheck?' jcard-check':''}" style="--i:${i}">
     ${rankHero}
@@ -1968,8 +1973,8 @@ function pageRange(cur, total){
 }
 
 /* ── Badges / helpers (reused from original) ── */
-function rankBadge(v){ const c={Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}">${v}</span>`:dash(); }
-function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}"><span class="b-lbl" style="color:rgba(255,255,255,.7)">${lbl}</span>${v}</span>`:''; }
+function rankBadge(v){ const c={Q1:'b-q1',Q2:'b-q2','Q3/4':'b-q3',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}">${v}</span>`:dash(); }
+function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2','Q3/4':'b-q3',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}"><span class="b-lbl" style="color:rgba(255,255,255,.7)">${lbl}</span>${v}</span>`:''; }
 function dash(){ return '<span class="dash">—</span>'; }
 function ftpBadge(r){
   const ftp = r['Free to Publish']||'';

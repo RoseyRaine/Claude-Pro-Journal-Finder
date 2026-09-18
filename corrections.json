@@ -1,0 +1,25 @@
+{
+  "_meta": {
+    "last_updated": "2026-09-18",
+    "purpose": "Manual CSU agreement and publisher-status corrections that override source datasets."
+  },
+  "by_issn": {
+    "1445-6354": {
+      "Diamond OA": "",
+      "Free to Publish": "No",
+      "Journal Type": "Fully Open Access",
+      "Journal Website": "https://www.rrh.org.au/journal/",
+      "_note": "Rural and Remote Health may charge an APC for articles submitted after 1 July 2026."
+    },
+    "0022-2615": {
+      "Eligible": "Yes",
+      "CSU Discount": "",
+      "Agreement": "Microbiology Society",
+      "Publisher Name": "Microbiology Society",
+      "Journal Type": "Hybrid",
+      "Free to Publish": "Yes — CSU Agreement",
+      "_note": "CSU publisher-direct agreement for Journal of Medical Microbiology."
+    }
+  },
+  "by_title": {}
+}
