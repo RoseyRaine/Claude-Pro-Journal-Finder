@@ -1788,6 +1788,7 @@ function cardHTML(r, i, matchLabel){
   const isCheck = state.intent==='lookup';
   const sciRank = r['Scimago Rank'];
   const csuRank = r['CSU Rank'];
+  const journalURL = normaliseExternalURL(r['Journal Website']);
   const rankHero = isCheck && (sciRank || csuRank) ? `<div class="rank-hero">
     ${sciRank?`<div class="rank-hero-item"><span class="rank-hero-lbl">Scimago</span><span class="badge ${{'Q1':'b-q1','Q2':'b-q2','Q3':'b-q3','Q4':'b-q4'}[sciRank]||''}">${esc(sciRank)}</span></div>`:''}
     ${csuRank?`<div class="rank-hero-item"><span class="rank-hero-lbl">CSU Rank</span><span class="badge ${{'Q1':'b-q1','Q2':'b-q2','Q3/4':'b-q3','Q3':'b-q3','Q4':'b-q4'}[csuRank]||''}">${esc(csuRank)}</span></div>`:''}
@@ -1801,7 +1802,7 @@ function cardHTML(r, i, matchLabel){
     ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
     ${capDetail(r)}
-    ${r['Journal Website']?`<div class="crow jcard-link"><span aria-hidden="true">🔗</span><span><a href="${escAttr(r['Journal Website'])}" target="_blank" rel="noopener noreferrer">Visit journal homepage<span class="sr-only"> (opens in a new tab)</span></a></span></div>`:''}
+    ${journalURL?`<div class="crow jcard-link"><span aria-hidden="true">🔗</span><span><a href="${escAttr(journalURL)}" target="_blank" rel="noopener noreferrer">Visit journal homepage<span class="sr-only"> (opens in a new tab)</span></a></span></div>`:''}
     ${(()=>{
       const issnRaw = (r['ISSNs']||'').split(';')[0].trim();
       const opfURL = r['Open Policy Finder URL'] || '';
@@ -1814,6 +1815,16 @@ function cardHTML(r, i, matchLabel){
         <button class="btn btn-sm btn-similar similarBtn" data-idx="${idx}" title="Find journals in the same research area">Find similar</button>
       </div>
     </div></div>`;
+}
+
+function normaliseExternalURL(value){
+  const raw=(value||'').trim();
+  if (!raw || /^(tbc|tbd|yet to publish|n\/?a)$/i.test(raw)) return '';
+  const candidate=/^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  try {
+    const url=new URL(candidate);
+    return (url.protocol==='https:' || url.protocol==='http:') && url.hostname.includes('.') ? url.href : '';
+  } catch (_) { return ''; }
 }
 
 
