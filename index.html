@@ -12,7 +12,7 @@
     --csu-navy:      #222944;
     --csu-navy-2:    #2C3556;
     --csu-green:     #3C8364;
-    --csu-blue:      #5675BC;
+    --csu-blue:      #4967A8;
     --csu-pink:      #E9CECA;
     --csu-brown-lt:  #C7B8A0;
     --white:         #FFFFFF;
@@ -52,6 +52,18 @@
   }
   a { color: var(--csu-blue); }
   ::selection { background: rgba(240,87,42,.22); }
+  .sr-only {
+    position: absolute !important; width: 1px !important; height: 1px !important;
+    padding: 0 !important; margin: -1px !important; overflow: hidden !important;
+    clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important;
+  }
+  .skip-link {
+    position: fixed; top: 8px; left: 8px; z-index: 10000;
+    background: var(--white); color: var(--csu-navy); border: 2px solid var(--csu-orange-dk);
+    border-radius: var(--radius-sm); padding: 10px 14px; font-weight: 700;
+    transform: translateY(-150%); transition: transform .15s ease;
+  }
+  .skip-link:focus { transform: translateY(0); }
 
   /* ── Header ── */
   header {
@@ -102,11 +114,11 @@
   .chip .k { color: var(--grey-600); }
   .chip button {
     border: none; background: var(--grey-300); color: var(--csu-navy);
-    width: 17px; height: 17px; border-radius: 50%; cursor: pointer;
+    width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
     font-size: 12px; line-height: 1; display: flex; align-items: center; justify-content: center;
     transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
   }
-  .chip button:hover { background: var(--csu-orange); color: #fff; }
+  .chip button:hover { background: var(--csu-orange-dk); color: #fff; }
   .chipbar-actions { display: flex; gap: 8px; align-items: center; }
   .btn {
     font-family: inherit; font-size: 13px; cursor: pointer;
@@ -117,11 +129,15 @@
   }
   .btn:hover { border-color: var(--csu-navy); }
   .btn:active { transform: translateY(1px); }
-  .btn-primary { background: var(--csu-orange); border-color: var(--csu-orange); color: #fff; font-weight: 700; }
+  .btn-primary { background: var(--csu-orange-dk); border-color: var(--csu-orange-dk); color: #fff; font-weight: 700; }
   .btn-primary:hover { background: var(--csu-orange-dk); border-color: var(--csu-orange-dk); }
   .btn-ghost { background: transparent; }
   .btn-sm { padding: 5px 10px; font-size: 12px; }
-  .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, .opt:focus-visible, .intent-card:focus-visible, th:focus-visible { outline: none; box-shadow: var(--ring); }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: 3px solid var(--csu-orange-dk); outline-offset: 2px;
+    box-shadow: 0 0 0 5px var(--white);
+  }
 
   /* ── Stage (the single scroll region) ── */
   #stage { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; }
@@ -228,7 +244,7 @@
   }
   .intent-search-wrap input::placeholder { color: var(--grey-400); }
   .intent-search-wrap button {
-    background: var(--csu-orange); color: #fff;
+    background: var(--csu-orange-dk); color: #fff;
     border: none; padding: 10px 16px;
     cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 700;
     white-space: nowrap;
@@ -236,7 +252,7 @@
   }
   .intent-search-wrap button:hover { background: var(--csu-orange-dk); }
   .intent-search-hint {
-    font-size: 11px; color: var(--grey-500);
+    font-size: 11px; color: var(--grey-600);
     margin-top: 6px; min-height: 16px; padding: 0 2px;
   }
   .intent-search-hint b { color: var(--csu-navy); }
@@ -426,7 +442,7 @@
   .seg button { border: none; background: transparent; font-family: inherit; font-size: 12.5px; padding: 7px 13px; cursor: pointer; color: var(--grey-600); }
   .seg button.on { background: #fff; color: var(--csu-navy); font-weight: 700; box-shadow: var(--shadow-sm); }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 13px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: 13px; }
   .jcard {
     background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); box-shadow: var(--shadow-sm);
     padding: 15px 16px; display: flex; flex-direction: column; gap: 9px;
@@ -450,13 +466,13 @@
   .b-yes { background: #FEF0EB; color: #8B3A10; }
   .b-no { background: #FDDEDE; color: #8B1A1A; }
   .b-na { background: var(--grey-200); color: var(--grey-600); }
-  .b-q1 { background: #2ecc71; color: #fff; }
+  .b-q1 { background: #187A46; color: #fff; }
   .b-q2 { background: #f1c40f; color: #333; }
-  .b-q3 { background: #e67e22; color: #fff; }
-  .b-q4 { background: #e74c3c; color: #fff; }
+  .b-q3 { background: #9C4600; color: #fff; }
+  .b-q4 { background: #B42318; color: #fff; }
   .b-diamond { background: #E8F4FD; color: #1565A0; }
-  .b-lbl { font-size: 9px; color: var(--grey-400); text-transform: uppercase; letter-spacing: .04em; margin-right: 3px; }
-  .dash { color: var(--grey-400); }
+  .b-lbl { font-size: 10px; color: inherit; opacity: .9; text-transform: uppercase; letter-spacing: .04em; margin-right: 3px; }
+  .dash { color: var(--grey-600); }
 
   /* ── Table ── */
   .table-wrap { background: #fff; border: 1px solid var(--grey-200); border-radius: var(--radius); box-shadow: var(--shadow-md); overflow: hidden; }
@@ -486,15 +502,16 @@
   td.ctr { text-align: center; white-space: nowrap; }
   td.for { max-width: 130px; font-size: 12px; color: var(--grey-600); font-variant-numeric: tabular-nums; }
   td.issn { font-size: 11px; color: var(--grey-600); min-width: 150px; font-variant-numeric: tabular-nums; }
-  td .rowcopy { opacity: 0; border: none; background: var(--grey-100); border-radius: 5px; cursor: pointer; font-size: 11px; padding: 3px 7px; color: var(--grey-600); transition: opacity var(--dur) var(--ease), background var(--dur) var(--ease); }
+  td .rowcopy { opacity: 0; border: none; background: var(--grey-100); border-radius: 5px; cursor: pointer; font-size: 11px; min-width: 28px; min-height: 28px; padding: 4px 8px; color: var(--grey-600); transition: opacity var(--dur) var(--ease), background var(--dur) var(--ease); }
   tbody tr:hover .rowcopy { opacity: 1; }
-  td .rowcopy:hover { background: var(--csu-orange); color: #fff; }
+  tbody tr:focus-within .rowcopy, td .rowcopy:focus-visible { opacity: 1; }
+  td .rowcopy:hover { background: var(--csu-orange-dk); color: #fff; }
   #tableBody.fade { opacity: .35; transition: opacity .12s; }
 
   .pagination { display: flex; align-items: center; justify-content: center; gap: 5px; padding: 13px; border-top: 1px solid var(--grey-200); flex-wrap: wrap; }
   .pg { min-width: 32px; height: 32px; padding: 0 7px; border: 1px solid var(--grey-200); background: #fff; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-size: 12px; color: var(--csu-charcoal); display: flex; align-items: center; justify-content: center; transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), background var(--dur) var(--ease); }
-  .pg:hover:not(:disabled) { border-color: var(--csu-orange); color: var(--csu-orange); }
-  .pg.active { background: var(--csu-orange); color: #fff; border-color: var(--csu-orange); }
+  .pg:hover:not(:disabled) { border-color: var(--csu-orange-dk); color: var(--csu-orange-dk); }
+  .pg.active { background: var(--csu-orange-dk); color: #fff; border-color: var(--csu-orange-dk); }
   .pg:disabled { opacity: .35; cursor: default; }
 
   /* ── Empty / loading ── */
@@ -522,13 +539,22 @@
   .footer-about-body ul { margin: 0 0 8px 18px; }
   .footer-about-body li { margin-bottom: 6px; line-height: 1.6; }
   .footer-about-body strong { color: var(--white); }
-  .footer-legal { padding: 12px 24px; font-size: 11px; color: var(--grey-600); }
+  .footer-legal { padding: 12px 24px; font-size: 11px; color: var(--grey-400); }
   .footer-about-link { background:none; border:none; color:var(--csu-brown-lt); font-size:11px; cursor:pointer; padding:0; text-decoration:underline; font-family:inherit; }
   footer a { color: var(--csu-brown-lt); }
 
   /* ── Toast ── */
   #toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(14px); background: var(--csu-navy); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 13px; box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); z-index: 1000; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .publishing-reminder {
+    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
+    background: #FFF8E1; border: 1px solid #C58A00; border-left: 4px solid #8A5F00;
+    border-radius: var(--radius); padding: 12px 14px; margin: 0 0 14px;
+    color: var(--csu-charcoal); font-size: 13px; line-height: 1.55;
+  }
+  .publishing-reminder strong { color: var(--csu-navy); }
+  .publishing-reminder .reminder-icon { font-size: 18px; line-height: 1.3; }
 
   /* ── Animations ── */
   @keyframes fade-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -559,6 +585,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  }
+  @media (forced-colors: active) {
+    .badge, .publishing-reminder, .intent-card, .panel { border: 1px solid CanvasText; }
+    .skip-link { border: 2px solid CanvasText; }
   }
 
   /* ── Heading animation: drift-in (Option 4) + magnetic (Option 3 desktop) ── */
@@ -649,6 +679,8 @@
 </head>
 <body>
 
+<a class="skip-link" href="#stage">Skip to main content</a>
+
 <header>
   <div class="header-brand">
     <img class="header-crest" src="data:image/png;base64,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" alt="Charles Sturt University crest">
@@ -678,7 +710,7 @@
   </div>
 </div>
 
-<main id="stage">
+<main id="stage" tabindex="-1">
   <div class="wrap">
 
     <!-- Loading skeleton -->
@@ -686,6 +718,7 @@
       <div class="sk sk-search"></div>
       <div class="sk sk-row"></div><div class="sk sk-row"></div><div class="sk sk-row"></div>
     </div>
+    <div id="loadingStatus" class="sr-only" role="status" aria-live="polite">Loading journal data.</div>
 
     <!-- ENTRY hero band: outside wrap for full-width -->
     </div><!-- close .wrap -->
@@ -756,6 +789,10 @@
     <section class="surface" id="results" aria-label="Results">
       <div id="loosen"></div>
       <div class="results-head" id="resultsHead"></div>
+      <aside class="publishing-reminder" aria-labelledby="publishingReminderTitle">
+        <span class="reminder-icon" aria-hidden="true">✓</span>
+        <div><strong id="publishingReminderTitle">Verify before submitting.</strong> Always check the journal website for the latest open access policies, fees, agreement eligibility, publication caps and author guidance. Consider journal scope, peer review, editorial standards and research integrity—not rankings or cost alone—when making your publishing decision.</div>
+      </aside>
       <div id="exploreNote" class="explore-note" hidden>
         <span>💡 Results are matched by FOR codes and keywords. For deeper discovery, also try
         <a href="https://www.scimagojr.com/" target="_blank" rel="noopener noreferrer">Scimago</a> or a subject database.</span>
@@ -765,6 +802,7 @@
         <div class="table-wrap">
           <div class="table-scroll" id="tableScroll">
             <table id="journalTable" aria-label="Journal results">
+              <caption class="sr-only">Journal Finder search results. Activate a column heading to sort the table.</caption>
               <thead><tr id="theadRow"></tr></thead>
               <tbody id="tableBody"></tbody>
             </table>
@@ -780,7 +818,7 @@
     </section>
 
     <!-- data load error -->
-    <div class="empty" id="errorMsg" hidden></div>
+    <div class="empty" id="errorMsg" role="alert" hidden></div>
   </div>
 </main>
 
@@ -798,9 +836,9 @@
 
 <!-- ── Key / Legend Drawer ── -->
 <div id="keyOverlay" class="about-overlay" hidden aria-hidden="true"></div>
-<aside id="keyDrawer" class="about-drawer" hidden aria-label="Label key" role="dialog" aria-modal="true">
+<aside id="keyDrawer" class="about-drawer" hidden aria-labelledby="keyDrawerTitle" role="dialog" aria-modal="true">
   <div class="about-drawer-header">
-    <h2>Label Key</h2>
+    <h2 id="keyDrawerTitle">Label Key</h2>
     <button class="about-close" id="keyClose" aria-label="Close">✕</button>
   </div>
   <div class="about-drawer-body">
@@ -883,9 +921,9 @@
 
 <!-- ── About & Help Drawer ── -->
 <div id="aboutOverlay" class="about-overlay" hidden aria-hidden="true"></div>
-<aside id="aboutDrawer" class="about-drawer" hidden aria-label="About and Help" role="dialog" aria-modal="true">
+<aside id="aboutDrawer" class="about-drawer" hidden aria-labelledby="aboutDrawerTitle" role="dialog" aria-modal="true">
   <div class="about-drawer-header">
-    <h2>About &amp; Help</h2>
+    <h2 id="aboutDrawerTitle">About &amp; Help</h2>
     <button class="about-close" id="aboutClose" aria-label="Close">✕</button>
   </div>
   <div class="about-drawer-body">
@@ -947,8 +985,13 @@
     </section>
 
     <section class="about-section">
+      <h3>Accessibility</h3>
+      <p>The Journal Finder supports keyboard navigation, screen readers, browser zoom, high-contrast settings and reduced-motion preferences. If you experience an accessibility problem, please <a href="https://library.csu.edu.au/our-libraries/contact-library-team/faculty-teams" target="_blank" rel="noopener noreferrer">contact the CSU Library team</a>.</p>
+    </section>
+
+    <section class="about-section">
       <h3>Disclaimer</h3>
-      <p>Information is provided in good faith for guidance purposes. Charles Sturt University Library makes no warranty as to the accuracy or completeness of the data. Always confirm eligibility directly with the publisher or your library liaison before submitting a manuscript.</p>
+      <p>Information is provided in good faith for guidance purposes. Charles Sturt University Library makes no warranty as to the accuracy or completeness of the data. Always check the journal website for the latest open access policies, fees, agreement eligibility, publication caps and author guidance. Consider journal scope, peer review, editorial standards and research integrity when making a publishing decision, and confirm eligibility with the publisher or your library liaison before submitting a manuscript.</p>
     </section>
 
   </div>
@@ -997,7 +1040,7 @@ const STEP_OPTIONAL = {
   explore: { q:false, scimago:true, freeoa:true }
 };
 const INTENTS = [
-  { id:'lookup', color:'#5675BC', title:'Check a journal', desc:'Know a title or ISSN? Look it up to see its rank, agreement, and free-to-publish status.',
+  { id:'lookup', color:'#4967A8', title:'Check a journal', desc:'Know a title or ISSN? Look it up to see its rank, agreement, and free-to-publish status.',
     icon:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>' },
   { id:'explore', color:'#3C8364', title:'Explore journals', desc:'Find journals by topic, FOR code, or keyword — filter by rank and free-to-publish status.',
     icon:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>' }
@@ -1150,6 +1193,7 @@ Promise.all([loadConfig(), fetch(DATA_URL).then(r => { if(!r.ok) throw new Error
     buildAdvancedControls();
     buildTableHead();
     $('skeleton').style.display = 'none';
+    $('loadingStatus').textContent = `Journal data loaded. ${allData.length.toLocaleString()} journals available.`;
     const totalTxt = $('totalCountTxt');
     if (totalTxt) totalTxt.textContent = allData.length.toLocaleString();
     const had = readStateFromURL();
@@ -1160,6 +1204,7 @@ Promise.all([loadConfig(), fetch(DATA_URL).then(r => { if(!r.ok) throw new Error
   })
   .catch(err => {
     $('skeleton').style.display = 'none';
+    $('loadingStatus').textContent = 'Journal data could not be loaded.';
     const e = $('errorMsg'); e.hidden = false;
     e.innerHTML = '<div class="ic">⚠</div><p><strong>Could not load journal data.</strong></p><p style="font-size:13px;margin-top:6px">'+esc(err.message)+'</p>';
   });
@@ -1428,7 +1473,7 @@ document.getElementById('entrySearchForm') && document.getElementById('entrySear
   e.preventDefault();
   state.q = (document.getElementById('entrySearch')||{}).value||''.trim().toLowerCase();
   state.intent = 'lookup'; state.resultView='summary'; state.page=1;
-  applyFilters(); showMode('results');
+  applyFilters(); showMode('results'); focusResultsTitle();
 });
 $('toAdvancedLink').addEventListener('click', () => { showMode('advanced'); applyFilters(); });
 
@@ -1442,6 +1487,7 @@ function startIntent(intent){
   if (intent === 'lookup') {
     applyFilters();
     showMode('results');
+    focusResultsTitle();
     return;
   }
 
@@ -1452,7 +1498,7 @@ function startIntent(intent){
     const firstUnanswered = steps.findIndex(k => k !== 'q');
     state.stepIndex = firstUnanswered >= 0 ? firstUnanswered : steps.length;
     if (state.stepIndex >= steps.length) {
-      applyFilters(); showMode('results'); return;
+      applyFilters(); showMode('results'); focusResultsTitle(); return;
     }
   }
 
@@ -1497,7 +1543,7 @@ function renderStep(){
   const counts = facetCounts(key);
   if (f.type==='enum'){
     const opts = ENUM_OPTS[key];
-    html += `<div class="opts ${opts.length>3?'':'grid'}" role="radiogroup" aria-label="${esc(f.label)}">`;
+    html += `<div class="opts ${opts.length>3?'':'grid'}" role="${multiChoice?'group':'radiogroup'}" aria-label="${esc(f.label)}">`;
     opts.forEach((o,i)=>{ html += optionHTML(key, o.v, o.t, counts.get(o.v)||0, i); });
     html += `</div>`;
   } else { // catalog
@@ -1529,7 +1575,8 @@ function stateRawQ(){ return state._rawQ || (state.q || ''); }
 function optionHTML(key, v, label, count, i){
   const checked = isChosen(key, v);
   const dis = count===0 && !checked;
-  return `<button class="opt" role="radio" aria-checked="${checked}" data-v="${esc(v)}" style="--i:${i}" ${dis?'disabled aria-disabled="true"':''}>
+  const role = (key==='scimago'||key==='csu'||key==='freeoa') ? 'checkbox' : 'radio';
+  return `<button class="opt" role="${role}" aria-checked="${checked}" data-v="${esc(v)}" style="--i:${i}" ${dis?'disabled aria-disabled="true"':''}>
     <span class="ov"><span class="tick"></span><span>${esc(label)}</span></span>
     <span class="cnt">${count.toLocaleString()}</span></button>`;
 }
@@ -1550,6 +1597,10 @@ function selectOption(key, v){
   state.page = 1;
   applyFilters();
   renderStep();
+  setTimeout(() => {
+    const selected = [...document.querySelectorAll('#wizStep .opt')].find(button => button.dataset.v === v);
+    if (selected) selected.focus({preventScroll:true});
+  }, 60);
 }
 function updateWizardNav(){
   const steps = currentSteps();
@@ -1573,7 +1624,7 @@ $('wizSkip').addEventListener('click', () => {
   const steps = currentSteps();
   if (state.stepIndex < steps.length-1){ state.stepIndex++; renderStep(); } else finishToResults();
 });
-function finishToResults(){ state.resultView='summary'; applyFilters(); showMode('results'); }
+function finishToResults(){ state.resultView='summary'; applyFilters(); showMode('results'); focusResultsTitle(); }
 
 function enableRadioKeys(container){
   const group = container.querySelector('[role="radiogroup"]'); if(!group) return;
@@ -1684,10 +1735,10 @@ function renderResultsHead(){
   const head = $('resultsHead');
   if (filtered.length===0){ head.innerHTML=''; return; }
   const subText = state.resultView==='summary' ? 'Strongest matches first.' : 'Showing all matches.';
-  const title = `<div><h2><b>${filtered.length.toLocaleString()}</b> journals match</h2><div class="sub">${subText}</div></div>`;
-  const seg = `<div class="seg" role="tablist">
-      <button class="${state.resultView==='summary'?'on':''}" id="viewSummary" role="tab">Top matches</button>
-      <button class="${state.resultView==='table'?'on':''}" id="viewTable" role="tab">Full table</button></div>`;
+  const title = `<div><h2 id="resultsTitle" tabindex="-1"><b>${filtered.length.toLocaleString()}</b> journals match</h2><div class="sub">${subText}</div></div>`;
+  const seg = `<div class="seg" role="group" aria-label="Result view">
+      <button class="${state.resultView==='summary'?'on':''}" id="viewSummary" aria-pressed="${state.resultView==='summary'}">Top matches</button>
+      <button class="${state.resultView==='table'?'on':''}" id="viewTable" aria-pressed="${state.resultView==='table'}">Full table</button></div>`;
   head.innerHTML = `${title}<div class="results-tools">${seg}
       <button class="btn btn-sm" id="csvBtn">⤓ Export CSV</button>
       <button class="btn btn-sm" id="shareBtn">\u{1F517} Share</button></div>`;
@@ -1695,6 +1746,9 @@ function renderResultsHead(){
   $('viewTable').addEventListener('click', ()=>{ state.resultView='table'; renderResultsArea(); updateURL(); });
   $('csvBtn').addEventListener('click', exportCSV);
   $('shareBtn').addEventListener('click', copyShare);
+}
+function focusResultsTitle(){
+  requestAnimationFrame(() => { const title=$('resultsTitle'); if(title) title.focus({preventScroll:true}); });
 }
 
 /* strength ranking for summary */
@@ -1747,12 +1801,12 @@ function cardHTML(r, i, matchLabel){
     ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
     ${capDetail(r)}
-    ${r['Journal Website']?`<div class="crow jcard-link"><span>🔗 <a href="${escAttr(r['Journal Website'])}" target="_blank" rel="noopener noreferrer">Visit journal homepage</a></span></div>`:''}
+    ${r['Journal Website']?`<div class="crow jcard-link"><span aria-hidden="true">🔗</span><span><a href="${escAttr(r['Journal Website'])}" target="_blank" rel="noopener noreferrer">Visit journal homepage<span class="sr-only"> (opens in a new tab)</span></a></span></div>`:''}
     ${(()=>{
       const issnRaw = (r['ISSNs']||'').split(';')[0].trim();
       const opfURL = r['Open Policy Finder URL'] || '';
-      if (opfURL) return `<div class="crow jcard-link"><span>📋 <a href="${escAttr(opfURL)}" target="_blank" rel="noopener noreferrer">View Green OA policy (Open Policy Finder)</a></span></div>`;
-      return issnRaw ? `<div class="crow jcard-link"><span>📋 <a href="https://openpolicyfinder.jisc.ac.uk/" target="_blank" rel="noopener noreferrer">Search Open Policy Finder</a> — ISSN: <code style="font-size:11px;background:var(--grey-100);padding:1px 5px;border-radius:3px;user-select:all">${esc(issnRaw)}</code></span></div>` : '';
+      if (opfURL) return `<div class="crow jcard-link"><span aria-hidden="true">📋</span><span><a href="${escAttr(opfURL)}" target="_blank" rel="noopener noreferrer">View Green OA policy (Open Policy Finder)<span class="sr-only"> (opens in a new tab)</span></a></span></div>`;
+      return issnRaw ? `<div class="crow jcard-link"><span aria-hidden="true">📋</span><span><a href="https://openpolicyfinder.jisc.ac.uk/" target="_blank" rel="noopener noreferrer">Search Open Policy Finder<span class="sr-only"> (opens in a new tab)</span></a> — ISSN: <code style="font-size:11px;background:var(--grey-100);padding:1px 5px;border-radius:3px;user-select:all">${esc(issnRaw)}</code></span></div>` : '';
     })()}
     <div class="cardfoot">
       <div style="display:flex;gap:6px">
@@ -1951,7 +2005,7 @@ function renderTable(){
 function cellHTML(r, c, idx){
   if (c.badge==='rank') return `<td class="ctr">${rankBadge(r[c.key])}</td>`;
   if (c.badge==='ftp')  return `<td class="ctr">${ftpBadge(r)}</td>`;
-  if (c.key==='Journal Title') return `<td class="title-cell">${esc(r[c.key])} <button class="rowcopy" data-idx="${idx}" title="Copy details">copy</button></td>`;
+  if (c.key==='Journal Title') return `<td class="title-cell">${esc(r[c.key])} <button class="rowcopy" data-idx="${idx}" aria-label="Copy details for ${escAttr(r[c.key])}">copy</button></td>`;
   return `<td class="${c.cls}">${esc(r[c.key])||dash()}</td>`;
 }
 function renderPagination(total){
@@ -1960,7 +2014,7 @@ function renderPagination(total){
   if (pages<=1){ pg.innerHTML=''; return; }
   const range = pageRange(state.page, pages);
   let html = `<button class="pg" data-go="${state.page-1}" ${state.page===1?'disabled':''} aria-label="Previous page">‹</button>`;
-  range.forEach(p => { html += p==='…' ? `<span style="padding:0 4px;color:var(--grey-400)">…</span>` : `<button class="pg ${p===state.page?'active':''}" data-go="${p}">${p}</button>`; });
+  range.forEach(p => { html += p==='…' ? `<span style="padding:0 4px;color:var(--grey-600)">…</span>` : `<button class="pg ${p===state.page?'active':''}" data-go="${p}" ${p===state.page?'aria-current="page"':''} aria-label="Page ${p}">${p}</button>`; });
   html += `<button class="pg" data-go="${state.page+1}" ${state.page===pages?'disabled':''} aria-label="Next page">›</button>`;
   pg.innerHTML = html;
   pg.querySelectorAll('button[data-go]').forEach(b => b.addEventListener('click', () => { state.page=+b.dataset.go; renderTable(); $('tableScroll').scrollTop=0; }));
@@ -1974,7 +2028,7 @@ function pageRange(cur, total){
 
 /* ── Badges / helpers (reused from original) ── */
 function rankBadge(v){ const c={Q1:'b-q1',Q2:'b-q2','Q3/4':'b-q3',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}">${v}</span>`:dash(); }
-function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2','Q3/4':'b-q3',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}"><span class="b-lbl" style="color:rgba(255,255,255,.7)">${lbl}</span>${v}</span>`:''; }
+function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2','Q3/4':'b-q3',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}"><span class="b-lbl">${lbl}</span>${v}</span>`:''; }
 function dash(){ return '<span class="dash">—</span>'; }
 function ftpBadge(r){
   const ftp = r['Free to Publish']||'';
@@ -2160,61 +2214,52 @@ reduceMotion.addEventListener('change', () => { if(state.mode==='wizard') render
   window.animateHeading = animateHeading;
 })();
 
-/* ── Key drawer ── */
-(function(){
-  const trigger  = document.getElementById('keyTrigger');
-  const overlay  = document.getElementById('keyOverlay');
-  const drawer   = document.getElementById('keyDrawer');
-  const closeBtn = document.getElementById('keyClose');
-  if (!trigger || !drawer) return;
+/* ── Accessible modal drawers ── */
+function setupDrawer(triggerId, overlayId, drawerId, closeId){
+  const trigger=$(triggerId), overlay=$(overlayId), drawer=$(drawerId), closeBtn=$(closeId);
+  if (!trigger || !overlay || !drawer || !closeBtn) return;
+  const backgroundRoots=[document.querySelector('header'), $('chipBar'), $('stage'), document.querySelector('footer')].filter(Boolean);
+  let returnFocus=trigger;
 
-  function openKey(){
-    drawer.hidden  = false;
-    overlay.hidden = false;
-    trigger.setAttribute('aria-expanded','true');
-    closeBtn.focus();
-    document.body.style.overflow = 'hidden';
+  function setBackgroundInert(value){
+    backgroundRoots.forEach(element => { element.inert=value; });
   }
-  function closeKey(){
-    drawer.hidden  = true;
-    overlay.hidden = true;
-    trigger.setAttribute('aria-expanded','false');
-    trigger.focus();
-    document.body.style.overflow = '';
-  }
-  trigger.addEventListener('click', openKey);
-  closeBtn.addEventListener('click', closeKey);
-  overlay.addEventListener('click', closeKey);
-  document.addEventListener('keydown', e => { if (e.key==='Escape' && !drawer.hidden) closeKey(); });
-})();
-
-/* ── About drawer ── */
-(function(){
-  const trigger  = $('aboutTrigger');
-  const overlay  = $('aboutOverlay');
-  const drawer   = $('aboutDrawer');
-  const closeBtn = $('aboutClose');
-  if (!trigger || !drawer) return;
-
   function openDrawer(){
-    drawer.hidden  = false;
-    overlay.hidden = false;
+    returnFocus=document.activeElement || trigger;
+    drawer.hidden=false;
+    overlay.hidden=false;
     trigger.setAttribute('aria-expanded','true');
+    setBackgroundInert(true);
+    document.body.style.overflow='hidden';
     closeBtn.focus();
-    document.body.style.overflow = 'hidden';
   }
   function closeDrawer(){
-    drawer.hidden  = true;
-    overlay.hidden = true;
+    drawer.hidden=true;
+    overlay.hidden=true;
     trigger.setAttribute('aria-expanded','false');
-    trigger.focus();
-    document.body.style.overflow = '';
+    setBackgroundInert(false);
+    document.body.style.overflow='';
+    (returnFocus && returnFocus.isConnected ? returnFocus : trigger).focus();
   }
+  function focusableElements(){
+    return [...drawer.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+      .filter(element => !element.hidden && element.getClientRects().length);
+  }
+  drawer.addEventListener('keydown', event => {
+    if (event.key==='Escape') { event.preventDefault(); closeDrawer(); return; }
+    if (event.key!=='Tab') return;
+    const items=focusableElements();
+    if (!items.length) { event.preventDefault(); drawer.focus(); return; }
+    const first=items[0], last=items[items.length-1];
+    if (event.shiftKey && document.activeElement===first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement===last) { event.preventDefault(); first.focus(); }
+  });
   trigger.addEventListener('click', openDrawer);
   closeBtn.addEventListener('click', closeDrawer);
   overlay.addEventListener('click', closeDrawer);
-  document.addEventListener('keydown', e => { if (e.key==='Escape' && !drawer.hidden) closeDrawer(); });
-})();
+}
+setupDrawer('keyTrigger','keyOverlay','keyDrawer','keyClose');
+setupDrawer('aboutTrigger','aboutOverlay','aboutDrawer','aboutClose');
 </script>
 </body>
 </html>
