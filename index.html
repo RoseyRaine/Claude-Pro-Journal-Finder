@@ -175,6 +175,11 @@
     font-size: 16px; color: var(--csu-brown-lt);
     margin: 16px auto 0; line-height: 1.6; max-width: 520px;
   }
+  .data-freshness {
+    display: inline-block; margin-top: 12px; color: var(--white);
+    font-size: 12px; line-height: 1.5;
+  }
+  .data-freshness a { color: var(--white); text-underline-offset: 2px; }
 
   /* ── Choice cards (below the band) ── */
   .intent-or { display: none; }
@@ -502,9 +507,7 @@
   td.ctr { text-align: center; white-space: nowrap; }
   td.for { max-width: 130px; font-size: 12px; color: var(--grey-600); font-variant-numeric: tabular-nums; }
   td.issn { font-size: 11px; color: var(--grey-600); min-width: 150px; font-variant-numeric: tabular-nums; }
-  td .rowcopy { opacity: 0; border: none; background: var(--grey-100); border-radius: 5px; cursor: pointer; font-size: 11px; min-width: 28px; min-height: 28px; padding: 4px 8px; color: var(--grey-600); transition: opacity var(--dur) var(--ease), background var(--dur) var(--ease); }
-  tbody tr:hover .rowcopy { opacity: 1; }
-  tbody tr:focus-within .rowcopy, td .rowcopy:focus-visible { opacity: 1; }
+  td .rowcopy { opacity: 1; border: none; background: var(--grey-100); border-radius: 5px; cursor: pointer; font-size: 11px; min-width: 28px; min-height: 28px; padding: 4px 8px; color: var(--grey-600); transition: background var(--dur) var(--ease); }
   td .rowcopy:hover { background: var(--csu-orange-dk); color: #fff; }
   #tableBody.fade { opacity: .35; transition: opacity .12s; }
 
@@ -555,6 +558,9 @@
   }
   .publishing-reminder strong { color: var(--csu-navy); }
   .publishing-reminder .reminder-icon { font-size: 18px; line-height: 1.3; }
+  .publishing-terms {
+    margin: -6px 0 14px; color: var(--grey-600); font-size: 12px; line-height: 1.55;
+  }
 
   /* ── Animations ── */
   @keyframes fade-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -736,6 +742,7 @@
             <span class="aw">confidence.</span>
           </h1>
           <p>Check publishing eligibility for a journal you know, or explore journals by topic and rank.</p>
+          <div class="data-freshness">Data last refreshed: <strong><time id="homeDataDate" datetime="2026-09-18">18 September 2026</time></strong>. <a href="#" id="homeAboutLink">About the data</a></div>
         </div>
       </div>
 
@@ -791,10 +798,11 @@
       <div class="results-head" id="resultsHead"></div>
       <aside class="publishing-reminder" aria-labelledby="publishingReminderTitle">
         <span class="reminder-icon" aria-hidden="true">✓</span>
-        <div><strong id="publishingReminderTitle">Verify before submitting.</strong> Always check the journal website for the latest open access policies, fees, agreement eligibility, publication caps and author guidance. Consider journal scope, peer review, editorial standards and research integrity—not rankings or cost alone—when making your publishing decision.</div>
+        <div><strong id="publishingReminderTitle">Verify before submitting.</strong> Always check the journal website for the latest open access policies, fees—including article processing charges (APCs)—agreement eligibility, publication caps and author guidance. Consider journal scope, peer review, editorial standards and research integrity—not rankings or cost alone—when making your publishing decision.</div>
       </aside>
+      <p class="publishing-terms"><strong>Publishing terms:</strong> Fully Open Access (Gold OA) journals make all articles openly available. Hybrid journals publish a mix of open access and subscription articles.</p>
       <div id="exploreNote" class="explore-note" hidden>
-        <span>💡 Results are matched by FOR codes and keywords. For deeper discovery, also try
+        <span><span aria-hidden="true">💡</span> Results are matched by FOR codes and keywords. For deeper discovery, also try
         <a href="https://www.scimagojr.com/" target="_blank" rel="noopener noreferrer">Scimago</a> or a subject database.</span>
       </div>
       <div id="summaryCards"></div>
@@ -811,7 +819,7 @@
         </div>
       </div>
       <div class="empty" id="emptyMsg" hidden>
-        <div class="ic">🔍</div>
+        <div class="ic" aria-hidden="true">🔍</div>
         <p><strong>No journals match.</strong></p>
         <p style="margin-top:6px;font-size:13px">Loosen a filter above, or clear all.</p>
       </div>
@@ -839,7 +847,7 @@
 <aside id="keyDrawer" class="about-drawer" hidden aria-labelledby="keyDrawerTitle" role="dialog" aria-modal="true">
   <div class="about-drawer-header">
     <h2 id="keyDrawerTitle">Label Key</h2>
-    <button class="about-close" id="keyClose" aria-label="Close">✕</button>
+    <button class="about-close" id="keyClose" aria-label="Close"><span aria-hidden="true">✕</span></button>
   </div>
   <div class="about-drawer-body">
 
@@ -847,13 +855,13 @@
       <h3>Free to Publish</h3>
       <p>Whether you can publish open access in this journal at no cost or reduced cost as a Charles Sturt University author.</p>
       <div class="key-grid">
-        <span class="badge b-yes">✓ Free — CSU Agreement</span>
+        <span class="badge b-yes"><span aria-hidden="true">✓</span> Free — CSU Agreement</span>
         <span class="key-desc">Free to publish for eligible CSU authors through either a CAUL-negotiated agreement or a publisher-direct agreement.</span>
 
-        <span class="badge b-diamond">✓ Free — Diamond OA</span>
+        <span class="badge b-diamond"><span aria-hidden="true">✓</span> Free — Diamond OA</span>
         <span class="key-desc">Diamond Open Access — no APC for any author regardless of institution. Always free to publish.</span>
 
-        <span class="badge b-yes">✓ Free — CSU Agreement &amp; Diamond OA</span>
+        <span class="badge b-yes"><span aria-hidden="true">✓</span> Free — CSU Agreement &amp; Diamond OA</span>
         <span class="key-desc">Covered by both a CSU agreement and Diamond OA status.</span>
 
         <span class="badge b-disc">💰 Discounted — CSU rate</span>
@@ -904,16 +912,16 @@
       <h3>Agreement cap warnings</h3>
       <p>Some agreements have a cap on the number of Gold OA articles that can be published across all CAUL institutions in a year.</p>
       <div class="key-grid">
-        <span class="badge b-cap">⚠ Cap risk</span>
+        <span class="badge b-cap"><span aria-hidden="true">⚠</span> Cap risk</span>
         <span class="key-desc">This journal's agreement has a shared publication cap that is approaching. Check with the Library before submitting — a discount may still apply if the cap is reached.</span>
 
-        <span class="badge b-cap-reached">⚠ Cap reached</span>
+        <span class="badge b-cap-reached"><span aria-hidden="true">⚠</span> Cap reached</span>
         <span class="key-desc">The cap for this agreement has been reached. Publishing is no longer funded under the agreement this year. You will be responsible for the full APC.</span>
       </div>
     </section>
 
     <section class="about-section" style="border-bottom:none">
-      <p style="font-size:12px;color:var(--grey-600)">Not sure which option applies to your article? Contact your <a href="https://library.csu.edu.au/our-libraries/contact-library-team/faculty-teams" target="_blank" rel="noopener noreferrer">CSU Faculty Librarian</a> for advice before submitting.</p>
+      <p style="font-size:12px;color:var(--grey-600)">Not sure which option applies to your manuscript? Contact your <a href="https://library.csu.edu.au/our-libraries/contact-library-team/faculty-teams" target="_blank" rel="noopener noreferrer">CSU Faculty Librarian</a> for advice before submitting.</p>
     </section>
 
   </div>
@@ -924,14 +932,14 @@
 <aside id="aboutDrawer" class="about-drawer" hidden aria-labelledby="aboutDrawerTitle" role="dialog" aria-modal="true">
   <div class="about-drawer-header">
     <h2 id="aboutDrawerTitle">About &amp; Help</h2>
-    <button class="about-close" id="aboutClose" aria-label="Close">✕</button>
+    <button class="about-close" id="aboutClose" aria-label="Close"><span aria-hidden="true">✕</span></button>
   </div>
   <div class="about-drawer-body">
 
     <section class="about-section">
       <h3>About the Charles Sturt University Journal Finder</h3>
       <p>The Charles Sturt University Journal Finder helps researchers and staff at Charles Sturt University identify journals that are free or discounted to publish in, and explore journals by quality ranking and field of research.</p>
-      <p><strong>Data last updated:</strong> 18 September 2026.</p>
+      <p><strong>Data last updated:</strong> <time id="aboutDataDate" datetime="2026-09-18">18 September 2026</time>.</p>
     </section>
 
     <section class="about-section">
@@ -940,10 +948,10 @@
       <p>Know the journal title or ISSN? Use <strong>Check a journal</strong> to look it up directly. Results show the journal's rank prominently, its free-to-publish status, and any CSU agreement or discount.</p>
       <h4>Explore journals</h4>
       <p>Use <strong>Explore journals</strong> to discover journals by topic, keyword, or FOR code — then filter by rank, free-to-publish status, or agreement. Note that results are matched by FOR codes and keywords; for deeper discovery, also consult Scimago or a subject database, as scope-based matches may be missed.</p>
-      <h4>Find similar journals</h4>
-      <p>Each journal card includes a <strong>Find similar</strong> button. This identifies journals sharing the same FOR (Field of Research) codes, ranked by how many codes they have in common, then by free-to-publish status and Scimago quartile. This is a subject-area match, not a citation-based similarity score. Journals without FOR codes will show a "not enough data" message with a link to Scimago.</p>
+      <h4>Find related journals</h4>
+      <p>Each journal card includes a <strong>Find related journals</strong> button. This identifies journals sharing the same FOR (Field of Research) codes, ranked by how many codes they have in common, then by free-to-publish status and Scimago quartile. This is a research-area match, not a citation-based similarity score. Journals without FOR codes will show a "not enough data" message with a link to Scimago.</p>
       <h4>Share a search</h4>
-      <p>The <strong>🔗 Share</strong> button in the filter bar copies a link to your current search and filters to the clipboard. Paste this link to share a pre-filtered view with colleagues — for example, a list of Q1 free-to-publish journals in a specific FOR code area.</p>
+      <p>The <strong>Share</strong> button copies a shareable link to your clipboard so you can paste it into an email, Teams message or document. The link preserves your current search and filters—for example, a list of Q1 free-to-publish journals in a specific FOR code area.</p>
     </section>
 
     <section class="about-section">
@@ -964,7 +972,7 @@
       <p>Each journal card shows whether the journal is <strong>Fully OA</strong> (Gold — all articles are open access, APC funded by the agreement) or <strong>Hybrid</strong> (a mix of open and closed articles; OA publishing is covered by the agreement). This distinction matters because some agreements only cover Hybrid journals, and Fully OA (Gold) journals under certain agreements have publication caps.</p>
 
       <h3>Agreement cap warnings</h3>
-      <p>Some agreements impose a shared cap on the number of Gold OA articles that can be published across all CAUL institutions in a year. When a cap is approaching or has been reached, an <strong>⚠ amber or red badge</strong> appears on affected journal cards with a detail explanation. Current capped agreements:</p>
+      <p>Some agreements impose a shared cap on the number of Gold OA articles that can be published across all CAUL institutions in a year. When a cap is approaching or has been reached, a <strong>Cap risk</strong> or <strong>Cap reached</strong> badge appears on affected journal cards with a detailed explanation. Current capped agreements:</p>
       <ul>
         <li><strong>Wiley Gold OA</strong> — capped; a 20% APC discount applies if the cap is reached</li>
         <li><strong>Springer Nature Gold OA</strong> — extremely limited (176 articles shared across all CAUL institutions)</li>
@@ -977,6 +985,7 @@
 
       <h3>How "Free to Publish" is determined</h3>
       <p>A journal is marked free to publish in if it is covered for eligible CSU authors under an open access agreement or is a Diamond Open Access journal with no APC for any author. A journal is marked discounted where CSU authors receive a negotiated reduction on article processing charges (APCs). These determinations are based on the data sources listed above and should be verified with the Library before submission.</p>
+      <p>Access to APC funding varies between researchers, disciplines and institutions. Consider publishing cost alongside journal scope, quality, editorial standards and research integrity when selecting a journal.</p>
     </section>
 
     <section class="about-section">
@@ -986,7 +995,7 @@
 
     <section class="about-section">
       <h3>Accessibility</h3>
-      <p>The Journal Finder supports keyboard navigation, screen readers, browser zoom, high-contrast settings and reduced-motion preferences. If you experience an accessibility problem, please <a href="https://library.csu.edu.au/our-libraries/contact-library-team/faculty-teams" target="_blank" rel="noopener noreferrer">contact the CSU Library team</a>.</p>
+      <p>The Journal Finder has been designed to support WCAG 2.2 Level AA requirements. It supports keyboard navigation, screen readers, browser zoom, high-contrast settings and reduced-motion preferences. If you experience an accessibility problem, please <a href="https://library.csu.edu.au/our-libraries/contact-library-team/faculty-teams" target="_blank" rel="noopener noreferrer">contact the CSU Library team</a>.</p>
     </section>
 
     <section class="about-section">
@@ -1083,6 +1092,14 @@ function loadConfig(){
     .then(r => r.ok ? r.json() : {})
     .then(cfg => {
       capWarnings = (cfg && cfg.cap_warnings) ? cfg.cap_warnings : {};
+      if (cfg && cfg.data_last_updated) {
+        ['homeDataDate','aboutDataDate'].forEach(id => {
+          const element=$(id);
+          if (!element) return;
+          element.textContent=cfg.data_last_updated;
+          if (cfg.data_last_updated_iso) element.setAttribute('datetime', cfg.data_last_updated_iso);
+        });
+      }
       console.log('[JF] Config loaded, cap warnings:', Object.keys(capWarnings).length);
     })
     .catch(() => { capWarnings = {}; });
@@ -1169,14 +1186,14 @@ function capBadge(r){
   const w = getCapWarning(r);
   if (!w) return '';
   if (w.status === 'reached')
-    return `<span class="badge b-cap-reached" title="${esc(w.label)}">⚠ Cap reached</span>`;
-  return `<span class="badge b-cap" title="${esc(w.label)}">⚠ Cap risk</span>`;
+    return `<span class="badge b-cap-reached" title="${esc(w.label)}"><span aria-hidden="true">⚠</span> Cap reached</span>`;
+  return `<span class="badge b-cap" title="${esc(w.label)}"><span aria-hidden="true">⚠</span> Cap risk</span>`;
 }
 
 function capDetail(r){
   const w = getCapWarning(r);
   if (!w) return '';
-  return `<div class="cap-detail">⚠ <strong>${esc(w.label)}</strong> — ${esc(w.detail)}
+  return `<div class="cap-detail"><span aria-hidden="true">⚠</span> <strong>${esc(w.label)}</strong> — ${esc(w.detail)}
     ${w.link ? `<a href="${escAttr(w.link)}" target="_blank" rel="noopener noreferrer"> Learn more →</a>` : ''}
   </div>`;
 }
@@ -1206,7 +1223,7 @@ Promise.all([loadConfig(), fetch(DATA_URL).then(r => { if(!r.ok) throw new Error
     $('skeleton').style.display = 'none';
     $('loadingStatus').textContent = 'Journal data could not be loaded.';
     const e = $('errorMsg'); e.hidden = false;
-    e.innerHTML = '<div class="ic">⚠</div><p><strong>Could not load journal data.</strong></p><p style="font-size:13px;margin-top:6px">'+esc(err.message)+'</p>';
+    e.innerHTML = '<div class="ic" aria-hidden="true">⚠</div><p><strong>Could not load journal data.</strong></p><p style="font-size:13px;margin-top:6px">'+esc(err.message)+'</p>';
   });
 
 /* ── Build catalogs (reuses original enumeration logic) ── */
@@ -1403,6 +1420,10 @@ function buildIntents(){
     lookup:  'Journal title, ISSN, or abbreviation…',
     explore: 'Topic, keyword, or FOR code…',
   };
+  const searchLabels = {
+    lookup: 'Check journal',
+    explore: 'Explore topic',
+  };
   $('intents').innerHTML = INTENTS.map(it => `
     <div class="intent-card" data-intent="${it.id}" role="group" aria-label="${esc(it.title)}">
       <span class="intent-ic">
@@ -1414,7 +1435,7 @@ function buildIntents(){
         <input type="search" autocomplete="off"
           placeholder="${esc(placeholders[it.id]||'Search…')}"
           aria-label="${esc(it.title)}">
-        <button type="submit">Search</button>
+        <button type="submit">${esc(searchLabels[it.id]||'Search')}</button>
       </form>
       <div class="intent-search-hint" id="hint_${it.id}" aria-live="polite"></div>
     </div>`).join('');
@@ -1437,7 +1458,7 @@ function buildIntents(){
           return hay.includes(q);
         }).length;
         if (hint) hint.innerHTML = n ? `<b>${n.toLocaleString()}</b> journals match` : 'No matches';
-      }, 180);
+      }, 500);
     });
 
     // Submit → launch intent with query pre-filled
@@ -1467,7 +1488,7 @@ document.getElementById('entrySearch') && document.getElementById('entrySearch')
     const tmp = Object.assign({}, state, { q:v });
     let c=0; if(v){ for(const r of allData) if(recMatches(r,tmp,null)) c++; }
     (document.getElementById('searchHint')||{}).innerHTML = v ? `<b>${c.toLocaleString()}</b> match — press Enter to see them` : '';
-  }, 200);
+  }, 500);
 });
 document.getElementById('entrySearchForm') && document.getElementById('entrySearchForm').addEventListener('submit', e => {
   e.preventDefault();
@@ -1534,7 +1555,7 @@ function renderStep(){
     html += `<input class="kw-input" id="kwInput" type="search" autocomplete="off" placeholder="${kwPlaceholder}" value="${esc(stateRawQ())}">`;
     stepEl.innerHTML = html; stepEl.classList.remove('enter'); void stepEl.offsetWidth; stepEl.classList.add('enter');
     const kw=$('kwInput');
-    kw.addEventListener('input', () => { clearTimeout(entryDebounce); entryDebounce=setTimeout(()=>{ state.q=kw.value.trim().toLowerCase(); applyFilters(); updateWizardNav(); }, 200); });
+    kw.addEventListener('input', () => { clearTimeout(entryDebounce); entryDebounce=setTimeout(()=>{ state.q=kw.value.trim().toLowerCase(); applyFilters(); updateWizardNav(); }, 500); });
     kw.focus();
     updateWizardNav();
     return;
@@ -1653,7 +1674,7 @@ function buildAdvancedControls(){
        <div style="display:flex;gap:4px;flex-wrap:wrap;padding-top:4px">${['Q1','Q2','Q3','Q4'].map(q=>`<button class="btn btn-sm adv-q-btn" data-q="${q}" data-key="scimago" style="padding:4px 10px">${q}</button>`).join('')}</div></div>`
     + `<div class="fg"><label>CSU Rank <span style="font-size:10px;color:var(--grey-600)">(multi-select)</span></label>
        <div style="display:flex;gap:4px;flex-wrap:wrap;padding-top:4px">${['Q1','Q2','Q3Q4'].map(q=>`<button class="btn btn-sm adv-q-btn" data-q="${q}" data-key="csu" style="padding:4px 10px">${q==='Q3Q4'?'Q3/Q4':q}</button>`).join('')}</div></div>`
-    + `<button class="btn btn-ghost btn-sm" id="advClear" style="align-self:flex-end">✕ Clear all</button>`;
+    + `<button class="btn btn-ghost btn-sm" id="advClear" style="align-self:flex-end"><span aria-hidden="true">✕</span> Clear all</button>`;
   row.querySelectorAll('select').forEach(sel => sel.addEventListener('change', () => {
     state[sel.dataset.key] = sel.value; state.page=1; applyFilters();
   }));
@@ -1678,7 +1699,7 @@ function updateAdvQButtons(row){
 let advDebounce;
 $('advSearch').addEventListener('input', e => {
   clearTimeout(advDebounce);
-  advDebounce = setTimeout(()=>{ state.q = e.target.value.trim().toLowerCase(); state._rawQ=e.target.value.trim(); state.page=1; applyFilters(); }, 220);
+  advDebounce = setTimeout(()=>{ state.q = e.target.value.trim().toLowerCase(); state._rawQ=e.target.value.trim(); state.page=1; applyFilters(); }, 500);
 });
 function syncAdvancedFromState(){
   $('advSearch').value = state._rawQ || state.q || '';
@@ -1689,7 +1710,7 @@ function syncAdvancedFromState(){
 /* ── CHIPS / live count ── */
 function renderChips(){
   const keys = activeKeys();
-  chipsEl.innerHTML = keys.map(k => `<span class="chip"><span class="k">${esc(FACETS[k].label)}:</span> ${esc(facetValueLabel(k, state[k]))} <button data-k="${k}" aria-label="Remove ${esc(FACETS[k].label)} filter">✕</button></span>`).join('');
+  chipsEl.innerHTML = keys.map(k => `<span class="chip"><span class="k">${esc(FACETS[k].label)}:</span> ${esc(facetValueLabel(k, state[k]))} <button data-k="${k}" aria-label="Remove ${esc(FACETS[k].label)} filter"><span aria-hidden="true">✕</span></button></span>`).join('');
   chipsEl.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { clearFacet(b.dataset.k); state.page=1; applyFilters(); }));
   clearAllBtn.hidden = keys.length===0;
 }
@@ -1740,8 +1761,8 @@ function renderResultsHead(){
       <button class="${state.resultView==='summary'?'on':''}" id="viewSummary" aria-pressed="${state.resultView==='summary'}">Top matches</button>
       <button class="${state.resultView==='table'?'on':''}" id="viewTable" aria-pressed="${state.resultView==='table'}">Full table</button></div>`;
   head.innerHTML = `${title}<div class="results-tools">${seg}
-      <button class="btn btn-sm" id="csvBtn">⤓ Export CSV</button>
-      <button class="btn btn-sm" id="shareBtn">\u{1F517} Share</button></div>`;
+      <button class="btn btn-sm" id="csvBtn"><span aria-hidden="true">⤓</span> Export CSV</button>
+      <button class="btn btn-sm" id="shareBtn" aria-label="Copy shareable link to clipboard"><span aria-hidden="true">\u{1F517}</span> Share</button></div>`;
   $('viewSummary').addEventListener('click', ()=>{ state.resultView='summary'; renderResultsArea(); updateURL(); });
   $('viewTable').addEventListener('click', ()=>{ state.resultView='table'; renderResultsArea(); updateURL(); });
   $('csvBtn').addEventListener('click', exportCSV);
@@ -1797,7 +1818,7 @@ function cardHTML(r, i, matchLabel){
     ${rankHero}
     <h3>${esc(r['Journal Title'])}</h3>
     ${r['Publisher Name']?`<div class="meta">${esc(r['Publisher Name'])}</div>`:''}
-    ${matchLabel?`<div style="font-size:11px;color:var(--csu-green);font-weight:600;margin-bottom:4px">✓ ${esc(matchLabel)}</div>`:''}
+    ${matchLabel?`<div style="font-size:11px;color:var(--csu-green);font-weight:600;margin-bottom:4px"><span aria-hidden="true">✓</span> ${esc(matchLabel)}</div>`:''}
     <div class="badges">${ftpBadge(r)}${journalTypeBadge(r)}${capBadge(r)}${!isCheck?rankBadgeL('CSU Rank',r['CSU Rank']):''}${!isCheck?rankBadgeL('SJR',r['Scimago Rank']):''}</div>
     ${r['Agreement']?`<div class="crow"><span><b>Agreement:</b> ${esc(r['Agreement'])}</span></div>`:''}
     <div class="crow">${r['ISSNs']?`<span><b>ISSN:</b> ${esc(r['ISSNs'])}</span>`:''}${r['FOR Codes']?`<span><b>FOR:</b> ${esc(r['FOR Codes'])}</span>`:''}</div>
@@ -1812,7 +1833,7 @@ function cardHTML(r, i, matchLabel){
     <div class="cardfoot">
       <div style="display:flex;gap:6px">
         <button class="btn btn-sm copybtn" data-idx="${idx}">Copy details</button>
-        <button class="btn btn-sm btn-similar similarBtn" data-idx="${idx}" title="Find journals in the same research area">Find similar</button>
+        <button class="btn btn-sm btn-similar similarBtn" data-idx="${idx}" title="Find journals in the same research area">Find related journals</button>
       </div>
     </div></div>`;
 }
@@ -1828,7 +1849,7 @@ function normaliseExternalURL(value){
 }
 
 
-/* ── Find Similar Journals ── */
+/* ── Find Related Journals ── */
 function findSimilar(sourceJournal) {
   if (!sourceJournal) return;
 
@@ -1886,11 +1907,11 @@ function renderSimilarBanner() {
   const total = state.similarScored ? state.similarScored.length : 0;
   return `<div class="similar-banner">
     <div class="similar-banner-text">
-      <strong>🔍 Journals similar to: ${esc(r['Journal Title'])}</strong>
+      <strong><span aria-hidden="true">🔍</span> Journals related to: ${esc(r['Journal Title'])}</strong>
       <span>Matched by shared FOR codes: ${forCodes.map(c=>`<b>${esc(c)}</b>`).join(', ')} · ${total.toLocaleString()} journals share at least one code · ranked by number of codes in common</span>
     </div>
     <div class="similar-banner-actions">
-      <button class="btn btn-sm" onclick="clearSimilar()" style="border-color:var(--csu-brown-lt);color:var(--csu-brown-lt)">✕ Clear</button>
+      <button class="btn btn-sm" onclick="clearSimilar()" style="border-color:var(--csu-brown-lt);color:var(--csu-brown-lt)"><span aria-hidden="true">✕</span> Clear</button>
     </div>
   </div>`;
 }
@@ -1913,7 +1934,7 @@ function renderSimilarResults() {
     const r = state.similarJournal;
     sc.innerHTML = renderSimilarBanner() + `
       <div class="no-for-msg">
-        <strong>Not enough data to find similar journals</strong>
+        <strong>Not enough data to find related journals</strong>
         <em>${esc(r['Journal Title'])}</em> has no FOR (Field of Research) codes in our dataset.
         FOR codes are required to identify related journals.<br><br>
         <a href="https://www.scimagojr.com/journalsearch.php?q=${encodeURIComponent(r['Journal Title'])}" target="_blank" rel="noopener noreferrer" style="color:var(--csu-blue)">
@@ -1969,7 +1990,7 @@ function renderLoosen(){
   }).filter(s=>s.gain>0).sort((a,b)=>b.gain-a.gain);
   if (!sugg.length){ box.innerHTML=''; return; }
   box.innerHTML = `<div class="loosen">
-    <h3>⚡ ${base===0?'No journals match':'Only '+base+' match'} — try loosening a filter</h3>
+    <h3><span aria-hidden="true">⚡</span> ${base===0?'No journals match':'Only '+base+' match'} — try loosening a filter</h3>
     <p>Tick the filters to remove, then apply. The biggest openers are first.</p>
     <div class="loosen-opts">${sugg.map(s=>`<label class="loosen-opt"><input type="checkbox" value="${s.k}"><span>Remove <b>${esc(FACETS[s.k].label)}: ${esc(facetValueLabel(s.k,state[s.k]))}</b></span><span class="gain">+${s.gain.toLocaleString()}</span></label>`).join('')}</div>
     <div class="loosen-actions"><button class="btn btn-primary btn-sm" id="loosenApply">Apply</button><button class="btn btn-ghost btn-sm" id="loosenAll">Clear all filters</button></div>
@@ -2043,9 +2064,9 @@ function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2','Q3/4':'b-q3',Q3:'b-q3'
 function dash(){ return '<span class="dash">—</span>'; }
 function ftpBadge(r){
   const ftp = r['Free to Publish']||'';
-  if (ftp.startsWith('Yes — CSU Agreement & Diamond OA')) return '<span class="badge b-yes">✓ Free — CSU Agreement & Diamond OA</span>';
-  if (ftp.startsWith('Yes — CSU Agreement')) return '<span class="badge b-yes">✓ Free — CSU Agreement</span>';
-  if (ftp.startsWith('Yes — Diamond OA'))    return '<span class="badge b-diamond">✓ Free — Diamond OA</span>';
+  if (ftp.startsWith('Yes — CSU Agreement & Diamond OA')) return '<span class="badge b-yes"><span aria-hidden="true">✓</span> Free — CSU Agreement & Diamond OA</span>';
+  if (ftp.startsWith('Yes — CSU Agreement')) return '<span class="badge b-yes"><span aria-hidden="true">✓</span> Free — CSU Agreement</span>';
+  if (ftp.startsWith('Yes — Diamond OA'))    return '<span class="badge b-diamond"><span aria-hidden="true">✓</span> Free — Diamond OA</span>';
   if (ftp.startsWith('Discounted'))          return '<span class="badge b-disc">💰 Discounted — CSU rate</span>';
   return '<span class="badge b-no">No free OA option</span>';
 }
@@ -2271,6 +2292,10 @@ function setupDrawer(triggerId, overlayId, drawerId, closeId){
 }
 setupDrawer('keyTrigger','keyOverlay','keyDrawer','keyClose');
 setupDrawer('aboutTrigger','aboutOverlay','aboutDrawer','aboutClose');
+$('homeAboutLink').addEventListener('click', event => {
+  event.preventDefault();
+  $('aboutTrigger').click();
+});
 </script>
 </body>
 </html>

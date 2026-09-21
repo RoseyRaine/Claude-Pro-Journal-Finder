@@ -2,6 +2,8 @@
   "_readme": "CSU Journal Finder — Agreement cap configuration. Edit this file and upload to GitHub to update cap warnings without touching index.html.",
   "_last_updated": "2026-08-18",
   "_updated_by": "CSU Library",
+  "data_last_updated": "18 September 2026",
+  "data_last_updated_iso": "2026-09-18",
 
   "cap_warnings": {
     "Wiley|Fully Open Access": {
