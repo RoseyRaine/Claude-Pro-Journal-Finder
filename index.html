@@ -219,7 +219,7 @@
   }
   .intent-card.is-selected .intent-ic { background: var(--csu-green) !important; }
   .intent-ic svg { width: 24px; height: 24px; }
-  .intent-card h3 {
+  .intent-card h2 {
     font-size: 18px; font-weight: 700;
     color: var(--csu-navy); margin-bottom: 6px;
   }
@@ -1417,8 +1417,8 @@ function showMode(mode){
 /* ── ENTRY ── */
 function buildIntents(){
   const placeholders = {
-    lookup:  'Journal title, ISSN, or abbreviation…',
-    explore: 'Topic, keyword, or FOR code…',
+    lookup:  'Journal title or ISSN…',
+    explore: 'Topic or FOR code…',
   };
   const searchLabels = {
     lookup: 'Check journal',
@@ -1429,7 +1429,7 @@ function buildIntents(){
       <span class="intent-ic">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${it.icon}</svg>
       </span>
-      <h3>${esc(it.title)}</h3>
+      <h2>${esc(it.title)}</h2>
       <p>${esc(it.desc)}</p>
       <form class="intent-search-wrap" data-intent="${it.id}" role="search" aria-label="${esc(it.title)} search">
         <input type="search" autocomplete="off"
