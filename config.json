@@ -1,9 +1,9 @@
 {
   "_readme": "CSU Journal Finder — Agreement cap configuration. Edit this file and upload to GitHub to update cap warnings without touching index.html.",
-  "_last_updated": "2026-08-18",
+  "_last_updated": "2026-09-25",
   "_updated_by": "CSU Library",
-  "data_last_updated": "18 September 2026",
-  "data_last_updated_iso": "2026-09-18",
+  "data_last_updated": "25 September 2026",
+  "data_last_updated_iso": "2026-09-25",
 
   "cap_warnings": {
     "Wiley|Fully Open Access": {
@@ -13,10 +13,10 @@
       "link": "https://libguides.csu.edu.au/OpenAccess/readandpublish"
     },
     "Springer|Fully Open Access": {
-      "status": "capped",
-      "label": "Springer Nature Gold OA — extremely limited",
-      "detail": "Only 176 Gold OA articles are available across all CAUL institutions under this agreement. This cap is shared and extremely limited. If the cap is reached before your article is accepted, you will be responsible for the full APC. Check with the Library before submitting.",
-      "link": "https://libguides.csu.edu.au/OpenAccess/readandpublish"
+      "status": "ok",
+      "label": "Springer Nature OA — uncapped",
+      "detail": "The Springer Nature agreement is uncapped for 2026–2028. A forecast pool applies to certain Springer and Palgrave Open fully OA titles, but publishing does not cease if the pool's maximum threshold is reached.",
+      "link": "https://caul.libguides.com/read-and-publish/springer-nature"
     }
   },
 
