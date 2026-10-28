@@ -1,15 +1,15 @@
 {
   "_readme": "CSU Journal Finder — Agreement cap configuration. Edit this file and upload to GitHub to update cap warnings without touching index.html.",
-  "_last_updated": "2026-09-25",
+  "_last_updated": "2026-10-28",
   "_updated_by": "CSU Library",
-  "data_last_updated": "25 September 2026",
-  "data_last_updated_iso": "2026-09-25",
+  "data_last_updated": "28 October 2026",
+  "data_last_updated_iso": "2026-10-28",
 
   "cap_warnings": {
     "Wiley|Fully Open Access": {
-      "status": "capped",
-      "label": "Wiley Gold OA — cap nearly reached",
-      "detail": "The Wiley agreement has a shared cap on Gold (Fully OA) journals across all CAUL institutions. Publishing may no longer be funded if the cap has been reached. A 20% APC discount applies if you publish outside the cap. Check with the Library before submitting.",
+      "status": "unavailable",
+      "label": "Wiley Gold OA — agreement funding unavailable",
+      "detail": "CSU Library is treating the 2026 Wiley allocation for fully open access (Gold) journals as unavailable for the remainder of 2026. New articles are not expected to be funded through the agreement until January 2027. A 20% APC discount may apply if alternative funding is available. Wiley hybrid journals are unaffected.",
       "link": "https://libguides.csu.edu.au/OpenAccess/readandpublish"
     },
     "Springer|Fully Open Access": {
@@ -23,8 +23,9 @@
   "_status_values": {
     "ok": "No cap warning — agreement is uncapped or cap not yet reached",
     "capped": "Cap warning active — show amber warning badge on journal cards",
-    "reached": "Cap reached — show red warning badge, publishing no longer funded"
+    "reached": "Cap reached — show red warning badge, publishing no longer funded",
+    "unavailable": "Agreement funding unavailable — show red warning badge and exclude from free-to-publish results"
   },
 
-  "_how_to_update": "To clear a warning, change 'status' from 'capped' to 'ok'. To mark cap as fully reached, change to 'reached'. Upload this file to your GitHub repo alongside index.html. Changes take effect within 2 minutes."
+  "_how_to_update": "To clear a warning, change its status to 'ok'. Use 'capped' for a cap risk, 'reached' for confirmed exhaustion, or 'unavailable' when CSU Library is treating agreement funding as unavailable. Upload this file to your GitHub repo alongside index.html. Changes take effect within 2 minutes."
 }

@@ -742,7 +742,7 @@
             <span class="aw">confidence.</span>
           </h1>
           <p>Check publishing eligibility for a journal you know, or explore journals by topic and rank.</p>
-          <div class="data-freshness">Data last refreshed: <strong><time id="homeDataDate" datetime="2026-09-25">25 September 2026</time></strong>. <a href="#" id="homeAboutLink">About the data</a></div>
+          <div class="data-freshness">Data last refreshed: <strong><time id="homeDataDate" datetime="2026-10-28">28 October 2026</time></strong>. <a href="#" id="homeAboutLink">About the data</a></div>
         </div>
       </div>
 
@@ -939,7 +939,7 @@
     <section class="about-section">
       <h3>About the Charles Sturt University Journal Finder</h3>
       <p>The Charles Sturt University Journal Finder helps researchers and staff at Charles Sturt University identify journals that are free or discounted to publish in, and explore journals by quality ranking and field of research.</p>
-      <p><strong>Data last updated:</strong> <time id="aboutDataDate" datetime="2026-09-25">25 September 2026</time>.</p>
+      <p><strong>Data last updated:</strong> <time id="aboutDataDate" datetime="2026-10-28">28 October 2026</time>.</p>
     </section>
 
     <section class="about-section">
@@ -972,9 +972,9 @@
       <p>Each journal card shows whether the journal is <strong>Fully OA</strong> (Gold — all articles are open access, APC funded by the agreement) or <strong>Hybrid</strong> (a mix of open and closed articles; OA publishing is covered by the agreement). This distinction matters because some agreements only cover Hybrid journals, and Fully OA (Gold) journals under certain agreements have publication caps.</p>
 
       <h3>Agreement cap warnings</h3>
-      <p>Some agreements impose a shared cap on the number of Gold OA articles that can be published across all CAUL institutions in a year. When a cap is approaching or has been reached, a <strong>Cap risk</strong> or <strong>Cap reached</strong> badge appears on affected journal cards with a detailed explanation. Current capped agreements:</p>
+      <p>Some agreements impose a shared cap on the number of Gold OA articles that can be published across all CAUL institutions in a year. When funding is at risk, has been exhausted or is being treated as unavailable, a status badge appears on affected journal cards with a detailed explanation. Current capped agreements:</p>
       <ul>
-        <li><strong>Wiley Gold OA</strong> — capped; a 20% APC discount applies if the cap is reached</li>
+        <li><strong>Wiley Gold OA</strong> — CSU Library is treating agreement funding as unavailable for the remainder of 2026. A 20% APC discount may apply if alternative funding is available. Wiley hybrid journals are unaffected.</li>
       </ul>
       <p>The <strong>Springer Nature agreement is uncapped for 2026–2028</strong>. A forecast pool applies to certain Springer and Palgrave Open fully OA titles, but publishing does not cease if the pool's maximum threshold is reached. See the <a href="https://caul.libguides.com/read-and-publish/springer-nature" target="_blank" rel="noopener noreferrer">CAUL Springer Nature agreement information</a>.</p>
       <p>Cap status is updated manually by Charles Sturt University Library by editing a configuration file (<code>config.json</code>). Always confirm with the Library before submitting to a capped journal. See the <a href="https://libguides.csu.edu.au/OpenAccess/readandpublish" target="_blank" rel="noopener noreferrer">OA Publishing Agreements guide</a> for current details.</p>
@@ -1174,6 +1174,25 @@ function getCapWarning(r){
   return warn;
 }
 
+function isAgreementFundingUnavailable(r){
+  const warn = getCapWarning(r);
+  return !!warn && (warn.status === 'reached' || warn.status === 'unavailable');
+}
+
+function hasFundedCSUAgreement(r){
+  return r['Eligible'] === 'Yes' && !isAgreementFundingUnavailable(r);
+}
+
+function isFreeToPublish(r){
+  return hasFundedCSUAgreement(r) || r['Diamond OA'] === 'Yes';
+}
+
+function effectiveFreeToPublish(r){
+  if (!isAgreementFundingUnavailable(r)) return r['Free to Publish'] || '';
+  if (r['Diamond OA'] === 'Yes') return 'Yes — Diamond OA';
+  return 'No — agreement funding unavailable';
+}
+
 function journalTypeBadge(r){
   const t = r['Journal Type'] || '';
   if (t === 'Fully Open Access') return '<span class="badge b-fully-oa">Fully OA</span>';
@@ -1185,6 +1204,9 @@ function journalTypeBadge(r){
 function capBadge(r){
   const w = getCapWarning(r);
   if (!w) return '';
+  // The primary Free to Publish badge already shows unavailable funding.
+  // Keep the explanatory panel, but avoid a duplicate status badge.
+  if (w.status === 'unavailable') return '';
   if (w.status === 'reached')
     return `<span class="badge b-cap-reached" title="${esc(w.label)}"><span aria-hidden="true">⚠</span> Cap reached</span>`;
   return `<span class="badge b-cap" title="${esc(w.label)}"><span aria-hidden="true">⚠</span> Cap risk</span>`;
@@ -1238,10 +1260,13 @@ function buildCatalog(data){
 
 /* ── Predicate (one definition powers filtering + counts) ── */
 function recMatches(r, st, skip){
-  if (skip!=='eligible'  && st.eligible  && r['Eligible']     !== st.eligible)  return false;
+  if (skip!=='eligible' && st.eligible){
+    const effectiveEligible = hasFundedCSUAgreement(r) ? 'Yes' : (r['Eligible']==='Yes' ? 'No' : r['Eligible']);
+    if (effectiveEligible !== st.eligible) return false;
+  }
   if (skip!=='freeoa' && st.freeoa && st.freeoa.length > 0){
     const matchesFreeRoute = st.freeoa.some(v =>
-      (v==='eligible' && r['Eligible']==='Yes') ||
+      (v==='eligible' && hasFundedCSUAgreement(r)) ||
       (v==='diamond' && r['Diamond OA']==='Yes')
     );
     if (!matchesFreeRoute) return false;
@@ -1286,8 +1311,8 @@ function computeFiltered(){
 function sortFiltered(){
   const col=state.sortCol, dir=state.sortDir;
   filtered.sort((a,b)=>{
-    let av=(a[col]||'').toString(); const as=av.replace(/^[^a-zA-Z]+/,'').toLowerCase(); av=as||av.toLowerCase();
-    let bv=(b[col]||'').toString(); const bs=bv.replace(/^[^a-zA-Z]+/,'').toLowerCase(); bv=bs||bv.toLowerCase();
+    let av=(col==='Free to Publish' ? effectiveFreeToPublish(a) : (a[col]||'')).toString(); const as=av.replace(/^[^a-zA-Z]+/,'').toLowerCase(); av=as||av.toLowerCase();
+    let bv=(col==='Free to Publish' ? effectiveFreeToPublish(b) : (b[col]||'')).toString(); const bs=bv.replace(/^[^a-zA-Z]+/,'').toLowerCase(); bv=bs||bv.toLowerCase();
     if (av<bv) return dir==='asc'?-1:1;
     if (av>bv) return dir==='asc'?1:-1;
     return 0;
@@ -1307,8 +1332,11 @@ function facetCounts(facetKey){
     } else if (facetKey==='diamond'){
       if (r['Diamond OA']==='Yes') inc('Yes');
     } else if (facetKey==='freeoa'){
-      if (r['Eligible']==='Yes') inc('eligible');
+      if (hasFundedCSUAgreement(r)) inc('eligible');
       if (r['Diamond OA']==='Yes') inc('diamond');
+    } else if (facetKey==='eligible'){
+      const effectiveEligible = hasFundedCSUAgreement(r) ? 'Yes' : (r['Eligible']==='Yes' ? 'No' : r['Eligible']);
+      if (effectiveEligible) inc(effectiveEligible);
     } else {
       const v = r[FACETS[facetKey].field]; if (v) inc(v);
     }
@@ -1775,7 +1803,7 @@ function focusResultsTitle(){
 /* strength ranking for summary */
 function strengthScore(r){
   let s=0;
-  if (r['Eligible']==='Yes') s+=1000;
+  if (hasFundedCSUAgreement(r)) s+=1000;
   s += ({Q1:4,Q2:3,Q3:2,Q4:1}[r['Scimago Rank']]||0)*100;
   s += ({Q1:4,Q2:3,'Q3/4':2,Q3:2,Q4:1}[r['CSU Rank']]||0)*20;
   if (r['Diamond OA']==='Yes') s+=10;
@@ -1882,11 +1910,10 @@ function findSimilar(sourceJournal) {
 
   // Sort by number of matching codes desc, then by Free to Publish, then Scimago rank
   const rankOrder = { Q1:4, Q2:3, Q3:2, Q4:1 };
-  const ftpOrder = v => v && v.startsWith('Yes') ? 1 : 0;
   scored.sort((a, b) => {
     if (b.matches !== a.matches) return b.matches - a.matches;
-    if (ftpOrder(b.r['Free to Publish']) !== ftpOrder(a.r['Free to Publish']))
-      return ftpOrder(b.r['Free to Publish']) - ftpOrder(a.r['Free to Publish']);
+    if (isFreeToPublish(b.r) !== isFreeToPublish(a.r))
+      return isFreeToPublish(b.r) ? 1 : -1;
     return (rankOrder[b.r['Scimago Rank']] || 0) - (rankOrder[a.r['Scimago Rank']] || 0);
   });
 
@@ -2063,7 +2090,9 @@ function rankBadge(v){ const c={Q1:'b-q1',Q2:'b-q2','Q3/4':'b-q3',Q3:'b-q3',Q4:'
 function rankBadgeL(lbl,v){ const c={Q1:'b-q1',Q2:'b-q2','Q3/4':'b-q3',Q3:'b-q3',Q4:'b-q4'}[v]; return c?`<span class="badge ${c}"><span class="b-lbl">${lbl}</span>${v}</span>`:''; }
 function dash(){ return '<span class="dash">—</span>'; }
 function ftpBadge(r){
-  const ftp = r['Free to Publish']||'';
+  if (isAgreementFundingUnavailable(r) && r['Diamond OA'] !== 'Yes')
+    return '<span class="badge b-cap-reached"><span aria-hidden="true">✕</span> Agreement funding unavailable</span>';
+  const ftp = effectiveFreeToPublish(r);
   if (ftp.startsWith('Yes — CSU Agreement & Diamond OA')) return '<span class="badge b-yes"><span aria-hidden="true">✓</span> Free — CSU Agreement & Diamond OA</span>';
   if (ftp.startsWith('Yes — CSU Agreement')) return '<span class="badge b-yes"><span aria-hidden="true">✓</span> Free — CSU Agreement</span>';
   if (ftp.startsWith('Yes — Diamond OA'))    return '<span class="badge b-diamond"><span aria-hidden="true">✓</span> Free — Diamond OA</span>';
@@ -2093,7 +2122,7 @@ function exportCSV(){
   const cols = COLUMNS.map(c=>c.key);
   const q = s => { s=(s==null?'':String(s)); return /[",;\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
   const lines = [cols.map(q).join(',')];
-  for (const r of filtered) lines.push(cols.map(c=>q(r[c])).join(','));
+  for (const r of filtered) lines.push(cols.map(c=>q(c==='Free to Publish' ? effectiveFreeToPublish(r) : r[c])).join(','));
   const blob = new Blob([lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2105,10 +2134,12 @@ function exportCSV(){
 function copyShare(){ const link = updateURL(); copyText(link, 'Share link copied'); }
 function copyJournal(r){
   if (!r) return;
+  const agreementFunding = hasFundedCSUAgreement(r) ? 'Yes' : 'No';
   const t = [
     r['Journal Title'],
     r['Publisher Name'] ? 'Publisher: '+r['Publisher Name'] : '',
-    'Free through CSU agreement: '+(r['Eligible']||'N/A'),
+    'Free through CSU agreement: '+agreementFunding,
+    isAgreementFundingUnavailable(r) ? 'Wiley Gold agreement funding: unavailable for the remainder of 2026' : '',
     'CSU Rank: '+(r['CSU Rank']||'—'),
   ].filter(Boolean).join('\n');
   copyText(t, 'Journal details copied');
